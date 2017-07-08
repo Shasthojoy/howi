@@ -1,0 +1,4 @@
+Development tmp dir for easier analyzes of temporary files
+or any keeping any other project related files which should not
+end up in repository. Also good place for drafting without having
+issues when changing branches and do on....
