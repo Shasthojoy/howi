@@ -1,2 +1,4 @@
 # howi-lib
-Go Library Collection of extended Go standard libraries, replacments, helpers and additional packages
+
+Go Library collection of extended Go standard libraries, replacements, helpers 
+and additional packages which have no external dependencies. (follows HOWI API from it's other language bindings)

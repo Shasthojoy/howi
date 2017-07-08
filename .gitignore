@@ -1,0 +1,29 @@
+################################################################################
+# FILES to ignore
+################################################################################
+# Files to ignore
+.*.swp
+.DS_Store
+*.dll
+*.dylib
+*.exe
+*.exe~
+*.orig
+*.out
+*.so
+# Test binary, build with `go test -c`
+*.test
+
+################################################################################
+# DIRECTORIES to ignore
+################################################################################
+# repository is place for source code not for binaries if you need to include
+# binaries in repository then consider appropriate values .gitattributes
+**/[Bb]in/*
+**/[Tt]mp/*
+**/[Vv]endor/*
+
+################################################################################
+# exception rules
+################################################################################
+!**/*.gitkeep
