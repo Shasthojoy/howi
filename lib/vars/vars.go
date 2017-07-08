@@ -82,6 +82,11 @@ func (v Value) Len() int {
 	return len(v.String())
 }
 
+// Empty returns true if this Value is empty
+func (v Value) Empty() bool {
+	return v.Len() == 0
+}
+
 // ValueFromString trims spaces and returns Value
 func ValueFromString(val string) Value {
 	return Value(strings.TrimSpace(val))

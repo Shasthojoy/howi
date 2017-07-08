@@ -429,5 +429,11 @@ func TestValue_Len(t *testing.T) {
 		if actual != val.Len() {
 			t.Errorf("Value.(%q).Len() len = %d, want %d", tt.k, actual, tt.wantLen)
 		}
+		if tt.defVal == "" && !val.Empty() {
+			t.Errorf("Value.(%q).Empty() = %t for value(%q), want true", tt.k, val.Empty(), val.String())
+		}
+		if tt.defVal != "" && val.Empty() {
+			t.Errorf("Value.(%q).Empty() = %t for value(%q), want true", tt.k, val.Empty(), val.String())
+		}
 	}
 }
