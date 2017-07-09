@@ -18,17 +18,19 @@ import (
 // the Writer's Write method. A Logger can be used simultaneously from
 // multiple goroutines; it guarantees to serialize access to the Writer.
 type Logger struct {
-	mu         sync.Mutex // ensures atomic writes; protects all Logger fields
-	w          io.Writer
-	wt         byte
-	level      int
-	aligned    bool
-	colors     bool
-	inProgress bool
-	exit       func(int)
-	msgBuf     []byte // for accumulating text to write out
-	started    timestamp
-	ts         *timestamp
+	mu           sync.Mutex // ensures atomic writes; protects all Logger fields
+	w            io.Writer
+	wt           byte
+	level        int
+	aligned      bool
+	colors       bool
+	inProgress   bool
+	exit         func(int)
+	msgBuf       []byte // for accumulating text to write out
+	started      timestamp
+	ts           *timestamp
+	primaryColor []byte
+	prfx         []byte
 }
 
 // Colors colirzes output
@@ -96,6 +98,7 @@ func New(w io.Writer, level int) *Logger {
 		wt:      t1,
 		ts:      &timestamp{},
 		started: timestamp{},
+		prfx:    []byte(" "),
 	}
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc,
@@ -173,9 +176,8 @@ func (l *Logger) TsTime() {
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Panic(v ...interface{}) {
 	s := fmt.Sprint(v...)
-	if l.isValid() && l.level >= PANIC {
-		//fmt.Println(_symPanic)
-		l.write(s, nil, sfxPanic[:], red)
+	if l.level >= PANIC && l.isValid() {
+		l.write(s, l.prfx, sfxPanic[:], red)
 	}
 	panic(s)
 }
@@ -184,9 +186,8 @@ func (l *Logger) Panic(v ...interface{}) {
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Panicf(format string, v ...interface{}) {
 	s := fmt.Sprintf(format, v...)
-	if l.isValid() && l.level >= PANIC {
-		//fmt.Println(_symPanic)
-		l.write(s, nil, sfxPanic[:], red)
+	if l.level >= PANIC && l.isValid() {
+		l.write(s, l.prfx, sfxPanic[:], red)
 	}
 	panic(s)
 }
@@ -196,9 +197,8 @@ func (l *Logger) Panicf(format string, v ...interface{}) {
 // Fatal is equivalent to l.Print() followed by a call to os.Exit(1).
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Fatal(v ...interface{}) {
-	if l.isValid() && l.level >= FATAL {
-		//fmt.Println(_symFatal)
-		l.write(fmt.Sprint(v...), nil, sfxFatal[:], red)
+	if l.level >= FATAL && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxFatal[:], red)
 	}
 	l.Exit(1)
 }
@@ -206,9 +206,8 @@ func (l *Logger) Fatal(v ...interface{}) {
 // Fatalf is equivalent to l.Printf() followed by a call to os.Exit(1).
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Fatalf(format string, v ...interface{}) {
-	if l.isValid() && l.level >= FATAL {
-		// fmt.Println(_symFatal)
-		l.write(fmt.Sprintf(format, v...), nil, sfxFatal[:], red)
+	if l.level >= FATAL && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxFatal[:], red)
 	}
 	l.Exit(1)
 }
@@ -218,18 +217,16 @@ func (l *Logger) Fatalf(format string, v ...interface{}) {
 // Emergency performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Emergency(v ...interface{}) {
-	if l.isValid() && l.level >= EMERGENCY {
-		//fmt.Println(_symEmer)
-		l.write(fmt.Sprint(v...), nil, sfxEmergency[:], red)
+	if l.level >= EMERGENCY && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxEmergency[:], red)
 	}
 }
 
 // Emergencyf performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Emergencyf(format string, v ...interface{}) {
-	if l.isValid() && l.level >= EMERGENCY {
-		//fmt.Println(_symEmer)
-		l.write(fmt.Sprintf(format, v...), nil, sfxEmergency[:], red)
+	if l.level >= EMERGENCY && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxEmergency[:], red)
 	}
 }
 
@@ -238,9 +235,8 @@ func (l *Logger) Emergencyf(format string, v ...interface{}) {
 // Alert performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Alert(v ...interface{}) {
-	if l.isValid() && l.level >= ALERT {
-		//fmt.Println(_symAlert)
-		l.write(fmt.Sprint(v...), nil, sfxAlert[:], red)
+	if l.level >= ALERT && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxAlert[:], red)
 
 	}
 }
@@ -248,9 +244,8 @@ func (l *Logger) Alert(v ...interface{}) {
 // Alertf performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Alertf(format string, v ...interface{}) {
-	if l.isValid() && l.level >= ALERT {
-		//fmt.Println(_symAlert)
-		l.write(fmt.Sprintf(format, v...), nil, sfxAlert[:], red)
+	if l.level >= ALERT && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxAlert[:], red)
 	}
 }
 
@@ -259,18 +254,16 @@ func (l *Logger) Alertf(format string, v ...interface{}) {
 // Critical performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Critical(v ...interface{}) {
-	if l.isValid() && l.level >= CRITICAL {
-		//fmt.Println(_symCrit)
-		l.write(fmt.Sprint(v...), nil, sfxCritical[:], red)
+	if l.level >= CRITICAL && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxCritical[:], red)
 	}
 }
 
 // Criticalf performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Criticalf(format string, v ...interface{}) {
-	if l.isValid() && l.level >= CRITICAL {
-		//fmt.Println(_symCrit)
-		l.write(fmt.Sprintf(format, v...), nil, sfxCritical[:], red)
+	if l.level >= CRITICAL && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxCritical[:], red)
 	}
 }
 
@@ -279,18 +272,16 @@ func (l *Logger) Criticalf(format string, v ...interface{}) {
 // Error performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Error(v ...interface{}) {
-	if l.isValid() && l.level >= ERROR {
-		//fmt.Println(_symError)
-		l.write(fmt.Sprint(v...), nil, sfxError[:], red)
+	if l.level >= ERROR && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxError[:], red)
 	}
 }
 
 // Errorf performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Errorf(format string, v ...interface{}) {
-	if l.isValid() && l.level >= ERROR {
-		//fmt.Println(_symError)
-		l.write(fmt.Sprintf(format, v...), nil, sfxError[:], red)
+	if l.level >= ERROR && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxError[:], red)
 	}
 }
 
@@ -299,18 +290,16 @@ func (l *Logger) Errorf(format string, v ...interface{}) {
 // Warning performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Warning(v ...interface{}) {
-	if l.isValid() && l.level >= WARNING {
-		//fmt.Println(_symWarn)
-		l.write(fmt.Sprint(v...), nil, sfxWarning[:], yellow)
+	if l.level >= WARNING && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxWarning[:], yellow)
 	}
 }
 
 // Warningf performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Warningf(format string, v ...interface{}) {
-	if l.isValid() && l.level >= WARNING {
-		//fmt.Println(_symWarn)
-		l.write(fmt.Sprintf(format, v...), nil, sfxWarning[:], yellow)
+	if l.level >= WARNING && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxWarning[:], yellow)
 	}
 }
 
@@ -319,26 +308,23 @@ func (l *Logger) Warningf(format string, v ...interface{}) {
 // Notice performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Notice(v ...interface{}) {
-	if l.isValid() && l.level >= NOTICE {
-		//fmt.Println(_symNotice)
-		l.write(fmt.Sprint(v...), nil, sfxNotice[:], cyan)
+	if l.level >= NOTICE && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxNotice[:], cyan)
 	}
 }
 
 // Noticef performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Noticef(format string, v ...interface{}) {
-	if l.isValid() && l.level >= NOTICE {
-		//fmt.Println(_symNotice)
-		l.write(fmt.Sprintf(format, v...), nil, sfxNotice[:], cyan)
+	if l.level >= NOTICE && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxNotice[:], cyan)
 	}
 }
 
 // Line performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Line(v ...interface{}) {
-	if l.isValid() && l.level >= LINE {
-		//fmt.Println(_symNotice)
+	if l.level >= LINE && l.isValid() {
 		l.write(fmt.Sprint(v...), nil, nil, nil)
 	}
 }
@@ -346,8 +332,7 @@ func (l *Logger) Line(v ...interface{}) {
 // Linef performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Linef(format string, v ...interface{}) {
-	if l.isValid() && l.level >= LINE {
-		//fmt.Println(_symNotice)
+	if l.level >= LINE && l.isValid() {
 		l.write(fmt.Sprintf(format, v...), nil, nil, nil)
 	}
 }
@@ -357,18 +342,16 @@ func (l *Logger) Linef(format string, v ...interface{}) {
 // Info performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Info(v ...interface{}) {
-	if l.isValid() && l.level >= INFO {
-		//fmt.Println(_symInfo)
-		l.write(fmt.Sprint(v...), nil, sfxInfo[:], cyan)
+	if l.level >= INFO && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxInfo[:], cyan)
 	}
 }
 
 // Infof performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Infof(format string, v ...interface{}) {
-	if l.isValid() && l.level >= INFO {
-		//fmt.Println(_symInfo)
-		l.write(fmt.Sprintf(format, v...), nil, sfxInfo[:], cyan)
+	if l.level >= INFO && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxInfo[:], cyan)
 	}
 }
 
@@ -377,18 +360,16 @@ func (l *Logger) Infof(format string, v ...interface{}) {
 // Ok performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Ok(v ...interface{}) {
-	if l.isValid() && l.level >= OK {
-		//fmt.Println(_symOk)
-		l.write(fmt.Sprint(v...), nil, sfxOk[:], green)
+	if l.level >= OK && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxOk[:], green)
 	}
 }
 
 // Okf performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Okf(format string, v ...interface{}) {
-	if l.isValid() && l.level >= OK {
-		//fmt.Println(_symOk)
-		l.write(fmt.Sprintf(format, v...), nil, sfxOk[:], green)
+	if l.level >= OK && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxOk[:], green)
 	}
 }
 
@@ -397,27 +378,71 @@ func (l *Logger) Okf(format string, v ...interface{}) {
 // Debug performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Debug(v ...interface{}) {
-	if l.isValid() && l.level == DEBUG {
-		//fmt.Println(_symDebug)
-		l.write(fmt.Sprint(v...), nil, sfxDebug[:], white)
+	if l.level == DEBUG && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxDebug[:], white)
 	}
-
 }
 
 // Debugf performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Debugf(format string, v ...interface{}) {
-	if l.isValid() && l.level == DEBUG {
-		//fmt.Println(_symDebug)
-		l.write(fmt.Sprintf(format, v...), nil, sfxDebug[:], white)
+	if l.level == DEBUG && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxDebug[:], white)
 	}
+}
 
+// SetPrimaryColor sets color for ColoredLine and ColoredLinef
+func (l *Logger) SetPrimaryColor(color string) {
+	switch color {
+	case "black":
+		l.primaryColor = black
+	case "red":
+		l.primaryColor = red
+	case "green":
+		l.primaryColor = green
+	case "yellow":
+		l.primaryColor = yellow
+	case "blue":
+		l.primaryColor = blue
+	case "magenta":
+		l.primaryColor = magenta
+	case "cyan":
+		l.primaryColor = cyan
+	default:
+		l.primaryColor = white
+	}
+}
+
+// ColoredLine performs write to the loggers attached io.Writer.
+// Arguments are handled in the manner of fmt.Println.
+// line is colored with color set by SetPrimaryColor
+func (l *Logger) ColoredLine(v ...interface{}) {
+	if l.isValid() && l.level >= LINE {
+		msg := fmt.Sprint(v...)
+		if l.colors {
+			msg = string(l.primaryColor) + msg + string(reset)
+		}
+		l.write(msg, nil, nil, nil)
+	}
+}
+
+// ColoredLinef performs write to the loggers attached io.Writer.
+// Arguments are handled in the manner of fmt.Printf followed by \n.
+// line is colored with color set by SetPrimaryColor
+func (l *Logger) ColoredLinef(format string, v ...interface{}) {
+	if l.isValid() && l.level >= LINE {
+		msg := fmt.Sprintf(format, v...)
+		if l.colors {
+			msg = string(l.primaryColor) + msg + string(reset)
+		}
+		l.write(msg, nil, nil, nil)
+	}
 }
 
 // write writes the output for a logging event. The string s contains
 func (l *Logger) write(s string, prfx []byte, suffix []byte, color []byte) error {
 
-	if l.colors && color != nil {
+	if l.colors && color != nil && suffix != nil {
 		suffix = append(color, suffix...)
 		suffix = append(suffix, reset...)
 		padDef = 11
@@ -425,7 +450,7 @@ func (l *Logger) write(s string, prfx []byte, suffix []byte, color []byte) error
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
-	if l.wt > t0 {
+	if l.wt > t0 && prfx != nil {
 		ts := l.ts.now(l.wt)
 		prfx = append(ts, prfx...)
 	}

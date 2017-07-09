@@ -62,13 +62,14 @@ func TestLogger_TsDisabled(t *testing.T) {
 	date := now.Format("2006-01-02")
 	var buf bytes.Buffer
 	SetOutput(&buf)
-	Line("TestLogger_TsDisabled1")
+	TsStandard()
+	Notice("TestLogger_TsDisabled1")
 	if !strings.Contains(buf.String(), date) {
-		t.Error("buffer should contain date")
+		t.Errorf("buffer should contain date got %q", buf.String())
 	}
 	buf.Reset()
 	TsDisabled()
-	Line("TestLogger_TsDisabled1")
+	Notice("TestLogger_TsDisabled1")
 	if strings.Contains(buf.String(), date) {
 		t.Error("buffer should not contain date")
 	}
@@ -80,9 +81,9 @@ func TestLogger_TsStandard(t *testing.T) {
 	var buf bytes.Buffer
 	SetOutput(&buf)
 	TsStandard()
-	Line("TestLogger_TsStandard")
+	Notice("TestLogger_TsStandard")
 	if !strings.Contains(buf.String(), date) {
-		t.Error("buffer should contain date")
+		t.Errorf("buffer should contain date got %q", buf.String())
 	}
 }
 
@@ -93,12 +94,12 @@ func TestLogger_TsTime(t *testing.T) {
 	var buf bytes.Buffer
 	SetOutput(&buf)
 	TsTime()
-	Line("TestLogger_TsTime")
+	Notice("TestLogger_TsTime")
 	if strings.Contains(buf.String(), date) {
 		t.Error("buffer should not contain date")
 	}
 	if !strings.Contains(buf.String(), time) {
-		t.Error("buffer should contain time")
+		t.Errorf("buffer should contain time got %q", buf.String())
 	}
 }
 
