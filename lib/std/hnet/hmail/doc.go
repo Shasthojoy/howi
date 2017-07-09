@@ -3,8 +3,8 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package email extends net/mail format for emails and mail addresses for Go Prj.
+Package hmail extends net/mail format for emails and mail addresses for Go Prj.
 */
-package email
+package hmail
 
 // TODO(mkungla): Complete the docs

@@ -5,7 +5,8 @@
 /*
 Package std is collection of libraries which extend Golang standard libraries
 and which would have name collision and therefore are all prefixed with 'h'
-to avoid need of aliasing the imports.
+to avoid need of aliasing the imports. Packages may use same same method naming
+convention, but have different behaviour.
 
 */
 package std
