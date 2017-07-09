@@ -3,9 +3,8 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package multierror is used by batch operations when there are errors
-in particular situations where returning these as a collection makes more sense.
+Package herrors implements functions to manipulate errors.
 */
-package multierror
+package herrors
 
 // TODO(mkungla): Complete the docs

@@ -1,4 +1,4 @@
-package multierror
+package herrors
 
 import "fmt"
 

@@ -1,4 +1,4 @@
-package email
+package hmail
 
 import "net/mail"
 
