@@ -3,9 +3,11 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package multierror is used by batch operations when there are errors
-in particular situations where returning these as a collection makes more sense.
+Package std is collection of libraries which extend Golang standard libraries
+and which would have name collision and therefore are all prefixed with 'h'
+to avoid need of aliasing the imports.
+
 */
-package multierror
+package std
 
 // TODO(mkungla): Complete the docs
