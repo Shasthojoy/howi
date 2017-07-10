@@ -47,7 +47,7 @@ func (merr *MultiError) AppendString(str string) error {
 	if str == "" {
 		return nil
 	}
-	err := fmt.Errorf("multierror: %s", str)
+	err := fmt.Errorf("%s", str)
 	merr.AppendError(err)
 	return err
 }
@@ -55,4 +55,9 @@ func (merr *MultiError) AppendString(str string) error {
 // Len returns total count of errors
 func (merr *MultiError) Len() int {
 	return len(merr.Errors)
+}
+
+// Nil returns true if there are no errors
+func (merr *MultiError) Nil() bool {
+	return len(merr.Errors) == 0
 }

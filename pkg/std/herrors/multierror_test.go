@@ -25,7 +25,7 @@ func TestNewMultiError(t *testing.T) {
 		if tests[i].errstr != "" && merr.Len() != total {
 			t.Errorf("multierror.Len() = %v, want %v", merr.Len(), total)
 		}
-		expected := fmt.Sprintf("multierror: %s (total errors: %d)", tests[0].errstr, total)
+		expected := fmt.Sprintf("%s (total errors: %d)", tests[0].errstr, total)
 		if tests[i].errstr != "" && expected != merr.Error() {
 			t.Errorf("multierror.Error() = %q, want %q", merr.Error(), expected)
 		}
