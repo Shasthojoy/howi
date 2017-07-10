@@ -71,36 +71,6 @@ var (
 	padDef       = 2
 )
 
-// SetOutput calls std.SetOutput
-func SetOutput(w io.Writer) {
-	std.SetOutput(w)
-}
-
-// SetLogLevel calls std.SetLogLevel
-func SetLogLevel(level int) {
-	std.SetLogLevel(level)
-}
-
-// TsDisabled calls std.TsDisabled
-func TsDisabled() {
-	std.TsDisabled()
-}
-
-// TsStandard calls std.TsStandard
-func TsStandard() {
-	std.TsStandard()
-}
-
-// TsTime calls std.TsTime
-func TsTime() {
-	std.TsTime()
-}
-
-// InitTerm sets terminal to raw mode and aligns output based on terminal width
-func InitTerm() {
-	std.InitTerm()
-}
-
 // Colors calls std.Colors
 func Colors() {
 	std.Colors()
@@ -116,9 +86,44 @@ func Exit(code int) {
 	std.Exit(code)
 }
 
+// InitTerm sets terminal to raw mode and aligns output based on terminal width
+func InitTerm() {
+	std.InitTerm()
+}
+
+// NewProgress calls std.NewProgress
+func NewProgress(name string, steps int) *Progress {
+	return std.NewProgress(name, steps)
+}
+
 // SetExitFunc calls std.SetExitFunc
 func SetExitFunc(exit func(code int)) {
 	std.SetExitFunc(exit)
+}
+
+// SetLogLevel calls std.SetLogLevel
+func SetLogLevel(level int) {
+	std.SetLogLevel(level)
+}
+
+// SetOutput calls std.SetOutput
+func SetOutput(w io.Writer) {
+	std.SetOutput(w)
+}
+
+// TsDisabled calls std.TsDisabled
+func TsDisabled() {
+	std.TsDisabled()
+}
+
+// TsStandard calls std.TsStandard
+func TsStandard() {
+	std.TsStandard()
+}
+
+// TsTime calls std.TsTime
+func TsTime() {
+	std.TsTime()
 }
 
 // Panic calls std.Panic
@@ -239,4 +244,19 @@ func Debug(v ...interface{}) {
 // Debugf calls std.Debugf
 func Debugf(format string, v ...interface{}) {
 	std.Debugf(format, v...)
+}
+
+// SetPrimaryColor calls std.SetPrimaryColor
+func SetPrimaryColor(color string) {
+	std.SetPrimaryColor(color)
+}
+
+// ColoredLine calls std.ColoredLine
+func ColoredLine(v ...interface{}) {
+	std.ColoredLine(v...)
+}
+
+// ColoredLinef calls std.ColoredLinef
+func ColoredLinef(format string, v ...interface{}) {
+	std.ColoredLinef(format, v...)
 }
