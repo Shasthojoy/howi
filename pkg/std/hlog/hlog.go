@@ -30,8 +30,8 @@ const (
 	NOTICE
 	// INFO (8) Interesting events for monitoring.
 	INFO
-	// OK (8) Presents another type of interesting event upon success level = INFO
-	OK = INFO
+	// OK (7) Presents another type of interesting event upon success level = INFO
+	OK = NOTICE
 	// DEBUG (9) is detailed debug information
 	DEBUG = INFO + 1
 	// LINE (7) Normal non verbose output line
@@ -69,6 +69,7 @@ var (
 	white        = []byte{esc, '[', '3', '7', 'm'}
 	reset        = []byte{esc, '[', '0', 'm'}
 	padDef       = 2
+	debug        = false
 )
 
 // Colors calls std.Colors
@@ -104,6 +105,11 @@ func SetExitFunc(exit func(code int)) {
 // SetLogLevel calls std.SetLogLevel
 func SetLogLevel(level int) {
 	std.SetLogLevel(level)
+}
+
+// LockLevel calls std.LockLevel
+func LockLevel() {
+	std.LockLevel()
 }
 
 // SetOutput calls std.SetOutput
@@ -238,11 +244,17 @@ func Okf(format string, v ...interface{}) {
 
 // Debug calls std.Debug
 func Debug(v ...interface{}) {
+	if !debug {
+		return
+	}
 	std.Debug(v...)
 }
 
 // Debugf calls std.Debugf
 func Debugf(format string, v ...interface{}) {
+	if !debug {
+		return
+	}
 	std.Debugf(format, v...)
 }
 

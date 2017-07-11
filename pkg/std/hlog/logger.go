@@ -31,6 +31,7 @@ type Logger struct {
 	ts           *timestamp
 	primaryColor []byte
 	prfx         []byte
+	levelLocked  bool
 }
 
 // Colors colirzes output
@@ -133,13 +134,22 @@ func (l *Logger) SetExitFunc(exit func(code int)) {
 	l.exit = exit
 }
 
-// SetLogLevel sets log level
+// SetLogLevel sets log level if loglevel is not locked by previous call
+// to .LockLevel
 func (l *Logger) SetLogLevel(level int) {
-	if level <= DEBUG || level >= QUIET {
+	if (level <= DEBUG || level >= QUIET) && !l.levelLocked {
 		l.mu.Lock()
 		defer l.mu.Unlock()
+		if level == DEBUG {
+			debug = true
+		}
 		l.level = level
 	}
+}
+
+// LockLevel locks log level so it can not be modified by SetLogLevel again
+func (l *Logger) LockLevel() {
+	l.levelLocked = true
 }
 
 // SetOutput sets the output destination for the logger.
@@ -378,7 +388,10 @@ func (l *Logger) Okf(format string, v ...interface{}) {
 // Debug performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Debug(v ...interface{}) {
-	if l.level == DEBUG && l.isValid() {
+	if !debug {
+		return
+	}
+	if l.isValid() {
 		l.write(fmt.Sprint(v...), l.prfx, sfxDebug[:], white)
 	}
 }
@@ -386,7 +399,10 @@ func (l *Logger) Debug(v ...interface{}) {
 // Debugf performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Printf followed by \n.
 func (l *Logger) Debugf(format string, v ...interface{}) {
-	if l.level == DEBUG && l.isValid() {
+	if !debug {
+		return
+	}
+	if l.isValid() {
 		l.write(fmt.Sprintf(format, v...), l.prfx, sfxDebug[:], white)
 	}
 }

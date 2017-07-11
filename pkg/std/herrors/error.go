@@ -13,5 +13,5 @@ func New(msg string) error {
 // Newf returns new standard error.  Arguments are handled in the manner of
 // fmt.Esprintf followed by \n.
 func Newf(format string, v ...interface{}) error {
-	return fmt.Errorf(format, v)
+	return fmt.Errorf(format, v...)
 }
