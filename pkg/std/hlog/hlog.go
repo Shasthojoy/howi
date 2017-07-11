@@ -60,15 +60,15 @@ var (
 	sfxOk         = [17]byte{ /*\u2714*/ 91, 32, 226, 156, 148, 32, 111, 107, 32, 32, 32, 32, 32, 32, 32, 32, 93}
 	sfxDebug      = [17]byte{ /*\u2699*/ 91, 32, 226, 154, 153, 32, 100, 101, 98, 117, 103, 32, 32, 32, 32, 32, 93}
 	esc           = byte(27)
-	black         = []byte{esc, '[', '3', '0', 'm'}
-	red           = []byte{esc, '[', '3', '1', 'm'}
-	green         = []byte{esc, '[', '3', '2', 'm'}
-	yellow        = []byte{esc, '[', '3', '3', 'm'}
-	blue          = []byte{esc, '[', '3', '4', 'm'}
-	magenta       = []byte{esc, '[', '3', '5', 'm'}
-	cyan          = []byte{esc, '[', '3', '6', 'm'}
-	white         = []byte{esc, '[', '3', '7', 'm'}
-	reset         = []byte{esc, '[', '0', 'm'}
+	black         = []byte{esc, 91, 51, 48, 109}
+	red           = []byte{esc, 91, 51, 49, 109}
+	green         = []byte{esc, 91, 51, 50, 109}
+	yellow        = []byte{esc, 91, 51, 51, 109}
+	blue          = []byte{esc, 91, 51, 52, 109}
+	magenta       = []byte{esc, 91, 51, 53, 109}
+	cyan          = []byte{esc, 91, 51, 54, 109}
+	white         = []byte{esc, 91, 51, 55, 109}
+	reset         = []byte{esc, 91, 51, 56, 109}
 	padDef        = 2
 	debug         = false
 )
