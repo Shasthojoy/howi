@@ -52,6 +52,18 @@ func (merr *MultiError) AppendString(str string) error {
 	return err
 }
 
+// AppendSprintf creates error from provided format, interface and appends it
+// to multierror. It also returns same created error if any case you would need it.
+// It returns nil if provided values are empty.
+func (merr *MultiError) AppendSprintf(format string, v ...interface{}) error {
+	if len(v) == 0 && format == "" {
+		return nil
+	}
+	err := fmt.Errorf(format, v...)
+	merr.AppendError(err)
+	return err
+}
+
 // Len returns total count of errors
 func (merr *MultiError) Len() int {
 	return len(merr.Errors)

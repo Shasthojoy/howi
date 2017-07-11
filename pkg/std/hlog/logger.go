@@ -240,6 +240,24 @@ func (l *Logger) Emergencyf(format string, v ...interface{}) {
 	}
 }
 
+// Deprecated performs write to the loggers attached io.Writer.
+// Arguments are handled in the manner of fmt.Println.
+// enables you to log and notice package users if any method is deprecated
+func (l *Logger) Deprecated(v ...interface{}) {
+	if l.level >= EMERGENCY && l.isValid() {
+		l.write(fmt.Sprint(v...), l.prfx, sfxDeprecated[:], red)
+	}
+}
+
+// Deprecatedf performs write to the loggers attached io.Writer.
+// Arguments are handled in the manner of fmt.Printf followed by \n.
+// enables you to log and notice package users if any method is deprecated
+func (l *Logger) Deprecatedf(format string, v ...interface{}) {
+	if l.level >= EMERGENCY && l.isValid() {
+		l.write(fmt.Sprintf(format, v...), l.prfx, sfxDeprecated[:], red)
+	}
+}
+
 // ALERT(3)
 
 // Alert performs write to the loggers attached io.Writer.
