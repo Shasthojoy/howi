@@ -68,7 +68,7 @@ var (
 	magenta       = []byte{esc, 91, 51, 53, 109}
 	cyan          = []byte{esc, 91, 51, 54, 109}
 	white         = []byte{esc, 91, 51, 55, 109}
-	reset         = []byte{esc, 91, 51, 56, 109}
+	reset         = []byte{esc, 91, 48, 109}
 	padDef        = 2
 	debug         = false
 )
