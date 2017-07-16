@@ -28,6 +28,9 @@ func (merr *MultiError) Error() (str string) {
 // AsError returns first occurred error with additional suffix with
 // total count of errors.
 func (merr *MultiError) AsError() error {
+	if merr.Nil() {
+		return nil
+	}
 	return New(merr.Error())
 }
 
