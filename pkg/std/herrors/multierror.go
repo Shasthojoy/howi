@@ -25,6 +25,12 @@ func (merr *MultiError) Error() (str string) {
 	return fmt.Sprintf("%s (total errors: %d)", str, l)
 }
 
+// AsError returns first occurred error with additional suffix with
+// total count of errors.
+func (merr *MultiError) AsError() error {
+	return New(merr.Error())
+}
+
 // AppendError appends error to multierror if provided error is not nil
 func (merr *MultiError) AppendError(err error) error {
 	if err != nil {
@@ -52,10 +58,10 @@ func (merr *MultiError) AppendString(str string) error {
 	return err
 }
 
-// AppendSprintf creates error from provided format, interface and appends it
+// AppendStringf creates error from provided format, interface and appends it
 // to multierror. It also returns same created error if any case you would need it.
 // It returns nil if provided values are empty.
-func (merr *MultiError) AppendSprintf(format string, v ...interface{}) error {
+func (merr *MultiError) AppendStringf(format string, v ...interface{}) error {
 	if len(v) == 0 && format == "" {
 		return nil
 	}
