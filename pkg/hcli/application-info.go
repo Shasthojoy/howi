@@ -1,6 +1,7 @@
 package hcli
 
-// ApplicationInfo object
+// ApplicationInfo can be consumed by header and footer templates.
+// It is used by MetaData.GetInfo()
 type ApplicationInfo struct {
 	Name             string   `json:"name"`
 	Title            string   `json:"title"`
