@@ -51,6 +51,6 @@ func NewApplication() *Application {
 }
 
 // NewCommand returns new command constructor.
-func NewCommand() Command {
-	return Command{}
+func NewCommand(name string) Command {
+	return Command{name: name}
 }
