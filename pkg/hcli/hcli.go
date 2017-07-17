@@ -49,6 +49,8 @@ const (
 	// FmtErrInvalidCommandArgs is returned when invalid args are recieved by
 	// command parser.
 	FmtErrInvalidCommandArgs = "invalid arguments passed for (%s).Parse"
+	// FmtErrCommandNotProvided when no command is provided calling the application
+	FmtErrCommandNotProvided = "no command, see (%s --help) for available commands"
 )
 
 // NewApplication constructs new application and returns it's instance for

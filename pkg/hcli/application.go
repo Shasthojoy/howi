@@ -85,6 +85,9 @@ func (a *Application) Start() {
 	// Shall we display default help if so print it and exit with 0
 	a.handleHelp()
 
+	if a.currentCmd == nil {
+		a.Log.Fatalf(FmtErrCommandNotProvided, a.MetaData.name)
+	}
 	// If debug flag was present. but not as global flag then set the level now
 	ll := a.Log.GetCurrentLevel()
 	if ll != hlog.DEBUG && a.flag("debug").Present() && !a.flag("debug").IsGlobal() {
