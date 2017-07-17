@@ -134,6 +134,11 @@ func (l *Logger) SetExitFunc(exit func(code int)) {
 	l.exit = exit
 }
 
+// GetCurrentLevel returns current log level
+func (l *Logger) GetCurrentLevel() int {
+	return l.level
+}
+
 // SetLogLevel sets log level if loglevel is not locked by previous call
 // to .LockLevel
 func (l *Logger) SetLogLevel(level int) {

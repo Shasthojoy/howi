@@ -103,6 +103,11 @@ func SetExitFunc(exit func(code int)) {
 	std.SetExitFunc(exit)
 }
 
+// GetCurrentLevel calls std.GetCurrentLevel
+func GetCurrentLevel() int {
+	return std.GetCurrentLevel()
+}
+
 // SetLogLevel calls std.SetLogLevel
 func SetLogLevel(level int) {
 	std.SetLogLevel(level)
