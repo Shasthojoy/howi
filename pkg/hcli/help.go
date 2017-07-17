@@ -30,11 +30,12 @@ var (
 {{if .Info.LongDescription}}{{ .Info.LongDescription }}{{end}}`
 
 	helpCommandTmpl = `{{ if .Command.LongDesc }}{{.Command.LongDesc}}{{ else }}{{ .Command.ShortDesc }}{{ end }}
-Usage:
- {{ .Usage | funcTextBold }}{{ if .Command.Usage }}
-{{ .Command.Usage }}{{ end }}
+
+ Usage:
+   {{ .Usage | funcTextBold }}{{ if .Command.Usage }}
+   {{ .Command.Usage }}{{ end }}
 {{ if .Command.HasSubcommands }}
-{{ print "Subcommands" | funcCmdCategory }}
+ {{ print "Subcommands" | funcCmdCategory }}
 {{ range $cmdObj := .Command.GetSubcommands }}
 {{ $cmdObj.Name | funcCmdName }}{{ $cmdObj.ShortDesc }}
 {{ end }}{{ end }}
