@@ -11,16 +11,16 @@ import (
 
 // MetaData contains application metadata
 type MetaData struct {
-	name      string
-	title     string
-	sdesc     string
-	ldesc     string
-	authors   []hmail.Address
-	copySince int // copy year
-	copyMsg   string
-	url       string
-	version   string
-	buildDate string
+	name         string
+	title        string
+	sdesc        string
+	ldesc        string
+	contributors []hmail.Address
+	copySince    int // copy year
+	copyMsg      string
+	url          string
+	version      string
+	buildDate    string
 }
 
 // SetName of the application
@@ -48,12 +48,12 @@ func (m *MetaData) SetLongDesc(ldesc string) {
 	m.ldesc = ldesc
 }
 
-// AddAuthor to application. argument should be valid RFC 5322 address,
+// AddContributor to application. argument should be valid RFC 5322 address,
 // e.g. "John Doe <john.doe@example.com>"
-func (m *MetaData) AddAuthor(addr string) error {
-	author, err := hmail.ParseAddress(addr)
+func (m *MetaData) AddContributor(addr string) error {
+	contributor, err := hmail.ParseAddress(addr)
 	if err == nil {
-		m.authors = append(m.authors, *author)
+		m.contributors = append(m.contributors, *contributor)
 	}
 	return err
 }
@@ -81,9 +81,9 @@ func (m *MetaData) SetBuildDate(buildDate string) {
 
 // GetInfo returns application info which can be consumed by templates or output as json
 func (m *MetaData) GetInfo() ApplicationInfo {
-	var authors []string
-	for _, author := range m.authors {
-		authors = append(authors, author.String())
+	var contributors []string
+	for _, contributor := range m.contributors {
+		contributors = append(contributors, contributor.String())
 	}
 	info := ApplicationInfo{
 		Name:             m.name,
@@ -96,7 +96,7 @@ func (m *MetaData) GetInfo() ApplicationInfo {
 		URL:              m.url,
 		Version:          m.version,
 		BuildDate:        m.buildDate,
-		Authors:          authors,
+		Contributors:     contributors,
 	}
 	return info
 }

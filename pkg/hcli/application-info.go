@@ -13,5 +13,5 @@ type ApplicationInfo struct {
 	URL              string   `json:"url"`
 	Version          string   `json:"version"`
 	BuildDate        string   `json:"build-date"`
-	Authors          []string `json:"authors"`
+	Contributors     []string `json:"authors"`
 }
