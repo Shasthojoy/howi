@@ -1,5 +1,13 @@
 package hcli
 
+import (
+	"os"
+	"time"
+
+	"github.com/howi-ce/howi/pkg/hcli/flags"
+	"github.com/howi-ce/howi/pkg/std/hlog"
+)
+
 const (
 	// PhasePending marks that phase is pending (800)
 	PhasePending = iota + 800
@@ -47,7 +55,37 @@ const (
 // configuration. Returned Application has basic initialization done and
 // all defaults set.
 func NewApplication() *Application {
-	return &Application{}
+	a := &Application{
+		Log:         hlog.NewStdout(hlog.NOTICE),
+		commands:    make(map[string]Command),
+		flags:       make(map[int]flags.Interface),
+		flagAliases: make(map[string]int),
+		osArgs:      os.Args[1:],
+	}
+	// set initial startup time
+	a.started = time.Now()
+	a.Log.TsDisabled()
+
+	a.addInternalFlags()
+
+	// Set log level to debug and lock the log level, but only if --debug
+	// flag was found before any command. If --debug flag was found later
+	// then we want to set debugging later for that command only.
+	if a.flag("debug").IsGlobal() && a.flag("debug").Present() {
+		a.Log.SetLogLevel(hlog.DEBUG)
+		a.Log.LockLevel()
+		a.flag("verbose").Unset()
+	}
+
+	// Only lock log level to verbose if no --debug flag was set
+	if !a.flag("debug").Present() && a.flag("verbose").Present() {
+		a.Log.LockLevel()
+	}
+
+	a.Log.Debugf("Application:Create - accepting configuration changes debugging(%t)",
+		a.flag("debug").Present())
+
+	return a
 }
 
 // NewCommand returns new command constructor.
