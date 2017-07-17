@@ -112,19 +112,46 @@ NextVar:
 		if l == 0 {
 			continue
 		}
-		hasVal := l - 1 // if key is smaller than l -1 then variable has no value
 		for i := 0; i < l; i++ {
 			if v[i] == '=' {
 				vars[v[:i]] = ValueFromString(v[i+1:])
-				if i < hasVal {
+				if i < l {
 					continue NextVar
 				}
 			}
 		}
 		// VAR did not have any value
-		vars[v[:hasVal]] = ""
+		vars[strings.TrimRight(v[:l], "=")] = ""
 	}
 	return vars
+}
+
+// ParseFromString parses variable from single "key=val" pair and
+// returns (key string, val Value)
+func ParseFromString(kv string) (key string, val Value) {
+	if len(kv) == 0 {
+		return
+	}
+	reg := regexp.MustCompile(`"([^"]*)"`)
+
+	kv = reg.ReplaceAllString(kv, "${1}")
+	l := len(kv)
+	if l == 0 {
+		return
+	}
+	for i := 0; i < l; i++ {
+		if kv[i] == '=' {
+			key = kv[:i]
+			val = ValueFromString(kv[i+1:])
+			if i < l {
+				return
+			}
+		}
+	}
+	// VAR did not have any value
+	key = kv[:l]
+	val = ""
+	return
 }
 
 // ParseFromBytes parses []bytes to string, creates []string by new line
