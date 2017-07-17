@@ -90,6 +90,7 @@ func (a *Application) Start() {
 	if ll != hlog.DEBUG && a.flag("debug").Present() && !a.flag("debug").IsGlobal() {
 		a.Log.SetLogLevel(hlog.DEBUG)
 	}
+
 	worker := newWorker(a.Log)
 	worker.args = a.currentCmd.getArgs()
 	// add global flags to worker
@@ -161,7 +162,7 @@ func (a *Application) verifyConfig() error {
 	lenc := len(a.commands)
 	lenf := len(a.flags)
 	a.Log.Debugf("Application:verifyConfig - %q has total %d command(s)", a.MetaData.name, lenc)
-	if (a.commands == nil || lenc == 0) && (a.flags == nil || lenf == 0) {
+	if (a.commands == nil || lenc == 0) || (a.flags == nil || lenf == 0) {
 		return herrors.New(FmtErrAppWithNoCommandsOrFlags)
 	}
 	if a.MetaData.name == "" {
