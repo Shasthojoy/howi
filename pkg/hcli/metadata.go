@@ -20,6 +20,7 @@ type MetaData struct {
 	copyMsg   string
 	url       string
 	version   string
+	buildDate string
 }
 
 // SetName of the application
@@ -73,6 +74,11 @@ func (m *MetaData) SetVersion(version string) {
 	m.version = version
 }
 
+// SetBuildDate of application
+func (m *MetaData) SetBuildDate(buildDate string) {
+	m.buildDate = buildDate
+}
+
 // GetInfo returns application info which can be consumed by templates or output as json
 func (m *MetaData) GetInfo() ApplicationInfo {
 	var authors []string
@@ -89,6 +95,7 @@ func (m *MetaData) GetInfo() ApplicationInfo {
 		CopyMsg:          m.copyMsg,
 		URL:              m.url,
 		Version:          m.version,
+		BuildDate:        m.buildDate,
 		Authors:          authors,
 	}
 	return info

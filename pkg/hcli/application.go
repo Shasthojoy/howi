@@ -92,6 +92,7 @@ func (a *Application) Start() {
 	}
 
 	worker := newWorker(a.Log)
+	worker.Info = a.MetaData.GetInfo()
 	worker.args = a.currentCmd.getArgs()
 	// add global flags to worker
 	for _, flag := range a.flags {

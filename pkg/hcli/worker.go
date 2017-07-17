@@ -43,6 +43,7 @@ type Worker struct {
 	flagAliases  map[string]int          // global flag aliases
 	Log          *hlog.Logger
 	Config       WorkerConfig
+	Info         ApplicationInfo
 }
 
 // Fail marks phase as failed

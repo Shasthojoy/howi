@@ -12,5 +12,6 @@ type ApplicationInfo struct {
 	CopyMsg          string   `json:"copy-msg"`
 	URL              string   `json:"url"`
 	Version          string   `json:"version"`
+	BuildDate        string   `json:"build-date"`
 	Authors          []string `json:"authors"`
 }
