@@ -21,8 +21,10 @@ var (
   {{ $cmdObj.Name | funcCmdName }}{{ $cmdObj.ShortDesc }}
 {{ end }}{{ end }}
 {{ if .CommandsCategorized }}{{ range $cat, $cmds := .CommandsCategorized }}
- {{ $cat | funcCmdCategory }}{{ range $cmdObj := $cmds }}
+ {{ $cat | funcCmdCategory }}
+ {{ range $cmdObj := $cmds }}
  {{$cmdObj.Name | funcCmdName }}{{ $cmdObj.ShortDesc }}{{ end }}{{ end }}{{ end }}
+ 
  The global flags are:{{ if .Flags }}{{ range $flag := .Flags }}{{ if not .IsHidden }}
   {{$flag.HelpName | funcFlagName }}{{ $flag.Usage }}{{ if $flag.HelpAliases }}
    {{$flag.HelpAliases}}

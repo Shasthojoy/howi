@@ -32,6 +32,7 @@ func (t *TmplParser) ParseTmpl(name string, info interface{}, elapsed time.Durat
 		"funcCmdCategory": cmdCategory,
 		"funcCmdName":     cmdName,
 		"funcFlagName":    flagName,
+		"funcDate":        dateOnly,
 		"funcElapsed":     func() string { return elapsed.String() },
 	})
 	tmpl := template.Must(t.t.Parse(t.tmpl))
@@ -69,6 +70,12 @@ func textBold(s string) string {
 		return s
 	}
 	return fmt.Sprintf("\033[1m%s\033[0m", s)
+}
+
+func dateOnly(s string) string {
+	date, _ := time.Parse(time.RFC3339, s)
+	y, m, d := date.Date()
+	return fmt.Sprintf("%.2d-%.2d-%d", d, m, y)
 }
 
 // Header can be shown right after application is loaded.
