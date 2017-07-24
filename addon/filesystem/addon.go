@@ -6,9 +6,14 @@ package filesystem
 
 import "github.com/howi-ce/howi/addon/filesystem/plugin/path"
 
-// Addon creates new FileSystem instance for given path as root
+// NewAddon creates new file system Addon instance for given path as root
 // It returns error if current user does not have read access to that path.
-func Addon(root string) (*FileSystem, error) {
-	wdobj, err := path.Plugin(root)
-	return &FileSystem{root: wdobj}, err
+func NewAddon(root string) (*Addon, error) {
+	wdobj, err := path.NewPlugin(root)
+	return &Addon{root: wdobj}, err
+}
+
+// Addon for file system abstraction
+type Addon struct {
+	root path.Plugin
 }

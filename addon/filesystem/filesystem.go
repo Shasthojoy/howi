@@ -4,9 +4,4 @@
 
 package filesystem
 
-import "github.com/howi-ce/howi/addon/filesystem/plugin/path"
-
-// FileSystem is wdfs locked for path
-type FileSystem struct {
-	root path.Path
-}
+// STATIC API
