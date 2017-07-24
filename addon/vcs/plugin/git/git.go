@@ -1,19 +1,12 @@
+// Copyright 2005-2017 Marko Kungla. All rights reserved.
+// Use of this source code is governed by a Apache License 2.0
+// license that can be found in the LICENSE file.
+
 package git
 
-import (
-	"os"
-	"os/exec"
+import "os/exec"
 
-	"github.com/howi-ce/howi/pkg/vars"
-)
-
-var (
-	// Git executable
-	executable string
-
-	// Git version
-	version vars.Value
-)
+// STATIC API
 
 // GlobalConfig returns global git config
 func GlobalConfig() ([]string, error) {
@@ -31,23 +24,4 @@ func LookPath() (string, error) {
 		executable, err = exec.LookPath("git")
 	}
 	return executable, err
-}
-
-func cmdgit(v ...string) (*Output, error) {
-	b, err := exec.Command("git", v...).Output()
-	return &Output{b: b}, err
-}
-func cmdgitInPath(p string, v ...string) (*Output, error) {
-	cur, err := os.Getwd()
-	if err != nil {
-		return nil, err
-	}
-	if err := os.Chdir(p); err != nil {
-		return nil, err
-	}
-	resp, rderr := exec.Command("git", v...).Output()
-	if err := os.Chdir(cur); err != nil {
-		return nil, err
-	}
-	return &Output{b: resp}, rderr
 }

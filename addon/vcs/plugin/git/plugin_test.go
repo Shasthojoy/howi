@@ -1,3 +1,7 @@
+// Copyright 2005-2017 Marko Kungla. All rights reserved.
+// Use of this source code is governed by a Apache License 2.0
+// license that can be found in the LICENSE file.
+
 package git
 
 import (
@@ -5,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/howi-ce/howi/pkg/std/hstrings"
+	"github.com/howi-ce/howi/std/hstrings"
 )
 
 func TestGitAPI(t *testing.T) {
@@ -170,7 +174,7 @@ func TestGitAPI(t *testing.T) {
 		{"write-tree", "Create a tree object from the current index"},
 	}
 
-	gitType := reflect.TypeOf(&Git{})
+	gitType := reflect.TypeOf(&Plugin{})
 	for _, tt := range tests {
 		expected := hstrings.ToCamelCaseAlnum(tt.name)
 		if expected == "Gc" {
