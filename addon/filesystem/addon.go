@@ -17,3 +17,13 @@ func NewAddon(root string) (*Addon, error) {
 type Addon struct {
 	root path.Plugin
 }
+
+// RealAbs returns real abs path of that files system root in system
+func (a *Addon) RealAbs() string {
+	return a.root.Abs()
+}
+
+// IsGitRepository checks if the root is git repository.
+func (a *Addon) IsGitRepository() bool {
+	return a.root.IsGitRepository()
+}
