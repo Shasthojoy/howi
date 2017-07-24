@@ -1,7 +1,42 @@
 package git
 
+import (
+	"os/exec"
+	"strings"
+
+	"github.com/howi-ce/howi/pkg/std/herrors"
+	"github.com/howi-ce/howi/pkg/wdfs"
+)
+
+// OpenRepositoryPath returns git instance
+func OpenRepositoryPath(wd string) (*Git, error) {
+	p, err := wdfs.LoadPath(wd)
+	if err != nil {
+		return nil, err
+	}
+	if p.IsGitRepository() {
+		return &Git{wd: p}, err
+	}
+
+	for !p.IsGitRepository() {
+		p, err = wdfs.LoadPath(p.Join("../"))
+		if err != nil {
+			return nil, err
+		}
+		if p.Abs() == "/" {
+			return nil, herrors.New("Not a git repository (or any parent up to mount point /)")
+		}
+		if p.IsGitRepository() {
+			return &Git{wd: p}, err
+		}
+	}
+	return nil, herrors.New("failed to load git repository")
+}
+
 // Git global
-type Git struct{}
+type Git struct {
+	wd wdfs.Path
+}
 
 // Apply a patch to files and/or to the index. Reads the supplied diff output
 // (i.e. "a patch") and applies it to files. When running from a subdirectory in
@@ -191,8 +226,11 @@ func (g *Git) CommitTree() ErrNotImplemented {
 // options with this command. The name is actually the section and the key separated
 // by a dot, and the value will be escaped.
 //   git-config - https://git-scm.com/docs/git-config
-func (g *Git) Config() ErrNotImplemented {
-	return errNotImplemented("config")
+func (g *Git) Config(flags ...string) ([]string, error) {
+
+	flags = append([]string{"config"}, flags...)
+	gitconfig, err := exec.Command("git", flags...).Output()
+	return strings.Split(string(gitconfig), "\n"), err
 }
 
 // CountObjects counts unpacked number of objects and their disk consumption.
@@ -290,8 +328,9 @@ func (g *Git) Daemon() ErrNotImplemented {
 // it suffixes the tag name with the number of additional commits on top of the
 // tagged object and the abbreviated object name of the most recent commit.
 //   git-describe - https://git-scm.com/docs/git-describe
-func (g *Git) Describe() ErrNotImplemented {
-	return errNotImplemented("describe")
+func (g *Git) Describe(s ...string) (*Output, error) {
+	s = append([]string{"describe"}, s...)
+	return cmdgitInPath(g.wd.Abs(), s...)
 }
 
 // DiffFiles Compares the files in the working tree and the index. When paths
@@ -554,8 +593,9 @@ func (g *Git) Gitk() ErrNotImplemented {
 
 // Log shows the commit logs.
 //   git-log - https://git-scm.com/docs/git-log
-func (g *Git) Log() ErrNotImplemented {
-	return errNotImplemented("log")
+func (g *Git) Log(s ...string) (*Output, error) {
+	s = append([]string{"log"}, s...)
+	return cmdgitInPath(g.wd.Abs(), s...)
 }
 
 // LsFiles show information about files in the index and the working tree.
