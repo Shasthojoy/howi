@@ -1,4 +1,4 @@
-package wdfs
+package path
 
 import (
 	"go/build"
@@ -7,28 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/howi-ce/howi/pkg/std/herrors"
+	"github.com/howi-ce/howi/std/herrors"
 )
-
-// New returns PathInfo for given path, It tries to set absolute representation
-// of path, but sets provided string if that fails
-func New(path string) (*Path, error) {
-	abs, err := filepath.Abs(filepath.FromSlash(path))
-	p := &Path{}
-	if err != nil {
-		p.abs = path
-	} else {
-		p.abs = abs
-	}
-	// first load
-	p.Stat()
-	p.base = filepath.Base(abs)
-	p.clean = filepath.Clean(abs)
-	p.dir = filepath.Dir(abs)
-	p.ext = filepath.Ext(abs)
-	p.isAbs = filepath.IsAbs(abs)
-	return p, err
-}
 
 // Path retruns a path object with methods to work with path
 type Path struct {
@@ -44,28 +24,28 @@ type Path struct {
 
 // Abs returns an absolute representation of path.
 // result of filepath.Abs when object was loaded
-func (o *Path) Abs() string {
-	return o.abs
+func (p *Path) Abs() string {
+	return p.abs
 }
 
 // Base returns the last element of path.
 // result of filepath.Base when object was loaded
-func (o *Path) Base() string {
-	return o.base
+func (p *Path) Base() string {
+	return p.base
 }
 
 // Clean returns the shortest path name equivalent to path
 // by purely lexical processing.
 // result of filepath.Clean when object was loaded
-func (o *Path) Clean() string {
-	return o.clean
+func (p *Path) Clean() string {
+	return p.clean
 }
 
 // Dir returns all but the last element of path, typically the path's directory.
 // After dropping the final element,
 // result of filepath.Dir when object was loaded
-func (o *Path) Dir() string {
-	return o.dir
+func (p *Path) Dir() string {
+	return p.dir
 }
 
 // Ext returns the file name extension used by path.
@@ -73,59 +53,59 @@ func (o *Path) Dir() string {
 // in the final element of path; it is empty if there is
 // no dot.
 // result of filepath.Ext when object was loaded
-func (o *Path) Ext() string {
-	return o.ext
+func (p *Path) Ext() string {
+	return p.ext
 }
 
 // IsAbs reports whether the path is absolute.
 // result of filepath.IsAbs when object was loaded
-func (o *Path) IsAbs() bool {
-	return o.isAbs
+func (p *Path) IsAbs() bool {
+	return p.isAbs
 }
 
 // VolumeName is abbreviation for filepath.VolumeName()
 // with current path as argumentwhich returns leading volume name.
-func (o *Path) VolumeName() string {
-	return filepath.VolumeName(o.abs)
+func (p *Path) VolumeName() string {
+	return filepath.VolumeName(p.abs)
 }
 
 // Split is abbreviation for filepath.Split() with current path as argument
 // which splits path immediately following the final Separator,
-func (o *Path) Split() (dir, file string) {
-	return filepath.Split(o.abs)
+func (p *Path) Split() (dir, file string) {
+	return filepath.Split(p.abs)
 }
 
 // ToSlash is abbreviation for filepath.ToSlash() with current path as argument
 // which returns the result of replacing each separator character in path
 // with a slash ('/') character.
-func (o *Path) ToSlash() string {
-	return filepath.ToSlash(o.abs)
+func (p *Path) ToSlash() string {
+	return filepath.ToSlash(p.abs)
 }
 
 // Join joins any number of path elements into a single path
 // and appends these to current path
-func (o *Path) Join(elem ...string) string {
-	return filepath.Join(append([]string{o.abs}, elem...)...)
+func (p *Path) Join(elem ...string) string {
+	return filepath.Join(append([]string{p.abs}, elem...)...)
 }
 
 // Match is abbreviation for filepath.Match() with current paths basename as name argument
-func (o *Path) Match(pattern string) (matched bool, err error) {
-	return filepath.Match(pattern, o.base)
+func (p *Path) Match(pattern string) (matched bool, err error) {
+	return filepath.Match(pattern, p.base)
 }
 
 // Rel is abbreviation for filepath.Rel() with current path as basepath argument
-func (o *Path) Rel(targpath string) (string, error) {
-	return filepath.Rel(o.abs, targpath)
+func (p *Path) Rel(targpath string) (string, error) {
+	return filepath.Rel(p.abs, targpath)
 }
 
 // Walk is abbreviation for filepath.Walk() with current path as root argument
-func (o *Path) Walk(walkFn func(path string, info os.FileInfo, err error) error) error {
-	return filepath.Walk(o.abs, walkFn)
+func (p *Path) Walk(walkFn func(path string, info os.FileInfo, err error) error) error {
+	return filepath.Walk(p.abs, walkFn)
 }
 
 // Exists checks if a path exists.
-func (o *Path) Exists() bool {
-	if _, err := o.Stat(); err != nil {
+func (p *Path) Exists() bool {
+	if _, err := p.Stat(); err != nil {
 		return false
 	}
 	return true
@@ -133,21 +113,31 @@ func (o *Path) Exists() bool {
 
 // IsDir checks if a given path is a directory.
 // func (os.FileInfo).IsDir() bool
-func (o *Path) IsDir() bool {
-	o.Stat()
-	return o.fileInfo.IsDir()
+func (p *Path) IsDir() bool {
+	p.Stat()
+	return p.fileInfo.IsDir()
+}
+
+// IsGitRepository checks if a given path is a git repository directory.
+func (p *Path) IsGitRepository() bool {
+	p.Stat()
+	if !p.fileInfo.IsDir() {
+		return false
+	}
+	gitRepo, _ := Plugin(p.Join(".git"))
+	return gitRepo.Exists()
 }
 
 // IsRegular reports whether opject describes a regular file.
-func (o *Path) IsRegular() bool {
-	o.Stat()
-	return o.fileInfo.Mode().IsRegular()
+func (p *Path) IsRegular() bool {
+	p.Stat()
+	return p.fileInfo.Mode().IsRegular()
 }
 
 // InGOPATH reports whether path is in GOPATH.
-func (o *Path) InGOPATH() bool {
+func (p *Path) InGOPATH() bool {
 	for _, gopath := range filepath.SplitList(build.Default.GOPATH) {
-		if strings.HasPrefix(o.abs, gopath) {
+		if strings.HasPrefix(p.abs, gopath) {
 			return true
 		}
 	}
@@ -155,46 +145,46 @@ func (o *Path) InGOPATH() bool {
 }
 
 // Mode returns os.FileMode
-func (o *Path) Mode() os.FileMode {
-	o.Stat()
-	return o.fileInfo.Mode()
+func (p *Path) Mode() os.FileMode {
+	p.Stat()
+	return p.fileInfo.Mode()
 }
 
 // Perm returns os.FileInfo.Mode().Perm()
-func (o *Path) Perm() os.FileMode {
-	o.Stat()
-	return o.fileInfo.Mode().Perm()
+func (p *Path) Perm() os.FileMode {
+	p.Stat()
+	return p.fileInfo.Mode().Perm()
 }
 
 // ModTime returns modification time
 // func (os.FileInfo).ModTime() time.Time
-func (o *Path) ModTime() time.Time {
-	o.Stat()
-	return o.fileInfo.ModTime()
+func (p *Path) ModTime() time.Time {
+	p.Stat()
+	return p.fileInfo.ModTime()
 }
 
 // Size returns length in bytes for regular files; system-dependent for others
-func (o *Path) Size() int64 {
-	o.Stat()
-	return o.fileInfo.Size()
+func (p *Path) Size() int64 {
+	p.Stat()
+	return p.fileInfo.Size()
 }
 
 // Stat returns a FileInfo describing the named file.
 // If there is an error, it will be of type *PathError.
-func (o *Path) Stat() (os.FileInfo, error) {
-	fileInfo, err := os.Stat(o.abs)
+func (p *Path) Stat() (os.FileInfo, error) {
+	fileInfo, err := os.Stat(p.abs)
 	if os.IsNotExist(err) {
-		if o.fileInfo != nil {
-			o.deleted = true
-			return nil, o.error("has been deleted")
+		if p.fileInfo != nil {
+			p.deleted = true
+			return nil, p.error("has been deleted")
 		}
-		return nil, o.error(err.Error())
+		return nil, p.error(err.Error())
 	}
-	o.deleted = false
-	o.fileInfo = fileInfo
-	return o.fileInfo, nil
+	p.deleted = false
+	p.fileInfo = fileInfo
+	return p.fileInfo, nil
 }
 
-func (o *Path) error(msg ...string) error {
-	return herrors.Newf("%s (%s)", o.abs, msg)
+func (p *Path) error(msg ...string) error {
+	return herrors.Newf("%s (%s)", p.abs, msg)
 }

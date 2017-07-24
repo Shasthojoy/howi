@@ -3,9 +3,8 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package hcli provides light framework to build CLI applications.
-
+Package filesystem provides filesystem abstraction for specific path like working directory.
 */
-package hcli
+package filesystem
 
 // TODO(mkungla): Complete the docs
