@@ -1,4 +1,8 @@
-package slices
+// Copyright 2005-2017 Marko Kungla. All rights reserved.
+// Use of this source code is governed by a Apache License 2.0
+// license that can be found in the LICENSE file.
+
+package hslices
 
 import "strconv"
 
@@ -18,10 +22,6 @@ func (s *RuneSlice) Add(value string) error {
 	if !s.notEmpty {
 		s.raw = []rune{}
 		s.notEmpty = true
-	}
-
-	if s.SetFromSerialized(value) {
-		return nil
 	}
 
 	tmp, err := strconv.ParseInt(value, 0, 64)

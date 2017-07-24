@@ -1,4 +1,8 @@
-package slices
+// Copyright 2005-2017 Marko Kungla. All rights reserved.
+// Use of this source code is governed by a Apache License 2.0
+// license that can be found in the LICENSE file.
+
+package hslices
 
 // MakeStringSlice returns new *StringSlice with optionally default values
 func MakeStringSlice(defaults ...string) *StringSlice {
@@ -16,10 +20,6 @@ func (s *StringSlice) Add(value string) error {
 	if !s.notEmpty {
 		s.raw = []string{}
 		s.notEmpty = true
-	}
-
-	if s.SetFromSerialized(value) {
-		return nil
 	}
 
 	s.raw = append(s.raw, value)

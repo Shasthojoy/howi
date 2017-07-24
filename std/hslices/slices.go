@@ -1,4 +1,8 @@
-package slices
+// Copyright 2005-2017 Marko Kungla. All rights reserved.
+// Use of this source code is governed by a Apache License 2.0
+// license that can be found in the LICENSE file.
+
+package hslices
 
 import (
 	"encoding/json"
@@ -56,24 +60,28 @@ func (s *slice) String() string {
 }
 
 // JSON return json string of the slice
-func (s *slice) JSON() string {
-	bytes, _ := json.Marshal(s.raw)
+func (s *slice) JSON() (string, error) {
+	bytes, err := json.Marshal(s.raw)
 	s.json = string(bytes)
-	return s.json
+	return s.json, err
 }
 
 // Serialize slice
-func (s *slice) Serialize() string {
-	return fmt.Sprintf("%s%s", pfx, s.json)
+func (s *slice) Serialize() (string, error) {
+	json, err := s.JSON()
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%s%s", pfx, json), nil
 }
 
 // SetFromSerialized set value from serialized string returns bool
 // whether provided string was used to update values
-func (s *slice) SetFromSerialized(str string) bool {
+func (s *slice) SetFromSerialized(str string) (bool, error) {
 	if strings.HasPrefix(str, pfx) {
-		_ = json.Unmarshal([]byte(strings.Replace(str, pfx, "", 1)), &s.raw)
+		err := json.Unmarshal([]byte(strings.Replace(str, pfx, "", 1)), &s.raw)
 		s.notEmpty = true
-		return true
+		return true, err
 	}
-	return false
+	return false, nil
 }
