@@ -13,7 +13,7 @@ used for very specific use cases within developed software as source or shared l
 - transform multitude of libraries from other language bindings to Go Lang.
 - decide which Addons, Plugins and Libraries can be open sourced.
 - decide which Addons, Plugins and Libraries will be deprecated.
-- implement pre-release designs for Addons, Plugins and Libraries which will be open sourced.
+- implement pre-release designs in Go for Addons, Plugins and Libraries which will be open sourced.
 
 ## Redesign with Go
 Following describes HOWI-CE design for transforming it to Go Lang while keeping
