@@ -3,9 +3,8 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package lib is collection of commonly shared libraries within addons and plugins.
-Faith of these libraries are unclear since their ancestor libraries were mostly shared objects.
+Package addon is collection of HOWI-CE addons and their plugins.
 */
-package lib
+package addon
 
 // TODO(mkungla): Complete the docs
