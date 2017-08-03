@@ -16,5 +16,5 @@ func (o Output) Lines() []string {
 
 // String retruns string representation of output
 func (o Output) String() string {
-	return string(o)
+	return strings.Trim(string(o), "\n")
 }

@@ -198,10 +198,10 @@ func (cli *Plugin) Start() {
 		cli.elapsed().Seconds())
 	cli.started = now
 	// show header if command has not disabled it
+	cli.currentCmd.executeBeforeFn(worker)
 	if worker.Config.ShowHeader {
 		cli.Header.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
 	}
-	cli.currentCmd.executeBeforeFn(worker)
 	if worker.Phase().status <= StatusSuccess {
 		cli.currentCmd.executeDoFn(worker)
 	}

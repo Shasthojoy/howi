@@ -976,8 +976,9 @@ func (p *Plugin) Reset() herrors.ErrNotImplemented {
 
 // RevList Lists commit objects in reverse chronological order
 //   git-rev-list - https://git-scm.com/docs/git-rev-list
-func (p *Plugin) RevList() herrors.ErrNotImplemented {
-	return newErrNotImplemented("rev-list")
+func (p *Plugin) RevList(s ...string) (hexec.Output, error) {
+	s = append([]string{"rev-list"}, s...)
+	return cmdgitInPath(p.fs.RealAbs(), s...)
 }
 
 // RevParse Many Git porcelainish commands take mixture of flags (i.e.
@@ -986,8 +987,9 @@ func (p *Plugin) RevList() herrors.ErrNotImplemented {
 // commands they use downstream of git rev-list.
 // This command is used to distinguish between them.
 //   git-rev-parse - https://git-scm.com/docs/git-rev-parse
-func (p *Plugin) RevParse() herrors.ErrNotImplemented {
-	return newErrNotImplemented("rev-parse")
+func (p *Plugin) RevParse(s ...string) (hexec.Output, error) {
+	s = append([]string{"rev-parse"}, s...)
+	return cmdgitInPath(p.fs.RealAbs(), s...)
 }
 
 // Revert Given one or more existing commits, revert the changes that the related
