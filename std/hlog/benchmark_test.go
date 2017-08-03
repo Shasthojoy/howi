@@ -9,7 +9,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/howi-ce/howi/pkg/std/hlog"
+	"github.com/howi-ce/howi/std/hlog"
 )
 
 const testString = "Dummy log message to have something to log, length of this string is avarage message length."
