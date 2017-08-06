@@ -8,7 +8,7 @@ clean and stable API's. Majority of HOWI was written in `C` while independent
 Addons, plugins and libraries cover 150+ programming languages which could be  
 used for very specific use cases within developed software as source or shared library.  
 
-## Goals of 5th series of 
+## Goals of 5th series of
 
 - transform multitude of libraries from other language bindings to Go Lang.
 - decide which Addons, Plugins and Libraries can be open sourced.
@@ -22,7 +22,7 @@ HOWI's design style and philosophy.
 - **HOWI Addons ./addon/<addon-name>**  
 > Addons provide higher level API to include full feature set provided by that Addon and it's  
 > Plugins to your software. Addons are safest to use since their high level API introduces rarely
-> braking changes even when API's of it's plugins or used libraries change. 
+> braking changes even when API's of it's plugins or used libraries change.
 
   - **Addons may import**
     - Go source
@@ -52,28 +52,28 @@ HOWI's design style and philosophy.
     - any Plugins
 
 - **HOWI Libraries ./lib/<library-name>**  
-> Libraries are low level and packages within HOWI. Purpose of these libraries is 
-> to provide low level bleeding edge features for HOWI Addons and their Plugins. 
+> Libraries are low level and packages within HOWI. Purpose of these libraries is
+> to provide low level bleeding edge features for HOWI Addons and their Plugins.
 > HOWI Libraries mostly are extending or providing stable API for external libraries.
 
   - **Libraries may import**
     - Go source
     - any HOWI STD Library
     - external libraries
-  - **Plugins may never import**
+  - **Libraries may never import**
     - any Addons
     - any Plugins
     - any HOWI Library
 
 - **HOWI Standard Libraries ./std/<library-name>**  
-> Standard Libraries are lowest level and most unstable packages within HOWI. Purpose of these 
-> libraries to provide low level bleeding edge features for HOWI Addons and their Plugins. 
+> Standard Libraries are lowest level and most unstable packages within HOWI. Purpose of these
+> libraries to provide low level bleeding edge features for HOWI Addons and their Plugins.
 > HOWI Standard Libraries are often extending or replacing language features.
 
   - **Libraries may import**
     - Go source
     - external libraries
-  - **Plugins may never import**
+  - **Libraries may never import**
     - any Addons
     - any Plugins
     - any HOWI Library
