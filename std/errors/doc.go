@@ -3,8 +3,8 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package herrors implements functions to manipulate errors.
+Package errors implements functions to manipulate errors.
 */
-package herrors
+package errors
 
 // TODO(mkungla): Complete the docs

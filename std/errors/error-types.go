@@ -2,7 +2,7 @@
 // Use of this source code is governed by a Apache License 2.0
 // license that can be found in the LICENSE file.
 
-package herrors
+package errors
 
 // ErrDeprecated is error returned when git command with matching name is deprecated.
 type ErrDeprecated error
