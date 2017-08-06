@@ -3,9 +3,9 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package hvars provides the ability to parse variables from various input formats
+Package vars provides the ability to parse variables from various input formats
 to common key value pair or sets to map[Var]Value.
 */
-package hvars
+package vars
 
 // TODO(mkungla): Complete the docs
