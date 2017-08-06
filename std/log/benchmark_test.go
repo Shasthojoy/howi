@@ -2,14 +2,14 @@
 // Use of this source code is governed by a Apache License 2.0
 // license that can be found in the LICENSE file.
 
-package hlog_test
+package log_test
 
 import (
 	"bytes"
 	"log"
 	"testing"
 
-	"github.com/howi-ce/howi/std/hlog"
+	hlog "github.com/howi-ce/howi/std/log"
 )
 
 const testString = "Dummy log message to have something to log, length of this string is avarage message length."

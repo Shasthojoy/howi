@@ -3,9 +3,9 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package hlog provider a logger
+Package log provider a logger
 */
-package hlog
+package log
 
 // TODO(mkungla): Complete the docs
 // BUG(mkungla): This library needs to be improved
