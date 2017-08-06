@@ -13,6 +13,7 @@
 *.so
 # Test binary, build with `go test -c`
 *.test
+howi-*
 
 ################################################################################
 # DIRECTORIES to ignore

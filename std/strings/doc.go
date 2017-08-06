@@ -3,9 +3,7 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package std is collection of libraries which extend Golang standard libraries
-or have very similar behaviour.
+Package strings implements simple functions which are not present
+in go standard library to manipulate strings.
 */
-package std
-
-// TODO(mkungla): Complete the docs
+package strings

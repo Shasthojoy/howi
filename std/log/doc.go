@@ -3,9 +3,9 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package std is collection of libraries which extend Golang standard libraries
-or have very similar behaviour.
+Package log provider a logger
 */
-package std
+package log
 
 // TODO(mkungla): Complete the docs
+// BUG(mkungla): This library needs to be improved

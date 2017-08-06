@@ -3,9 +3,8 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package std is collection of libraries which extend Golang standard libraries
-or have very similar behaviour.
+Package errors implements functions to manipulate errors.
 */
-package std
+package errors
 
 // TODO(mkungla): Complete the docs

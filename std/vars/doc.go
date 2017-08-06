@@ -3,9 +3,9 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package std is collection of libraries which extend Golang standard libraries
-or have very similar behaviour.
+Package vars provides the ability to parse variables from various input formats
+to common key value pair or sets to map[Var]Value.
 */
-package std
+package vars
 
 // TODO(mkungla): Complete the docs

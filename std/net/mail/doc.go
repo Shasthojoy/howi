@@ -3,9 +3,8 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package std is collection of libraries which extend Golang standard libraries
-or have very similar behaviour.
+Package mail extends net/mail format for emails and mail addresses for Go Prj.
 */
-package std
+package mail
 
 // TODO(mkungla): Complete the docs
