@@ -10,8 +10,8 @@ import (
 
 	"github.com/howi-ce/howi/addon/application/plugin/cli/clitmpl"
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
-	"github.com/howi-ce/howi/std/herrors"
-	"github.com/howi-ce/howi/std/hlog"
+	"github.com/howi-ce/howi/std/errors"
+	"github.com/howi-ce/howi/std/log"
 )
 
 const (
@@ -64,7 +64,7 @@ const (
 // all defaults set.
 func NewPlugin() *Plugin {
 	cli := &Plugin{
-		Log:         hlog.NewStdout(hlog.NOTICE),
+		Log:         log.NewStdout(log.NOTICE),
 		commands:    make(map[string]Command),
 		flags:       make(map[int]flags.Interface),
 		flagAliases: make(map[string]int),
@@ -80,7 +80,7 @@ func NewPlugin() *Plugin {
 	// flag was found before any command. If --debug flag was found later
 	// then we want to set debugging later for that command only.
 	if cli.flag("debug").IsGlobal() && cli.flag("debug").Present() {
-		cli.Log.SetLogLevel(hlog.DEBUG)
+		cli.Log.SetLogLevel(log.DEBUG)
 		cli.Log.LockLevel()
 		cli.flag("verbose").Unset()
 	}
@@ -98,11 +98,11 @@ func NewPlugin() *Plugin {
 // Plugin for CLI Application instance
 type Plugin struct {
 	started     time.Time               // when application was started
-	Log         *hlog.Logger            // logger
+	Log         *log.Logger             // logger
 	MetaData    MetaData                // Application MetaData
 	Header      clitmpl.Header          // header if used
 	Footer      clitmpl.Footer          // footer if used
-	errs        herrors.MultiError      // internal errors
+	errs        errors.MultiError       // internal errors
 	commands    map[string]Command      // commands
 	flags       map[int]flags.Interface // global flags
 	flagAliases map[string]int          // global flag aliases
@@ -119,7 +119,7 @@ func (cli *Plugin) AddCommand(c Command) {
 	// Can only check command name here since nothing stops you to add possible
 	// shadow flags after this command was added.
 	if _, exists := cli.commands[c.Name()]; exists {
-		cli.errs.AppendError(herrors.Newf(FmtErrCommandNameInUse, c.Name()))
+		cli.errs.AppendError(errors.Newf(FmtErrCommandNameInUse, c.Name()))
 		return
 	}
 	cli.commands[c.Name()] = c
@@ -177,8 +177,8 @@ func (cli *Plugin) Start() {
 	}
 	// If debug flag was present. but not as global flag then set the level now
 	llvl := cli.Log.GetCurrentLevel()
-	if llvl != hlog.DEBUG && cli.flag("debug").Present() && !cli.flag("debug").IsGlobal() {
-		cli.Log.SetLogLevel(hlog.DEBUG)
+	if llvl != log.DEBUG && cli.flag("debug").Present() && !cli.flag("debug").IsGlobal() {
+		cli.Log.SetLogLevel(log.DEBUG)
 	}
 
 	worker := newWorker(cli.Log)
@@ -220,7 +220,7 @@ func (cli *Plugin) Start() {
 	cli.currentCmd.executeAfterFailureFn(worker)
 	cli.currentCmd.executeAfterAlwaysFn(worker)
 	// restore loglevel
-	if llvl != hlog.DEBUG && cli.flag("debug").Present() && !cli.flag("debug").IsGlobal() {
+	if llvl != log.DEBUG && cli.flag("debug").Present() && !cli.flag("debug").IsGlobal() {
 		cli.Log.SetLogLevel(llvl)
 	}
 	// show footer if command has not disabled it

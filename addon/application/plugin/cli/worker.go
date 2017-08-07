@@ -5,14 +5,14 @@ import (
 	"time"
 
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
-	"github.com/howi-ce/howi/std/herrors"
-	"github.com/howi-ce/howi/std/hlog"
-	"github.com/howi-ce/howi/std/hstrings"
-	"github.com/howi-ce/howi/std/hvars"
+	"github.com/howi-ce/howi/std/errors"
+	"github.com/howi-ce/howi/std/log"
+	"github.com/howi-ce/howi/std/strings"
+	"github.com/howi-ce/howi/std/vars"
 )
 
 // NewWorker constructs new worker
-func newWorker(logger *hlog.Logger) *Worker {
+func newWorker(logger *log.Logger) *Worker {
 	w := &Worker{
 		started:      time.Now(),
 		phases:       make(map[string]*Phase),
@@ -39,10 +39,10 @@ type Worker struct {
 	phase        string
 	phases       map[string]*Phase
 	taskPayloads map[string]chan []byte
-	args         []hvars.Value
+	args         []vars.Value
 	flags        map[int]flags.Interface // global flags
 	flagAliases  map[string]int          // global flag aliases
-	Log          *hlog.Logger
+	Log          *log.Logger
 	Config       WorkerConfig
 	Info         ApplicationInfo
 }
@@ -65,9 +65,9 @@ func (w *Worker) Task(name string, wt func(task *Task)) {
 		return
 	}
 	// Check task name and exit on failure
-	if !hstrings.IsNamespace(name) {
+	if !strings.IsNamespace(name) {
 		w.Log.Fatalf("task name %q is invalid - must match following regex %v",
-			name, hstrings.NamespaceMustCompile)
+			name, strings.NamespaceMustCompile)
 	}
 	if _, exists := w.taskPayloads[name]; exists {
 		w.Log.Fatalf("task name %q is already in use", name)
@@ -106,7 +106,7 @@ func (w *Worker) Phase() *Phase {
 }
 
 // Args returns arguments passed to command.
-func (w *Worker) Args() []hvars.Value {
+func (w *Worker) Args() []vars.Value {
 	return w.args
 }
 
@@ -118,7 +118,7 @@ func (w *Worker) Flag(alias string) (flags.Interface, error) {
 			return w.flags[id], nil
 		}
 	}
-	return nil, herrors.Newf(FmtErrUnknownFlag, alias)
+	return nil, errors.Newf(FmtErrUnknownFlag, alias)
 }
 
 // WaitTaskPayloadFrom enables you to wait payload from specific tasks.
@@ -133,7 +133,7 @@ func (w *Worker) WaitTaskPayloadFrom(name string) ([]byte, error) {
 		return payload, nil
 	}
 
-	return nil, herrors.Newf("no such task registered %q", name)
+	return nil, errors.Newf("no such task registered %q", name)
 }
 
 // wait for the phase to return

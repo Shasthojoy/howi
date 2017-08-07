@@ -4,7 +4,8 @@
 
 /*
 Package lib is collection of commonly shared libraries within addons and plugins.
-Faith of these libraries are unclear since their ancestor libraries were mostly shared objects.
+These are higher-level of libraries which mostly make use of multible
+howi/std or external libraries.
 */
 package lib
 

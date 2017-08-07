@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/howi-ce/howi/std/herrors"
-	"github.com/howi-ce/howi/std/hvars"
+	"github.com/howi-ce/howi/std/errors"
+	"github.com/howi-ce/howi/std/vars"
 )
 
 // Interface for the flags
@@ -39,7 +39,7 @@ type Interface interface {
 	// Present reports whether flag was set in commandline
 	Present() bool
 	// Value returns vars.Value for given flag
-	Value() hvars.Value
+	Value() vars.Value
 }
 
 // FlagCommon shares private fields and some function with flags
@@ -59,7 +59,7 @@ type FlagCommon struct {
 	// isPresent enables to mock removal and .Unset the flag it reports whether flag was "present"
 	isPresent bool
 	// value for this flag
-	value hvars.Value
+	value vars.Value
 }
 
 // Name returns primary name for the flag usually that is long option
@@ -133,14 +133,14 @@ func (f *FlagCommon) GetAliases() []string {
 // Verify the flag
 func (f *FlagCommon) Verify() error {
 	if f.name == "" {
-		return herrors.Newf("flag name %q is not valid", f.name)
+		return errors.Newf("flag name %q is not valid", f.name)
 	}
 	return nil
 }
 
 // Unset the value
 func (f *FlagCommon) Unset() {
-	f.value = hvars.Value("")
+	f.value = vars.Value("")
 	f.isPresent = false
 }
 
@@ -150,16 +150,16 @@ func (f *FlagCommon) Present() bool {
 }
 
 // Value returns vars.Value for this flag
-func (f *FlagCommon) Value() hvars.Value {
+func (f *FlagCommon) Value() vars.Value {
 	return f.value
 }
 
 // Parse value for the flag from given string. It returns true if flag has been parsed
 // and errro if flag has been already parsed.
-func (f *FlagCommon) parser(args *[]string, read func(*hvars.Value)) (bool, error) {
+func (f *FlagCommon) parser(args *[]string, read func(*vars.Value)) (bool, error) {
 
 	if f.isPresent {
-		return f.isPresent, herrors.Newf("flag %q is already parsed", f.name)
+		return f.isPresent, errors.Newf("flag %q is already parsed", f.name)
 	}
 
 	for i, arg := range *args {
@@ -168,7 +168,7 @@ func (f *FlagCommon) parser(args *[]string, read func(*hvars.Value)) (bool, erro
 			continue
 		}
 		cur := strings.TrimLeft(arg, "-")
-		flag, value := hvars.ParseFromString(cur)
+		flag, value := vars.ParseFromString(cur)
 		if flag == f.name {
 			f.isPresent = true
 			read(&value)

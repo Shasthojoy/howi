@@ -3,7 +3,7 @@ package flags
 import (
 	"strings"
 
-	"github.com/howi-ce/howi/std/hvars"
+	"github.com/howi-ce/howi/std/vars"
 )
 
 // NewBoolFlag returns new bool flag. Argument "a" can be any nr of aliases
@@ -14,7 +14,7 @@ func NewBoolFlag(name string, a ...string) *BoolFlag {
 	for _, alias := range a {
 		f.aliases = append(f.aliases, strings.TrimLeft(alias, "-"))
 	}
-	f.value = hvars.ValueFromString("false")
+	f.value = vars.ValueFromString("false")
 	return f
 }
 
@@ -25,9 +25,9 @@ type BoolFlag struct {
 
 // Parse the BoolFlag
 func (f *BoolFlag) Parse(args *[]string) (bool, error) {
-	return f.parser(args, func(v *hvars.Value) {
+	return f.parser(args, func(v *vars.Value) {
 		if v.Empty() {
-			*v = hvars.ValueFromString("true")
+			*v = vars.ValueFromString("true")
 		}
 	})
 }

@@ -3,7 +3,7 @@ package flags
 import (
 	"strings"
 
-	"github.com/howi-ce/howi/std/hvars"
+	"github.com/howi-ce/howi/std/vars"
 )
 
 // NewNumFlag returns new numeric flag. Argument "a" can be any nr of aliases
@@ -14,7 +14,7 @@ func NewNumFlag(name string, a ...string) *NumFlag {
 	for _, alias := range a {
 		f.aliases = append(f.aliases, strings.TrimLeft(alias, "-"))
 	}
-	f.value = hvars.ValueFromString("")
+	f.value = vars.ValueFromString("")
 	return f
 }
 
@@ -25,9 +25,9 @@ type NumFlag struct {
 
 // Parse the NumFlag
 func (f *NumFlag) Parse(args *[]string) (bool, error) {
-	return f.parser(args, func(v *hvars.Value) {
+	return f.parser(args, func(v *vars.Value) {
 		if v.Empty() {
-			*v = hvars.ValueFromString("0")
+			*v = vars.ValueFromString("0")
 		}
 	})
 }

@@ -2,9 +2,9 @@ package cli
 
 import (
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
-	"github.com/howi-ce/howi/std/herrors"
-	"github.com/howi-ce/howi/std/hstrings"
-	"github.com/howi-ce/howi/std/hvars"
+	"github.com/howi-ce/howi/std/errors"
+	"github.com/howi-ce/howi/std/strings"
+	"github.com/howi-ce/howi/std/vars"
 )
 
 // Command for application
@@ -15,7 +15,7 @@ type Command struct {
 	usage          string
 	shortDesc      string
 	longDesc       string
-	errs           herrors.MultiError // internal errors
+	errs           errors.MultiError // internal errors
 	beforeFn       func(w *Worker)
 	doFn           func(w *Worker)
 	afterFailureFn func(w *Worker)
@@ -25,7 +25,7 @@ type Command struct {
 	flags          map[int]flags.Interface // command flags
 	flagAliases    map[string]int          // command flag aliases
 	acceptArgs     int
-	args           []hvars.Value
+	args           []vars.Value
 	subCmd         *Command // if subcommand was called
 	parents        []string
 }
@@ -64,7 +64,7 @@ func (c *Command) AddFlag(f flags.Interface) {
 
 // SetCategory sets help category to categorize commands in help output
 func (c *Command) SetCategory(category string) {
-	c.category = hstrings.TrimSpace(category)
+	c.category = strings.TrimSpace(category)
 }
 
 // SetUsage adds extra usage string following the (app-name cmd-name ...)
@@ -72,7 +72,7 @@ func (c *Command) SetCategory(category string) {
 //   `app-name cmd-name [flags] [subcommand] [flags] [args]`
 // this text would appear next line
 func (c *Command) SetUsage(usage string) {
-	c.usage = hstrings.TrimSpace(usage)
+	c.usage = strings.TrimSpace(usage)
 }
 
 // SetShortDesc sets commands short description used when describing command within list.
@@ -220,18 +220,18 @@ func (c *Command) verify(reservedFlags map[string]int) error {
 		return c.errs.AsError()
 	}
 	// Chck commands name
-	if !hstrings.IsNamespace(c.name) {
-		return herrors.Newf(FmtErrCommandNameInvalid, c.name, hstrings.NamespaceMustCompile)
+	if !strings.IsNamespace(c.name) {
+		return errors.Newf(FmtErrCommandNameInvalid, c.name, strings.NamespaceMustCompile)
 	}
 	// must have Do function
 	if c.doFn == nil {
-		return herrors.Newf(FmtErrCommandMissingDoFn, c.name)
+		return errors.Newf(FmtErrCommandMissingDoFn, c.name)
 	}
 	// Check command flags
 	if c.flagAliases != nil && c.flags != nil {
 		for flagAlias, flagID := range c.flagAliases {
 			if _, isReserved := reservedFlags[flagAlias]; isReserved {
-				return herrors.Newf(FmtErrCommandFlagShadowing, c.name, c.flags[flagID].Name(), flagAlias)
+				return errors.Newf(FmtErrCommandFlagShadowing, c.name, c.flags[flagID].Name(), flagAlias)
 			}
 			// Add it as reserved for subcommands
 			reservedFlags[flagAlias] = flagID
@@ -254,7 +254,7 @@ func (c *Command) verify(reservedFlags map[string]int) error {
 func (c *Command) parse(args *[]string) error {
 
 	if len(*args) == 0 || (*args)[0] != c.name {
-		return herrors.Newf(FmtErrInvalidCommandArgs, c.name)
+		return errors.Newf(FmtErrInvalidCommandArgs, c.name)
 	}
 
 	// remove name of this command
@@ -268,7 +268,7 @@ func (c *Command) parse(args *[]string) error {
 
 	// If we still have arg 0 which is not a argument or subcommand
 	if len(*args) > 0 && (*args)[0][0] == '-' {
-		return herrors.Newf(FmtErrUnknownFlag, (*args)[0], c.name)
+		return errors.Newf(FmtErrUnknownFlag, (*args)[0], c.name)
 	}
 
 	for _, arg := range *args {
@@ -279,11 +279,11 @@ func (c *Command) parse(args *[]string) error {
 		}
 		// can parse args
 		if c.acceptArgs == 0 {
-			return herrors.Newf(FmtErrUnknownSubcommand, arg, c.name)
+			return errors.Newf(FmtErrUnknownSubcommand, arg, c.name)
 		}
 		// too many arguments
 		if len(c.args) >= c.acceptArgs {
-			return herrors.Newf(FmtErrTooManyArgs, c.name, c.acceptArgs)
+			return errors.Newf(FmtErrTooManyArgs, c.name, c.acceptArgs)
 		}
 		// add this arg
 		c.appendArg(arg)
@@ -292,7 +292,7 @@ func (c *Command) parse(args *[]string) error {
 }
 
 // getArgs returns args passed for command or subcommand
-func (c *Command) getArgs() []hvars.Value {
+func (c *Command) getArgs() []vars.Value {
 	if c.subCmd != nil {
 		return c.subCmd.getArgs()
 	}
@@ -326,12 +326,12 @@ func (c *Command) getParents() []string {
 func (c *Command) appendArg(arg string) {
 	n := len(c.args)
 	if n == cap(c.args) {
-		args := make([]hvars.Value, n, 2*n+1)
+		args := make([]vars.Value, n, 2*n+1)
 		copy(args, c.args)
 		c.args = args
 	}
 	c.args = c.args[0 : n+1]
-	c.args[n] = hvars.ValueFromString(arg)
+	c.args[n] = vars.ValueFromString(arg)
 }
 
 // execute Before function if it was set.
