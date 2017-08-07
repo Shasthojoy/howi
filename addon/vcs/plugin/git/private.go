@@ -6,20 +6,20 @@ package git
 
 import (
 	"os"
-	"os/exec"
+	goOsExec "os/exec"
 
-	"github.com/howi-ce/howi/std/herrors"
-	"github.com/howi-ce/howi/std/hos/hexec"
+	"github.com/howi-ce/howi/std/errors"
+	"github.com/howi-ce/howi/std/os/exec"
 )
 
 // PRIVATE STATIC API
 
-func cmdgit(v ...string) (hexec.Output, error) {
-	b, err := exec.Command("git", v...).Output()
-	return hexec.Output(b), err
+func cmdgit(v ...string) (exec.Output, error) {
+	b, err := goOsExec.Command("git", v...).Output()
+	return exec.Output(b), err
 }
 
-func cmdgitInPath(p string, v ...string) (hexec.Output, error) {
+func cmdgitInPath(p string, v ...string) (exec.Output, error) {
 	cur, err := os.Getwd()
 	if err != nil {
 		return nil, err
@@ -27,22 +27,22 @@ func cmdgitInPath(p string, v ...string) (hexec.Output, error) {
 	if err := os.Chdir(p); err != nil {
 		return nil, err
 	}
-	b, rderr := exec.Command("git", v...).Output()
+	b, rderr := goOsExec.Command("git", v...).Output()
 	if err := os.Chdir(cur); err != nil {
 		return nil, err
 	}
-	return hexec.Output(b), rderr
+	return exec.Output(b), rderr
 }
 
-// newErrDeprecated constructs herrors.ErrDeprecated
-func newErrDeprecated(method string, alternative string, docs string) herrors.ErrDeprecated {
-	return herrors.NewErrDeprecatedf("method %s is deprecated - alternatives (%s) - docs (%s)",
+// newErrDeprecated constructs errors.ErrDeprecated
+func newErrDeprecated(method string, alternative string, docs string) errors.ErrDeprecated {
+	return errors.NewErrDeprecatedf("method %s is deprecated - alternatives (%s) - docs (%s)",
 		method, alternative, docs)
 }
 
-// newErrNotImplemented constructs herrors.ErrNotImplemented
-func newErrNotImplemented(method string, reason ...string) herrors.ErrNotImplemented {
-	return herrors.NewErrNotImplementedf(
+// newErrNotImplemented constructs errors.ErrNotImplemented
+func newErrNotImplemented(method string, reason ...string) errors.ErrNotImplemented {
+	return errors.NewErrNotImplementedf(
 		"method %s is not implemented - it may be removed in next version or is in development (%s)",
 		method, reason)
 }

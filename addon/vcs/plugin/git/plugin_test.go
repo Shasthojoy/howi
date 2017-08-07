@@ -6,10 +6,10 @@ package git
 
 import (
 	"reflect"
-	"strings"
+	goStrings "strings"
 	"testing"
 
-	"github.com/howi-ce/howi/std/hstrings"
+	"github.com/howi-ce/howi/std/strings"
 )
 
 func TestGitAPI(t *testing.T) {
@@ -176,7 +176,7 @@ func TestGitAPI(t *testing.T) {
 
 	gitType := reflect.TypeOf(&Plugin{})
 	for _, tt := range tests {
-		expected := hstrings.ToCamelCaseAlnum(tt.name)
+		expected := strings.ToCamelCaseAlnum(tt.name)
 		if expected == "Gc" {
 			expected = "GC"
 		}
@@ -189,19 +189,19 @@ func TestGitAPI(t *testing.T) {
 		if expected == "RemoteTestgit" {
 			expected = "RemoteTestGit"
 		}
-		if strings.HasSuffix(expected, "Id") {
+		if goStrings.HasSuffix(expected, "Id") {
 			expected = string(expected[:len(expected)-2]) + "ID"
 		}
-		if strings.HasSuffix(expected, "Db") {
+		if goStrings.HasSuffix(expected, "Db") {
 			expected = string(expected[:len(expected)-2]) + "DB"
 		}
-		if strings.HasSuffix(expected, "Http") {
+		if goStrings.HasSuffix(expected, "Http") {
 			expected = string(expected[:len(expected)-4]) + "HTTP"
 		}
-		if strings.HasSuffix(expected, "Https") {
+		if goStrings.HasSuffix(expected, "Https") {
 			expected = string(expected[:len(expected)-5]) + "HTTPS"
 		}
-		if strings.HasPrefix(expected, "Http") {
+		if goStrings.HasPrefix(expected, "Http") {
 			expected = "HTTP" + string(expected[4:])
 		}
 
