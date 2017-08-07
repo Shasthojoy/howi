@@ -5,7 +5,7 @@ import (
 
 	"github.com/howi-ce/howi/addon/application/plugin/cli/clitmpl"
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
-	"github.com/howi-ce/howi/std/hlog"
+	"github.com/howi-ce/howi/std/log"
 )
 
 var (
@@ -58,7 +58,7 @@ type HelpGlobal struct {
 }
 
 // Print application help
-func (h *HelpGlobal) Print(log *hlog.Logger) {
+func (h *HelpGlobal) Print(log *log.Logger) {
 	h.SetTemplate(helpGlobalTmpl)
 	for _, cmdObj := range h.Commands {
 		if cmdObj.category == "" {
@@ -88,7 +88,7 @@ type HelpCommand struct {
 }
 
 // Print command help
-func (h *HelpCommand) Print(log *hlog.Logger) {
+func (h *HelpCommand) Print(log *log.Logger) {
 	h.SetTemplate(helpCommandTmpl)
 	usage := []string{h.Info.Name}
 	for _, parent := range h.Command.getParents() {

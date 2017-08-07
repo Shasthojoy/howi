@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
-	"github.com/howi-ce/howi/std/herrors"
+	"github.com/howi-ce/howi/std/errors"
 )
 
 // add builtin flags
@@ -41,10 +41,10 @@ func (cli *Plugin) verifyConfig() error {
 	lenf := len(cli.flags)
 	cli.Log.Debugf("Application:verifyConfig - %q has total %d command(s)", cli.MetaData.name, lenc)
 	if (cli.commands == nil || lenc == 0) || (cli.flags == nil || lenf == 0) {
-		return herrors.New(FmtErrAppWithNoCommandsOrFlags)
+		return errors.New(FmtErrAppWithNoCommandsOrFlags)
 	}
 	if cli.MetaData.name == "" {
-		return herrors.New(FmtErrAppUnnamed)
+		return errors.New(FmtErrAppUnnamed)
 	}
 	return nil
 }
@@ -82,7 +82,7 @@ func (cli *Plugin) prepare() error {
 
 	// If we still have global flags left
 	if len(cli.osArgs) > 0 && cli.osArgs[0][0] == '-' {
-		return herrors.Newf(FmtErrUnknownGlobalFlag, cli.osArgs[0])
+		return errors.Newf(FmtErrUnknownGlobalFlag, cli.osArgs[0])
 	}
 
 	// verify configuration of commands
@@ -95,7 +95,7 @@ func (cli *Plugin) prepare() error {
 	if len(cli.osArgs) > 0 {
 		cmd, exists := cli.commands[cli.osArgs[0]]
 		if !exists {
-			return herrors.Newf(FmtErrUnknownCommand, cli.osArgs[0])
+			return errors.Newf(FmtErrUnknownCommand, cli.osArgs[0])
 		}
 		cli.currentCmd = &cmd
 		if err := cli.currentCmd.parse(&cli.osArgs); err != nil {

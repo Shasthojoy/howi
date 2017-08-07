@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/howi-ce/howi/std/herrors"
-	"github.com/howi-ce/howi/std/hnet/hmail"
+	"github.com/howi-ce/howi/std/errors"
+	"github.com/howi-ce/howi/std/net/mail"
 )
 
 // MetaData contains application metadata
@@ -15,7 +15,7 @@ type MetaData struct {
 	title        string
 	sdesc        string
 	ldesc        string
-	contributors []hmail.Address
+	contributors []mail.Address
 	copySince    int // copy year
 	copyMsg      string
 	url          string
@@ -36,7 +36,7 @@ func (m *MetaData) SetTitle(title string) {
 // SetShortDesc set short description of the application max 160char
 func (m *MetaData) SetShortDesc(sdesc string) (errDescToLong error) {
 	if len(sdesc) > 160 {
-		errDescToLong = herrors.New("description is to long max char allowed 160")
+		errDescToLong = errors.New("description is to long max char allowed 160")
 		return
 	}
 	m.sdesc = sdesc
@@ -51,7 +51,7 @@ func (m *MetaData) SetLongDesc(ldesc string) {
 // AddContributor to application. argument should be valid RFC 5322 address,
 // e.g. "John Doe <john.doe@example.com>"
 func (m *MetaData) AddContributor(addr string) error {
-	contributor, err := hmail.ParseAddress(addr)
+	contributor, err := mail.ParseAddress(addr)
 	if err == nil {
 		m.contributors = append(m.contributors, *contributor)
 	}

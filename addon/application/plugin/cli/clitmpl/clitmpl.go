@@ -7,7 +7,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/howi-ce/howi/std/hlog"
+	"github.com/howi-ce/howi/std/log"
 )
 
 // TmplParser enables to parse templates for cli apps
@@ -84,7 +84,7 @@ type Header struct {
 }
 
 // Print application header
-func (h *Header) Print(log *hlog.Logger, info interface{}, elapsed time.Duration) {
+func (h *Header) Print(log *log.Logger, info interface{}, elapsed time.Duration) {
 	err := h.ParseTmpl("header-tmpl", info, elapsed)
 	if err != nil {
 		log.Fatal(err)
@@ -98,7 +98,7 @@ type Footer struct {
 }
 
 // Print application footer
-func (f *Footer) Print(log *hlog.Logger, info interface{}, elapsed time.Duration) {
+func (f *Footer) Print(log *log.Logger, info interface{}, elapsed time.Duration) {
 	err := f.ParseTmpl("footer-tmpl", info, elapsed)
 	if err != nil {
 		log.Fatal(err)

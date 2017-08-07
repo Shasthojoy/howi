@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/howi-ce/howi/std/herrors"
+	"github.com/howi-ce/howi/std/errors"
 )
 
 // NewPlugin returns Path Plugin for given string,
@@ -211,5 +211,5 @@ func (p *Plugin) Stat() (os.FileInfo, error) {
 }
 
 func (p *Plugin) error(msg ...string) error {
-	return herrors.Newf("%s (%s)", p.abs, msg)
+	return errors.Newf("%s (%s)", p.abs, msg)
 }
