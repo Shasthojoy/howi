@@ -1,3 +1,0 @@
-don't pollute repository, but make aware that directory name is reserved
-if some reason some modified vendor packages need to be stored then exceptions
-may be allowed in .gitignore

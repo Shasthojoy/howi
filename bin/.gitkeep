@@ -1,3 +1,0 @@
-don't pollute repository with binaries, but make aware that directory
-name is reserved if some reason some binaries need to be stored then
-these should be either under {dist,release,vendor} but not here.
