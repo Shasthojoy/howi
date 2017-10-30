@@ -1,6 +1,6 @@
 # HOWI-CE
 
-HOWI Community Edition is open source project governed by a Apache License 2.0.  
+HOWI Community Edition is open source project governed by a The MIT License.  
 HOWI has been a proprietary SDK, framework and package collection developed  
 by Marko Kungla since 2005. It has modular `addon/plugin/lib` design style  
 which as collection enables rapid development very wide range of software with  
