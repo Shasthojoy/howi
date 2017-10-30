@@ -29,8 +29,8 @@ HOWI's design style and philosophy.
     - own plugins
     - any HOWI STD Library
     - any HOWI Library
+    - external libraries
   - **Addons may never import**  
-    - external libraries (except in ./internal)
     - other Addons
     - Plugins from other Addons
 
@@ -47,7 +47,6 @@ HOWI's design style and philosophy.
     - any HOWI STD Library
     - any HOWI Library
   - **Plugins may never import**
-    - external libraries (except in ./internal)
     - other Addons
     - any Plugins
 
