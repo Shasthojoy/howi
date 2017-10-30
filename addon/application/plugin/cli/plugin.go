@@ -89,6 +89,7 @@ func NewPlugin(m appinfo.Metadata) *Plugin {
 
 	// Only lock log level to verbose if no --debug flag was set
 	if !cli.flag("debug").Present() && cli.flag("verbose").Present() {
+		cli.Log.SetLogLevel(log.INFO)
 		cli.Log.LockLevel()
 	}
 
