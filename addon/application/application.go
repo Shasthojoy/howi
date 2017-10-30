@@ -3,3 +3,12 @@
 // license that can be found in the LICENSE file.
 
 package application
+
+import "github.com/howi-ce/howi/lib/appinfo"
+
+// NewAddon provides Application addon instance
+func NewAddon() *Addon {
+	addon := &Addon{}
+	addon.info = &appinfo.Metadata{}
+	return addon
+}

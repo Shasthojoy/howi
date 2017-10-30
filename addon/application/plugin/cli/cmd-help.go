@@ -9,6 +9,7 @@ import (
 
 	"github.com/howi-ce/howi/addon/application/plugin/cli/clitmpl"
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
+	"github.com/howi-ce/howi/lib/appinfo"
 	"github.com/howi-ce/howi/std/log"
 )
 
@@ -54,7 +55,7 @@ var (
 // HelpGlobal used to show help for application
 type HelpGlobal struct {
 	clitmpl.TmplParser
-	Info                ApplicationInfo
+	Info                appinfo.Info
 	Commands            map[string]Command
 	Flags               map[int]flags.Interface
 	PrimaryCommands     []Command
@@ -85,7 +86,7 @@ func (h *HelpGlobal) Print(log *log.Logger) {
 // HelpCommand is used to display help for command
 type HelpCommand struct {
 	clitmpl.TmplParser
-	Info    ApplicationInfo
+	Info    appinfo.Info
 	Command Command
 	Usage   string
 	Flags   []flags.Interface

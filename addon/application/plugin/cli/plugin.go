@@ -10,6 +10,7 @@ import (
 
 	"github.com/howi-ce/howi/addon/application/plugin/cli/clitmpl"
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
+	"github.com/howi-ce/howi/lib/appinfo"
 	"github.com/howi-ce/howi/std/errors"
 	"github.com/howi-ce/howi/std/log"
 )
@@ -62,13 +63,14 @@ const (
 // NewPlugin constructs new CLI Application Plugin and returns it's instance for
 // configuration. Returned Application has basic initialization done and
 // all defaults set.
-func NewPlugin() *Plugin {
+func NewPlugin(m appinfo.Metadata) *Plugin {
 	cli := &Plugin{
 		Log:         log.NewStdout(log.NOTICE),
 		commands:    make(map[string]Command),
 		flags:       make(map[int]flags.Interface),
 		flagAliases: make(map[string]int),
 		osArgs:      os.Args[1:],
+		MetaData:    m,
 	}
 	// set initial startup time
 	cli.started = time.Now()
@@ -92,6 +94,9 @@ func NewPlugin() *Plugin {
 
 	cli.Log.Debugf("Application:Create - accepting configuration changes debugging(%t)",
 		cli.flag("debug").Present())
+
+	// Add about-cli command
+	cli.AddCommand(aboutCLI())
 	return cli
 }
 
@@ -99,7 +104,7 @@ func NewPlugin() *Plugin {
 type Plugin struct {
 	started     time.Time               // when application was started
 	Log         *log.Logger             // logger
-	MetaData    MetaData                // Application MetaData
+	MetaData    appinfo.Metadata        // Application MetaData
 	Header      clitmpl.Header          // header if used
 	Footer      clitmpl.Footer          // footer if used
 	errs        errors.MultiError       // internal errors
@@ -172,7 +177,7 @@ func (cli *Plugin) Start() {
 	cli.handleHelp()
 
 	if cli.currentCmd == nil {
-		cli.Log.Errorf(FmtErrCommandNotProvided, cli.MetaData.name)
+		cli.Log.Error(FmtErrCommandNotProvided)
 		cli.exit(2)
 	}
 	// If debug flag was present. but not as global flag then set the level now

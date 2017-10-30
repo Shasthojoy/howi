@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
+	"github.com/howi-ce/howi/lib/appinfo"
 	"github.com/howi-ce/howi/std/errors"
 	"github.com/howi-ce/howi/std/log"
 	"github.com/howi-ce/howi/std/strings"
@@ -48,7 +49,7 @@ type Worker struct {
 	flagAliases  map[string]int          // global flag aliases
 	Log          *log.Logger
 	Config       WorkerConfig
-	Info         ApplicationInfo
+	Info         appinfo.Info
 }
 
 // Fail marks phase as failed

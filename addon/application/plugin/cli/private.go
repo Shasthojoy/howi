@@ -39,11 +39,11 @@ func (cli *Plugin) addInternalFlags() {
 func (cli *Plugin) verifyConfig() error {
 	lenc := len(cli.commands)
 	lenf := len(cli.flags)
-	cli.Log.Debugf("Application:verifyConfig - %q has total %d command(s)", cli.MetaData.name, lenc)
+	cli.Log.Debugf("Application:verifyConfig - has total %d command(s)", cli.MetaData.Name(), lenc)
 	if (cli.commands == nil || lenc == 0) || (cli.flags == nil || lenf == 0) {
 		return errors.New(FmtErrAppWithNoCommandsOrFlags)
 	}
-	if cli.MetaData.name == "" {
+	if cli.MetaData.Name() == "" {
 		return errors.New(FmtErrAppUnnamed)
 	}
 	return nil
