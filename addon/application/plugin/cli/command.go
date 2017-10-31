@@ -269,6 +269,12 @@ func (c *Command) parse(args *[]string) error {
 			return err
 		}
 	}
+	// check did we have any required flags missing
+	for i := 1; i <= len(c.flags); i++ {
+		if c.flags[i].IsRequired() && !c.flags[i].Present() {
+			return errors.Newf(FmtErrRequiredFlag, c.flags[i].Name())
+		}
+	}
 
 	// If we still have arg 0 which is not a argument or subcommand
 	if len(*args) > 0 && (*args)[0][0] == '-' {

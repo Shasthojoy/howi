@@ -49,6 +49,8 @@ const (
 	FmtErrUnknownCommand = "unknown command %q"
 	// FmtErrUnknownFlag formats error for any request looking non existing flag.
 	FmtErrUnknownFlag = "unknown flag %q for command %q"
+	// FmtErrRequiredFlag formats error if required flag is missing
+	FmtErrRequiredFlag = "flag %q is required"
 	// FmtErrUnknownSubcommand formats error for unknown subcommand request.
 	FmtErrUnknownSubcommand = "unknown subcommand %q for command %q"
 	// FmtErrTooManyArgs formats error when too many arguments are passed.

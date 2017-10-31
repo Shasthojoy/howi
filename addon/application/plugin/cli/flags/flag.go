@@ -44,6 +44,10 @@ type Interface interface {
 	Present() bool
 	// Value returns vars.Value for given flag
 	Value() vars.Value
+	// Required sets this flag as required
+	Required()
+	// IsRequired returns true if this flag is required
+	IsRequired() bool
 }
 
 // FlagCommon shares private fields and some function with flags
@@ -64,6 +68,8 @@ type FlagCommon struct {
 	isPresent bool
 	// value for this flag
 	value vars.Value
+	// is this flag required
+	required bool
 }
 
 // Name returns primary name for the flag usually that is long option
@@ -156,6 +162,16 @@ func (f *FlagCommon) Present() bool {
 // Value returns vars.Value for this flag
 func (f *FlagCommon) Value() vars.Value {
 	return f.value
+}
+
+// Required setts this flag as required
+func (f *FlagCommon) Required() {
+	f.required = true
+}
+
+// IsRequired returns true if this flag is required
+func (f *FlagCommon) IsRequired() bool {
+	return f.required
 }
 
 // Parse value for the flag from given string. It returns true if flag has been parsed
