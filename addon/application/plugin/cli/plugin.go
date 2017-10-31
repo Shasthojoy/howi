@@ -50,7 +50,7 @@ const (
 	// FmtErrUnknownFlag formats error for any request looking non existing flag.
 	FmtErrUnknownFlag = "unknown flag %q for command %q"
 	// FmtErrRequiredFlag formats error if required flag is missing
-	FmtErrRequiredFlag = "flag %q is required"
+	FmtErrRequiredFlag = "%q requires flag %q"
 	// FmtErrUnknownSubcommand formats error for unknown subcommand request.
 	FmtErrUnknownSubcommand = "unknown subcommand %q for command %q"
 	// FmtErrTooManyArgs formats error when too many arguments are passed.
@@ -183,6 +183,7 @@ func (cli *Plugin) Start() {
 		cli.Log.Error(FmtErrCommandNotProvided)
 		cli.exit(2)
 	}
+
 	// If debug flag was present. but not as global flag then set the level now
 	llvl := cli.Log.GetCurrentLevel()
 	if llvl != log.DEBUG && cli.flag("debug").Present() && !cli.flag("debug").IsGlobal() {
@@ -195,9 +196,35 @@ func (cli *Plugin) Start() {
 	// add global flags to worker
 	for _, flag := range cli.flags {
 		worker.attachFlag(flag)
+		if flag.IsRequired() && !flag.Present() {
+			// show footer if command has not disabled it
+			if worker.Config.ShowHeader {
+				cli.Header.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
+			}
+			worker.Log.Errorf(FmtErrRequiredFlag, "global", flag.Name())
+			// show footer if command has not disabled it
+			if worker.Config.ShowFooter {
+				cli.Footer.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
+			}
+			cli.exit(1)
+		}
 	}
+
 	for _, flag := range cli.currentCmd.getFlags() {
 		worker.attachFlag(flag)
+		// check did we have any required flags missing
+		if flag.IsRequired() && !flag.Present() {
+			// show footer if command has not disabled it
+			if worker.Config.ShowHeader {
+				cli.Header.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
+			}
+			worker.Log.Errorf(FmtErrRequiredFlag, cli.currentCmd.Name(), flag.Name())
+			// show footer if command has not disabled it
+			if worker.Config.ShowFooter {
+				cli.Footer.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
+			}
+			cli.exit(1)
+		}
 	}
 
 	// Start the application and reset the start time
