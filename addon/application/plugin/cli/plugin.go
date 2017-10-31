@@ -96,8 +96,8 @@ func NewPlugin(m appinfo.Metadata) *Plugin {
 	cli.Log.Debugf("Application:Create - accepting configuration changes debugging(%t)",
 		cli.flag("debug").Present())
 
-	// Add about-cli command
-	cli.AddCommand(aboutCLI())
+	// Add internal commands besides help
+	cli.AddCommand(cmdAbout())
 	return cli
 }
 

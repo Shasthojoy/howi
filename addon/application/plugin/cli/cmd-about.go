@@ -10,9 +10,9 @@ import (
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
 )
 
-func aboutCLI() Command {
-	cmd := NewCommand("about-cli")
-	cmd.SetShortDesc("Display information about this CLI app")
+func cmdAbout() Command {
+	cmd := NewCommand("about")
+	cmd.SetShortDesc("Display information about this application")
 	cmd.SetCategory("internal")
 
 	contributors := flags.NewBoolFlag("contributors")
