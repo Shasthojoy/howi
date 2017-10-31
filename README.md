@@ -48,7 +48,6 @@ HOWI's design style and philosophy.
     - any HOWI Library
   - **Plugins may never import**
     - other Addons
-    - any Plugins
 
 - **HOWI Libraries ./lib/<library-name>**  
 > Libraries are low level and packages within HOWI. Purpose of these libraries is
