@@ -174,7 +174,7 @@ func TestGitAPI(t *testing.T) {
 		{"write-tree", "Create a tree object from the current index"},
 	}
 
-	gitType := reflect.TypeOf(&Plugin{})
+	gitType := reflect.TypeOf(&Git{})
 	for _, tt := range tests {
 		expected := strings.ToCamelCaseAlnum(tt.name)
 		if expected == "Gc" {
