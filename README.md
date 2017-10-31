@@ -59,10 +59,10 @@ HOWI's design style and philosophy.
     - Go source
     - any HOWI STD Library
     - external libraries
+    - any HOWI Library
   - **Libraries may never import**
     - any Addons
     - any Plugins
-    - any HOWI Library
 
 - **HOWI Standard Libraries ./std/<library-name>**  
 > Standard Libraries are lowest level and most unstable packages within HOWI. Purpose of these
