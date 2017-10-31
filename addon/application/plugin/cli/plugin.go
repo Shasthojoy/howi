@@ -50,7 +50,7 @@ const (
 	// FmtErrUnknownFlag formats error for any request looking non existing flag.
 	FmtErrUnknownFlag = "unknown flag %q for command %q"
 	// FmtErrRequiredFlag formats error if required flag is missing
-	FmtErrRequiredFlag = "%q requires flag %q"
+	FmtErrRequiredFlag = "%q requires flag %q %q"
 	// FmtErrUnknownSubcommand formats error for unknown subcommand request.
 	FmtErrUnknownSubcommand = "unknown subcommand %q for command %q"
 	// FmtErrTooManyArgs formats error when too many arguments are passed.
@@ -201,7 +201,7 @@ func (cli *Plugin) Start() {
 			if worker.Config.ShowHeader {
 				cli.Header.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
 			}
-			worker.Log.Errorf(FmtErrRequiredFlag, "global", flag.Name())
+			worker.Log.Errorf(FmtErrRequiredFlag, "global", flag.Name(), flag.Usage())
 			// show footer if command has not disabled it
 			if worker.Config.ShowFooter {
 				cli.Footer.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
@@ -218,7 +218,7 @@ func (cli *Plugin) Start() {
 			if worker.Config.ShowHeader {
 				cli.Header.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
 			}
-			worker.Log.Errorf(FmtErrRequiredFlag, cli.currentCmd.Name(), flag.Name())
+			worker.Log.Errorf(FmtErrRequiredFlag, cli.currentCmd.Name(), flag.Name(), flag.Usage())
 			// show footer if command has not disabled it
 			if worker.Config.ShowFooter {
 				cli.Footer.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
