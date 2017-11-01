@@ -10,7 +10,7 @@ import (
 
 	"github.com/howi-ce/howi/addon/application/plugin/cli/clitmpl"
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
-	"github.com/howi-ce/howi/lib/appinfo"
+	"github.com/howi-ce/howi/lib/app"
 	"github.com/howi-ce/howi/std/errors"
 	"github.com/howi-ce/howi/std/log"
 )
