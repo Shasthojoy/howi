@@ -87,6 +87,12 @@ func (f *FlagCommon) SetUsage(desc string) {
 	f.usage = desc
 }
 
+// SetUsagef is same as SetUsage, but enables format the usage string
+// Arguments are handled in the manner of fmt.Srintf
+func (f *FlagCommon) SetUsagef(format string, v ...interface{}) {
+	f.usage = fmt.Sprintf(format, v...)
+}
+
 // HelpName returns string for help menu
 func (f *FlagCommon) HelpName() string {
 	if len(f.name) == 1 {

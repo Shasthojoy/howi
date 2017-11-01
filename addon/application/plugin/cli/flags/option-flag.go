@@ -12,12 +12,15 @@ import (
 
 // NewOptionFlag returns new string flag. Argument "opts" is string slice
 // of options this flag accepts
-func NewOptionFlag(name string, opts []string) *OptionFlag {
+func NewOptionFlag(name string, opts []string, a ...string) *OptionFlag {
 	f := &OptionFlag{}
 	f.name = strings.TrimLeft(name, "-")
 	f.opts = make(map[string]bool)
 	for _, o := range opts {
 		f.opts[o] = true
+	}
+	for _, alias := range a {
+		f.aliases = append(f.aliases, strings.TrimLeft(alias, "-"))
 	}
 	f.value = vars.ValueFromString("")
 	return f

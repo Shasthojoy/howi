@@ -5,6 +5,8 @@
 package cli
 
 import (
+	"fmt"
+
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
 	"github.com/howi-ce/howi/std/errors"
 	"github.com/howi-ce/howi/std/strings"
@@ -77,6 +79,12 @@ func (c *Command) SetCategory(category string) {
 // this text would appear next line
 func (c *Command) SetUsage(usage string) {
 	c.usage = strings.TrimSpace(usage)
+}
+
+// SetUsagef is same as SetUsage, but enables format the usage string
+// Arguments are handled in the manner of fmt.Srintf
+func (c *Command) SetUsagef(format string, v ...interface{}) {
+	c.usage = fmt.Sprintf(format, v...)
 }
 
 // SetShortDesc sets commands short description used when describing command within list.
