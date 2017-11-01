@@ -1,0 +1,8 @@
+info:
+  name: "HOWI-CE"
+github:
+  labels:
+    - name: "good first issue"
+      color: "#c0e888"
+    - name: "help wanted"
+      color: "#c0e888"
