@@ -1,8 +1,2 @@
 info:
   name: "HOWI-CE"
-stury:
-  labels:
-    - name: "good first issue"
-      color: "#c0e888"
-    - name: "help wanted"
-      color: "#c0e888"
