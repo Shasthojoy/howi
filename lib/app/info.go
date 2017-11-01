@@ -2,7 +2,7 @@
 // Use of this source code is governed by a The MIT License
 // license that can be found in the LICENSE file.
 
-package appinfo
+package app
 
 // Info can be consumed by header and footer templates.
 // It is used by MetaData.GetInfo()
