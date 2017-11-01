@@ -271,17 +271,17 @@ func TestValue_TestParseUint(t *testing.T) {
 			out, err := val.ParseUint(10, 0)
 			if test.wantErr != nil {
 				if err == nil {
-					t.Errorf("Value(%s).ParseUint(10, 64) = %v, err(%s) want %v, err(%s)",
+					t.Errorf("Value(%s).ParseUint(10, 0) = %v, err(%s) want %v, err(%s)",
 						test.key, out, err, test.want, test.wantErr)
 				} else {
 					if test.wantErr != err.(*strconv.NumError).Err {
-						t.Errorf("Value(%s).ParseUint(10, 64) = %v, err(%s) want %v, err(%s)",
+						t.Errorf("Value(%s).ParseUint(10, 0) = %v, err(%s) want %v, err(%s)",
 							test.key, out, err, test.want, test.wantErr)
 					}
 				}
 			}
 			if uint32(out) != test.want {
-				t.Errorf("Value(%s).ParseUint(10, 64) = %v, err(%s) want %v, err(%s)",
+				t.Errorf("Value(%s).ParseUint(10, 0) = %v, err(%s) want %v, err(%s)",
 					test.key, out, err, test.want, test.wantErr)
 			}
 		}
@@ -292,17 +292,17 @@ func TestValue_TestParseUint(t *testing.T) {
 			out, err := val.ParseUint(10, 0)
 			if test.wantErr != nil {
 				if err == nil {
-					t.Errorf("Value(%s).ParseUint(10, 64) = %v, err(%s) want %v, err(%s)",
+					t.Errorf("Value(%s).ParseUint(10, 0) = %v, err(%s) want %v, err(%s)",
 						test.key, out, err, test.want, test.wantErr)
 				} else {
 					if test.wantErr != err.(*strconv.NumError).Err {
-						t.Errorf("Value(%s).ParseUint(10, 64) = %v, err(%s) want %v, err(%s)",
+						t.Errorf("Value(%s).ParseUint(10, 0) = %v, err(%s) want %v, err(%s)",
 							test.key, out, err, test.want, test.wantErr)
 					}
 				}
 			}
 			if uint64(out) != test.want {
-				t.Errorf("Value(%s).ParseUint(10, 64) = %v, err(%s) want %v, err(%s)",
+				t.Errorf("Value(%s).ParseUint(10, 0) = %v, err(%s) want %v, err(%s)",
 					test.key, out, err, test.want, test.wantErr)
 			}
 		}
@@ -318,11 +318,11 @@ func TestValue_TestParseInt(t *testing.T) {
 			out, err := val.ParseInt(10, 0)
 			if test.wantErr != nil {
 				if err == nil {
-					t.Errorf("Value(%s).ParseInt(10, 64) = %v, err(%s) want %v, err(%s)",
+					t.Errorf("Value(%s).ParseInt(10, 0) = %v, err(%s) want %v, err(%s)",
 						test.key, out, err, test.want, test.wantErr)
 				} else {
 					if test.wantErr != err.(*strconv.NumError).Err {
-						t.Errorf("Value(%s).ParseInt(10, 64) = %v, err(%s) want %v, err(%s)",
+						t.Errorf("Value(%s).ParseInt(10, 0)= %v, err(%s) want %v, err(%s)",
 							test.key, out, err, test.want, test.wantErr)
 					}
 				}
