@@ -5,6 +5,7 @@
 package cli
 
 import (
+	"fmt"
 	"sync"
 	"time"
 
@@ -55,6 +56,13 @@ type Worker struct {
 // Fail marks phase as failed
 func (w *Worker) Fail(msg string) {
 	w.Phase().msg = msg
+	w.Phase().status = StatusFailed
+}
+
+// Failf marks phase as failed
+// Arguments are handled in the manner of fmt.Srintf.
+func (w *Worker) Failf(format string, v ...interface{}) {
+	w.Phase().msg = fmt.Sprintf(format, v...)
 	w.Phase().status = StatusFailed
 }
 
