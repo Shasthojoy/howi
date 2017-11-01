@@ -53,6 +53,7 @@ HOWI's design style and philosophy.
 > Libraries are low level and packages within HOWI. Purpose of these libraries is
 > to provide low level bleeding edge features for HOWI Addons and their Plugins.
 > HOWI Libraries mostly are extending or providing stable API for external libraries.
+> (libraries can be nested)
 
   - **Libraries may import**
     - Go source
@@ -67,6 +68,7 @@ HOWI's design style and philosophy.
 > Standard Libraries are lowest level and most unstable packages within HOWI. Purpose of these
 > libraries to provide low level bleeding edge features for HOWI Addons and their Plugins.
 > HOWI Standard Libraries are often extending or replacing language features.
+> (libraries can be nested)
 
   - **Libraries may import**
     - Go source
