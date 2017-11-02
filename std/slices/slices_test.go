@@ -89,8 +89,13 @@ func TestMakeFloat64Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MakeFloat64Slice(tt.defaults...); !reflect.DeepEqual(got, tt.want) {
+			got := MakeFloat64Slice(tt.defaults...)
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MakeFloat64Slice() = %v, want %v", got, tt.want)
+			}
+
+			if err := got.Add("0.1"); err != nil {
+				t.Errorf("Float64Slice.Add() error = %v", err)
 			}
 		})
 	}
