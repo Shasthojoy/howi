@@ -4,21 +4,26 @@ go:
 # notifications
 notifications:
   email: false
-
+# Jobs
 jobs:
   fast_finish: true
   allow_failures:
     - go: master
   include:
+    # TEST
     - stage: test
-      script: echo "2"
       env: JOB=test
-    - script:
+      script: echo "2"
+    
+    - env: JOB=code coverage
+      script:
       - go get github.com/mattn/goveralls
       - goveralls -service=travis-ci
+    # BUILD
     - stage: build
-      script: echo "3"
       env: JOB=cmd howi-ce
+      script: echo "3"
+    # DEPLOY
     - stage: deploy
-      script: echo "4"
       env: JOB=deploy howi-ce
+      script: echo "4"
