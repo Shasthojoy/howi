@@ -95,5 +95,5 @@ HOWI's design style and philosophy.
 [godoc-url]: https://godoc.org/github.com/howi-ce/howi
 
 <!-- coverage -->
-[coverage-image]: https://img.shields.io/coveralls/howi-ce/howi.svg
-[coverage-url]: https://coveralls.io/r/howi-ce/howi?branch=master
+[coverage-image]: https://coveralls.io/repos/github/howi-ce/howi/badge.svg?branch=master
+[coverage-url]: https://coveralls.io/github/howi-ce/howi?branch=master

@@ -12,7 +12,7 @@ jobs:
   allow_failures:
     - go: master
   include:
-    - stage: HOWI CI / CD
+    - stage: test
       script:
         - go run ./cmd/howi-ce/main.go devel cicd
         - go run ./cmd/howi-ce/main.go devel cicd --vars | grep TRAVIS
