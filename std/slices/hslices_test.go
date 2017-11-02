@@ -32,8 +32,12 @@ func TestMakeFloat32Slice(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MakeFloat32Slice(tt.defaults...); !reflect.DeepEqual(got, tt.want) {
+			got := MakeFloat32Slice(tt.defaults...)
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MakeFloat32Slice() = %v, want %v", got, tt.want)
+			}
+			if !reflect.DeepEqual(got.raw, got.Raw()) {
+				t.Errorf("MakeFloat32Slice() raw %v and .Raw %v should equal", got.raw, got.Raw())
 			}
 		})
 	}
