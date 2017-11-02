@@ -14,3 +14,5 @@ script:
   - go run ./cmd/howi-ce/main.go devel cicd
   - go run ./cmd/howi-ce/main.go devel cicd --vars | grep TRAVIS
   - go run ./cmd/howi-ce/main.go devel cicd --vars | grep HOWI
+  - go get github.com/mattn/goveralls
+  - goveralls -service=travis-ci
