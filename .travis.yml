@@ -7,12 +7,9 @@ go:
 notifications:
   email: false
 # Jobs
-jobs:
-  fast_finish: true
-  allow_failures:
-    - go: master
-  include:
-    - stage: test
-      script:
-        - go run ./cmd/howi-ce/main.go devel cicd
-        - go run ./cmd/howi-ce/main.go devel cicd --vars | grep TRAVIS
+allow_failures:
+  - go: master
+
+script:
+  - go run ./cmd/howi-ce/main.go devel cicd
+  - go run ./cmd/howi-ce/main.go devel cicd --vars | grep TRAVIS
