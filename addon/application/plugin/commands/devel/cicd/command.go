@@ -9,6 +9,7 @@ import (
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
 	"github.com/howi-ce/howi/lib/alm/pipeline"
 	"github.com/howi-ce/howi/lib/goprj"
+	"github.com/howi-ce/howi/std/log"
 )
 
 // Command adds CI/CD commad to your application
@@ -19,10 +20,6 @@ func Command(path string) (cli.Command, error) {
 	cmd.SetShortDesc(pipeline.ShortDesc)
 
 	// Flags
-	nFlag := flags.NewBoolFlag("n")
-	nFlag.SetUsage("prints commands that would be executed.")
-	cmd.AddFlag(nFlag)
-
 	varsFlag := flags.NewStringFlag("vars")
 	varsFlag.SetUsage(`prints all variables available within CI/CD pipeline and exits. Use grep to filter (howi-ce devel cicd | grep HOWI_)!`)
 	cmd.AddFlag(varsFlag)
@@ -32,18 +29,34 @@ func Command(path string) (cli.Command, error) {
 	stageFlag.SetUsagef("define CI or CD pipeline stage %q", pipeline.Stages)
 	cmd.AddFlag(stageFlag)
 
-	project, err := goprj.Open(path)
-	if err != nil {
-		return cmd, err
-	}
-	cmd.Before(func(w *cli.Worker) {
+	nFlag := flags.NewBoolFlag("n")
+	nFlag.SetUsage("prints commands that would be executed.")
+	cmd.AddFlag(nFlag)
+
+	cmd.Before(addBeforeFn(varsFlag))
+
+	cmd.Do(addDoFn(path, varsFlag, stageFlag, nFlag))
+
+	return cmd, nil
+}
+
+func addBeforeFn(varsFlag *flags.StringFlag) func(w *cli.Worker) {
+	return func(w *cli.Worker) {
 		if varsFlag.Present() {
 			w.Config.ShowFooter = false
 			w.Config.ShowHeader = false
 		}
-	})
+	}
+}
 
-	cmd.Do(func(w *cli.Worker) {
+func addDoFn(path string, varsFlag, stageFlag, nFlag flags.Interface) func(w *cli.Worker) {
+	return func(w *cli.Worker) {
+		project, err := goprj.Open(path)
+		if err != nil {
+			w.Fail(err.Error())
+			return
+		}
+
 		// We exit if path is not valid project
 		if !project.Exists() {
 			w.Log.Errorf(".howi.yaml is missing on project root %s", path)
@@ -84,21 +97,10 @@ func Command(path string) (cli.Command, error) {
 
 		// TEST
 		w.Log.Okf("loading phase %q", cicd.GetPhaseName())
-		if jobs.Test.CanRun() {
-			w.Log.Line()
-			w.Log.Ok("starting test job")
-			w.Task("test", func(task *cli.Task) {
-				if diplayOnly {
-					jobs.Test.PrintCommands()
-					return
-				}
-				err := jobs.Test.Run(project.Path, w.Log)
-				if err != nil && !jobs.Test.AllowedToFail {
-					task.Fail(err.Error())
-				}
 
-				w.Log.ColoredLine("job test elapsed: ", task.Elapsed())
-			})
+		if jobs.Test.CanRun() {
+			w.Log.Line("starting test job\n")
+			w.Task("test", taskTest(diplayOnly, jobs.Test, project, w.Log))
 			w.Wait()
 			w.Log.Ok("test job DONE")
 		} else {
@@ -108,18 +110,8 @@ func Command(path string) (cli.Command, error) {
 		// BUILD
 		if jobs.Build.CanRun() {
 			w.Log.Line()
-			w.Log.Ok("starting build job")
-			w.Task("build", func(task *cli.Task) {
-				if diplayOnly {
-					jobs.Build.PrintCommands()
-					return
-				}
-				err := jobs.Build.Run(project.Path, w.Log)
-				if err != nil && !jobs.Build.AllowedToFail {
-					task.Fail(err.Error())
-				}
-				w.Log.ColoredLine("job build elapsed: ", task.Elapsed())
-			})
+			w.Log.Line("starting build job\n")
+			w.Task("build", taskBuild(diplayOnly, jobs.Build, project, w.Log))
 			w.Wait()
 			w.Log.Ok("build job DONE")
 		} else {
@@ -128,19 +120,8 @@ func Command(path string) (cli.Command, error) {
 
 		// DEPLOY
 		if jobs.Deploy.CanRun() {
-			w.Log.Line()
-			w.Log.Ok("starting deploy job")
-			w.Task("deploy", func(task *cli.Task) {
-				if diplayOnly {
-					jobs.Deploy.PrintCommands()
-					return
-				}
-				err := jobs.Deploy.Run(project.Path, w.Log)
-				if err != nil && !jobs.Deploy.AllowedToFail {
-					task.Fail(err.Error())
-				}
-				w.Log.ColoredLine("job deploy elapsed: ", task.Elapsed())
-			})
+			w.Log.Line("starting deploy job\n")
+			w.Task("deploy", taskDeploy(diplayOnly, jobs.Deploy, project, w.Log))
 			w.Wait()
 			w.Log.Ok("deploy job DONE")
 		} else {
@@ -149,16 +130,8 @@ func Command(path string) (cli.Command, error) {
 
 		// ALWAYS
 		if jobs.Always.CanRun() {
-			w.Log.Line()
-			w.Log.Ok("starting always job")
-			if diplayOnly {
-				jobs.Always.PrintCommands()
-			} else {
-				err := jobs.Always.Run(project.Path, w.Log)
-				if err != nil && !jobs.Always.AllowedToFail {
-					w.Fail(err.Error())
-				}
-			}
+			w.Log.Line("starting always job\n")
+			taskAlways(diplayOnly, jobs.Always, project, w)
 			w.Log.Ok("always job DONE")
 		} else {
 			w.Log.Notice("skipping always job")
@@ -166,16 +139,8 @@ func Command(path string) (cli.Command, error) {
 
 		// FAILURE
 		if jobs.Failure.CanRun() && w.Failed() {
-			w.Log.Line()
-			w.Log.Ok("starting failure job")
-			if diplayOnly {
-				jobs.Failure.PrintCommands()
-			} else {
-				err := jobs.Failure.Run(project.Path, w.Log)
-				if err != nil && !jobs.Failure.AllowedToFail {
-					w.Fail(err.Error())
-				}
-			}
+			w.Log.Line("starting failure job\n")
+			taskFailure(diplayOnly, jobs.Failure, project, w)
 			w.Log.Ok("failure job DONE")
 		} else {
 			w.Log.Notice("skipping failure job")
@@ -183,25 +148,96 @@ func Command(path string) (cli.Command, error) {
 
 		// SUCCESS
 		if jobs.Success.CanRun() && !w.Failed() {
-			w.Log.Line()
-			w.Log.Ok("starting success job")
-			w.Task("success", func(task *cli.Task) {
-				if diplayOnly {
-					jobs.Success.PrintCommands()
-					return
-				}
-				err := jobs.Success.Run(project.Path, w.Log)
-				if err != nil && !jobs.Success.AllowedToFail {
-					task.Fail(err.Error())
-				}
-				w.Log.ColoredLine("job success elapsed: ", task.Elapsed())
-			})
+			w.Log.Line("starting success job\n")
+			w.Task("success", taskSuccess(diplayOnly, jobs.Success, project, w.Log))
 			w.Wait()
-			w.Log.Ok("success job DONE")
+			w.Log.Ok("Success job DONE")
 		} else {
 			w.Log.Notice("skipping success job")
 		}
-	})
+	}
+}
 
-	return cmd, nil
+// Test job
+func taskTest(n bool, testJob pipeline.Job, prj *goprj.Project, wlog *log.Logger) func(task *cli.Task) {
+	return func(task *cli.Task) {
+		if n {
+			testJob.PrintCommands()
+			return
+		}
+		err := testJob.Run(prj.Path, wlog)
+		if err != nil && !testJob.AllowedToFail {
+			task.Fail(err.Error())
+		}
+		wlog.ColoredLine("job test elapsed: ", task.Elapsed())
+	}
+}
+
+// Build job
+func taskBuild(n bool, buildJob pipeline.Job, prj *goprj.Project, wlog *log.Logger) func(task *cli.Task) {
+	return func(task *cli.Task) {
+		if n {
+			buildJob.PrintCommands()
+			return
+		}
+		err := buildJob.Run(prj.Path, wlog)
+		if err != nil && !buildJob.AllowedToFail {
+			task.Fail(err.Error())
+		}
+		wlog.ColoredLine("job build elapsed: ", task.Elapsed())
+	}
+}
+
+// Deploy job
+func taskDeploy(n bool, deployJob pipeline.Job, prj *goprj.Project, wlog *log.Logger) func(task *cli.Task) {
+	return func(task *cli.Task) {
+		if n {
+			deployJob.PrintCommands()
+			return
+		}
+		err := deployJob.Run(prj.Path, wlog)
+		if err != nil && !deployJob.AllowedToFail {
+			task.Fail(err.Error())
+		}
+		wlog.ColoredLine("job deploy elapsed: ", task.Elapsed())
+	}
+}
+
+// Always job
+func taskAlways(n bool, alwaysJob pipeline.Job, prj *goprj.Project, w *cli.Worker) {
+	if n {
+		alwaysJob.PrintCommands()
+	} else {
+		err := alwaysJob.Run(prj.Path, w.Log)
+		if err != nil && !alwaysJob.AllowedToFail {
+			w.Fail(err.Error())
+		}
+	}
+}
+
+// Failure Job
+func taskFailure(n bool, failureJob pipeline.Job, prj *goprj.Project, w *cli.Worker) {
+	if n {
+		failureJob.PrintCommands()
+	} else {
+		err := failureJob.Run(prj.Path, w.Log)
+		if err != nil && !failureJob.AllowedToFail {
+			w.Fail(err.Error())
+		}
+	}
+}
+
+// Success Job
+func taskSuccess(n bool, successJob pipeline.Job, prj *goprj.Project, wlog *log.Logger) func(task *cli.Task) {
+	return func(task *cli.Task) {
+		if n {
+			successJob.PrintCommands()
+			return
+		}
+		err := successJob.Run(prj.Path, wlog)
+		if err != nil && !successJob.AllowedToFail {
+			task.Fail(err.Error())
+		}
+		wlog.ColoredLine("job success elapsed: ", task.Elapsed())
+	}
 }
