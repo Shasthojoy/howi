@@ -9,6 +9,7 @@ import (
 	"github.com/howi-ce/howi/addon/application/plugin/cli/flags"
 	"github.com/howi-ce/howi/lib/alm/pipeline"
 	"github.com/howi-ce/howi/lib/goprj"
+	"github.com/howi-ce/howi/std/errors"
 	"github.com/howi-ce/howi/std/log"
 )
 
@@ -51,42 +52,32 @@ func addBeforeFn(varsFlag *flags.StringFlag) func(w *cli.Worker) {
 
 func addDoFn(path string, varsFlag, stageFlag, nFlag flags.Interface) func(w *cli.Worker) {
 	return func(w *cli.Worker) {
-		project, err := goprj.Open(path)
-		if err != nil {
-			w.Fail(err.Error())
-			return
-		}
-
-		// We exit if path is not valid project
-		if !project.Exists() {
-			w.Log.Errorf(".howi.yaml is missing on project root %s", path)
-			w.Fail("Can not execute CI / CD commands")
-			return
-		}
-
-		diplayOnly, err := nFlag.Value().ParseBool()
+		n, err := nFlag.Value().ParseBool()
 		if err != nil {
 			w.Failf("%q %q failed to parse bool", nFlag.Name(), nFlag.Usage())
 			return
 		}
 
+		// Load the project
+		project, err := projectLoad(path)
+		if err != nil {
+			w.Fail(err.Error())
+			return
+		}
+		w.Log.Okf("loaded project %q", project.Config.Info.Name)
+
+		// Load pipeline
 		cicd, err := project.Pipeline()
 		if err != nil {
 			w.Fail(err.Error())
 			return
 		}
-
 		if varsFlag.Present() {
 			for k, v := range cicd.Vars {
 				w.Log.Linef("%s=%q", k, v.String())
 			}
 			return
 		}
-
-		if diplayOnly {
-			w.Log.Warning("Only printing commands that would be executed.")
-		}
-		w.Log.Okf("loaded project %q", project.Config.Info.Name)
 
 		// stageFlag.Value().String()
 		jobs, err := cicd.GetJobs()
@@ -100,7 +91,7 @@ func addDoFn(path string, varsFlag, stageFlag, nFlag flags.Interface) func(w *cl
 
 		if jobs.Test.CanRun() {
 			w.Log.Line("starting test job\n")
-			w.Task("test", taskTest(diplayOnly, jobs.Test, project, w.Log))
+			w.Task("test", taskTest(n, jobs.Test, project, w.Log))
 			w.Wait()
 			w.Log.Ok("test job DONE")
 		} else {
@@ -111,7 +102,7 @@ func addDoFn(path string, varsFlag, stageFlag, nFlag flags.Interface) func(w *cl
 		if jobs.Build.CanRun() {
 			w.Log.Line()
 			w.Log.Line("starting build job\n")
-			w.Task("build", taskBuild(diplayOnly, jobs.Build, project, w.Log))
+			w.Task("build", taskBuild(n, jobs.Build, project, w.Log))
 			w.Wait()
 			w.Log.Ok("build job DONE")
 		} else {
@@ -121,7 +112,7 @@ func addDoFn(path string, varsFlag, stageFlag, nFlag flags.Interface) func(w *cl
 		// DEPLOY
 		if jobs.Deploy.CanRun() {
 			w.Log.Line("starting deploy job\n")
-			w.Task("deploy", taskDeploy(diplayOnly, jobs.Deploy, project, w.Log))
+			w.Task("deploy", taskDeploy(n, jobs.Deploy, project, w.Log))
 			w.Wait()
 			w.Log.Ok("deploy job DONE")
 		} else {
@@ -131,7 +122,7 @@ func addDoFn(path string, varsFlag, stageFlag, nFlag flags.Interface) func(w *cl
 		// ALWAYS
 		if jobs.Always.CanRun() {
 			w.Log.Line("starting always job\n")
-			taskAlways(diplayOnly, jobs.Always, project, w)
+			taskAlways(n, jobs.Always, project, w)
 			w.Log.Ok("always job DONE")
 		} else {
 			w.Log.Notice("skipping always job")
@@ -140,7 +131,7 @@ func addDoFn(path string, varsFlag, stageFlag, nFlag flags.Interface) func(w *cl
 		// FAILURE
 		if jobs.Failure.CanRun() && w.Failed() {
 			w.Log.Line("starting failure job\n")
-			taskFailure(diplayOnly, jobs.Failure, project, w)
+			taskFailure(n, jobs.Failure, project, w)
 			w.Log.Ok("failure job DONE")
 		} else {
 			w.Log.Notice("skipping failure job")
@@ -149,13 +140,25 @@ func addDoFn(path string, varsFlag, stageFlag, nFlag flags.Interface) func(w *cl
 		// SUCCESS
 		if jobs.Success.CanRun() && !w.Failed() {
 			w.Log.Line("starting success job\n")
-			w.Task("success", taskSuccess(diplayOnly, jobs.Success, project, w.Log))
+			w.Task("success", taskSuccess(n, jobs.Success, project, w.Log))
 			w.Wait()
 			w.Log.Ok("Success job DONE")
 		} else {
 			w.Log.Notice("skipping success job")
 		}
 	}
+}
+
+func projectLoad(path string) (prj *goprj.Project, err error) {
+	prj, err = goprj.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	// We exit if path is not valid project
+	if !prj.Exists() {
+		return nil, errors.Newf(".howi.yaml is missing on project root %s", path)
+	}
+	return prj, nil
 }
 
 // Test job
