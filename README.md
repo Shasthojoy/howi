@@ -3,7 +3,7 @@
 | <h2> HOWI Community Edition </h2> |
 | [![GoDoc][godoc-image]][godoc-url] [![GitHub license][license-image]][license-url] [![Build Status][travis-ci-image]][travis-ci-url] [![Coverage Status][coverage-image]][coverage-url] |
 
-HOWI Community Edition is open source project governed by a The MIT License.  
+HOWI Community Edition is open source project governed by a [The MIT License][license-url].  
 HOWI has been a proprietary SDK, framework and package collection developed  
 by Marko Kungla since 2005. It has modular `addon/plugin/lib` design style  
 which as collection enables rapid development very wide range of software with  
