@@ -55,3 +55,13 @@ func (c *Contributor) AddEmail(address string, primary bool) error {
 func (c *Contributor) SetName(name string) {
 	c.name = name
 }
+
+// Name returns the name of the contributor
+func (c *Contributor) Name() string {
+	return c.name
+}
+
+// Email returns contributors primary email
+func (c *Contributor) Email() string {
+	return c.email.Email
+}

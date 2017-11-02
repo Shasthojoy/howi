@@ -5,11 +5,13 @@
 package goprj
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"os/user"
 	"strings"
 
+	"github.com/blang/semver"
 	"github.com/howi-ce/howi/lib/goprj/contributors"
 	"github.com/howi-ce/howi/lib/vcs/git"
 	"github.com/howi-ce/howi/std/vars"
@@ -25,17 +27,6 @@ func Open(prjPath string) (*Project, error) {
 	if err != nil {
 		return nil, err
 	}
-	// Get environment vars and merge these with govars
-	v := append(os.Environ(), govars...)
-
-	// Get git variables
-	gitconf, err := git.GlobalConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	v = append(v, gitconf...)
-	prj.Vars = vars.ParseFromStrings(v)
 
 	// Create new empty contibutor intsance to hold current users info
 	prj.Contributor = contributors.NewContributor()
@@ -43,6 +34,16 @@ func Open(prjPath string) (*Project, error) {
 	// Load Git library
 	prj.Git, err = git.New(prjPath)
 	prj.errs.AppendError(err)
+
+	// Get environment vars and merge these with govars
+	v := append(os.Environ(), govars...)
+	// Get git variables
+	gitconf, err := git.GlobalConfig()
+	if err != nil {
+		return nil, err
+	}
+	v = append(v, gitconf...)
+	prj.Vars = vars.ParseFromStrings(v)
 
 	// Set some gontributor information from git gonfig or from os.User
 	if err == nil {
@@ -60,7 +61,6 @@ func Open(prjPath string) (*Project, error) {
 			prj.errs.AppendError(oerr)
 		}
 	}
-	prj.errs.AppendError(err)
 
 	// Check is working directory actually directory
 	if !prj.Git.FS.IsDir() && err == nil {
@@ -70,6 +70,26 @@ func Open(prjPath string) (*Project, error) {
 	// Check is working directory in GOPATH
 	if !prj.Git.FS.InGOPATH() {
 		prj.errs.AppendString("provided path is not in GOPATH")
+	}
+
+	// If project exists
+	if prj.Exists() {
+		prj.Config.Reload()
+		prj.createVarsGit()
+		prj.Version, err = semver.Make(func() string {
+			commits, _ := prj.Vars.Getvar("HOWI_GIT_NUM_COMMITS_SINCE_LAST_TAG").ParseInt(10, 0)
+			tag := prj.Vars.Getvar("HOWI_GIT_LAST_TAG").String()
+			if commits > 0 {
+				return fmt.Sprintf("%s+%d.%s", tag, commits,
+					prj.Vars.Getvar("HOWI_GIT_COMMIT_SHA_ABBREV").String())
+			}
+			return tag
+		}())
+		if err == nil {
+			// We need Git vars to greate project vars and that version is parsed
+			prj.createVarsPrj()
+		}
+		prj.errs.AppendError(err)
 	}
 
 	return prj, prj.errs.AsError()
