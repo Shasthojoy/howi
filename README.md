@@ -1,9 +1,7 @@
-# HOWI-CE
-
-
-[![GitHub license][license-image]][license-url]
-[![Build Status][travis-ci-image]][travis-ci-url]
-[![GoDoc][godoc-image]][godoc-url]
+| |
+| :---: |
+| <h2> HOWI Community Edition </h2> |
+| [![GoDoc][godoc-image]][godoc-url] [![GitHub license][license-image]][license-url] [![Build Status][travis-ci-image]][travis-ci-url] [![Coverage Status][coverage-image]][coverage-url] |
 
 HOWI Community Edition is open source project governed by a The MIT License.  
 HOWI has been a proprietary SDK, framework and package collection developed  
@@ -95,3 +93,7 @@ HOWI's design style and philosophy.
 <!-- godoc -->
 [godoc-image]: https://godoc.org/github.com/howi-ce/howi?status.png
 [godoc-url]: https://godoc.org/github.com/howi-ce/howi
+
+<!-- coverage -->
+[coverage-image]: https://img.shields.io/coveralls/howi-ce/howi.svg
+[coverage-url]: https://coveralls.io/r/howi-ce/howi?branch=master
