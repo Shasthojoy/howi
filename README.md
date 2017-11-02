@@ -7,7 +7,7 @@ HOWI Community Edition is open source project governed by a [The MIT License][li
 HOWI has been a proprietary [SDK][sdk-link], framework and package collection developed  
 by Marko Kungla since 2005. It has modular `addon/plugin/lib` design style  
 which as collection enables rapid development very wide range of software with  
-clean and stable API's. Majority of HOWI was written in `C` while independent  
+clean and stable [API's][api-link]. Majority of HOWI was written in `C` while independent  
 Addons, plugins and libraries cover 150+ programming languages which could be  
 used for very specific use cases within developed software as source or shared library.  
 
@@ -83,6 +83,8 @@ HOWI's design style and philosophy.
 
 <!-- ASSETS and LINKS -->
 [sdk-link]: https://en.wikipedia.org/wiki/Software_development_kit
+[api-link]: https://en.wikipedia.org/wiki/Application_programming_interface
+
 <!-- travis-ci -->
 [travis-ci-image]: https://travis-ci.org/howi-ce/howi.svg?branch=master
 [travis-ci-url]: https://travis-ci.org/howi-ce/howi
