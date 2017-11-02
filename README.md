@@ -8,7 +8,7 @@ HOWI has been a proprietary [SDK][sdk-link], framework and package collection de
 by Marko Kungla since 2005. It has modular `addon/plugin/lib` design style  
 which as collection enables rapid development very wide range of software with  
 clean and stable [API's][api-link]. Majority of HOWI was written in `C` while independent  
-Addons, plugins and libraries cover [150+][lang-stats-link] programming languages which could be  
+Addons, plugins and libraries cover [150+ programming languages][lang-stats-link] which could be  
 used for very specific use cases within developed software as source or shared library.  
 
 ## Goals of 5th series of
