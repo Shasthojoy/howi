@@ -6,17 +6,17 @@ package application
 
 import (
 	"github.com/howi-ce/howi/addon/application/plugin/cli"
-	"github.com/howi-ce/howi/lib/appinfo"
+	"github.com/howi-ce/howi/lib/app"
 )
 
 // Addon instance
 type Addon struct {
-	info *appinfo.Metadata
+	info *app.Metadata
 	cli  *cli.Plugin
 }
 
 // Info returns application info
-func (a *Addon) Info() *appinfo.Metadata {
+func (a *Addon) Info() *app.Metadata {
 	return a.info
 }
 

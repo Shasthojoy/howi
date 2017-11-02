@@ -4,11 +4,11 @@
 
 package application
 
-import "github.com/howi-ce/howi/lib/appinfo"
+import "github.com/howi-ce/howi/lib/app"
 
 // NewAddon provides Application addon instance
 func NewAddon() *Addon {
 	addon := &Addon{}
-	addon.info = &appinfo.Metadata{}
+	addon.info = &app.Metadata{}
 	return addon
 }
