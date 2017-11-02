@@ -441,3 +441,15 @@ func TestValue_Len(t *testing.T) {
 		}
 	}
 }
+func TestParseFromString(t *testing.T) {
+	key, val := ParseFromString("X=1")
+	if key != "X" {
+		t.Errorf("Key should be X got %q", key)
+	}
+	if val.Empty() {
+		t.Error("Val should be 1")
+	}
+	if i, err := val.ParseInt(0, 10); i != 1 || err != nil {
+		t.Error("ParseInt should be 1")
+	}
+}
