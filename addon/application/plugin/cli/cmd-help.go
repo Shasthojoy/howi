@@ -55,7 +55,7 @@ var (
 // HelpGlobal used to show help for application
 type HelpGlobal struct {
 	clitmpl.TmplParser
-	Info                appinfo.Info
+	Info                app.Info
 	Commands            map[string]Command
 	Flags               map[int]flags.Interface
 	PrimaryCommands     []Command
@@ -86,7 +86,7 @@ func (h *HelpGlobal) Print(log *log.Logger) {
 // HelpCommand is used to display help for command
 type HelpCommand struct {
 	clitmpl.TmplParser
-	Info    appinfo.Info
+	Info    app.Info
 	Command Command
 	Usage   string
 	Flags   []flags.Interface

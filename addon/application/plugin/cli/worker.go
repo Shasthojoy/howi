@@ -50,7 +50,7 @@ type Worker struct {
 	flagAliases  map[string]int          // global flag aliases
 	Log          *log.Logger
 	Config       WorkerConfig
-	Info         appinfo.Info
+	Info         app.Info
 }
 
 // Fail marks phase as failed
@@ -74,7 +74,7 @@ func (w *Worker) Failed() bool {
 // Task for worker
 func (w *Worker) Task(name string, wt func(task *Task)) {
 	if w.Phase().status == StatusFailed {
-		w.Log.Warningf("skipping task %q since previous taks failed.", name)
+		w.Log.Warningf("skipping task %q since previous task failed.", name)
 		return
 	}
 	// Check task name and exit on failure
@@ -97,13 +97,14 @@ func (w *Worker) Task(name string, wt func(task *Task)) {
 			w.taskPayloads[name] <- t.payload
 			close(w.taskPayloads[name])
 		}()
+		t.start()
 		wt(t)
 		// Mark phase as failed if task failed without AllowFailure
 		if t.status == StatusFailed {
 			w.Fail(t.msg)
 		}
+		t.finish()
 	}()
-
 }
 
 // Wait for all previous tasks to complete before scheduling next task
@@ -204,6 +205,9 @@ func (p *Phase) Name() string {
 
 // Elapsed returns how long phase has been running
 func (p *Phase) Elapsed() string {
+	if p.status == StatusFailed {
+		p.finish()
+	}
 	if p.status == StatusRunning {
 		return time.Now().Sub(p.started).String()
 	}
@@ -242,6 +246,8 @@ func (p *Phase) finish() {
 // Task is single task which will be executed in it's own go routine
 // within the execution phase it was attached to.
 type Task struct {
+	started      time.Time
+	finished     time.Time
 	name         string
 	payload      []byte
 	status       uint
@@ -269,10 +275,33 @@ func (t *Task) Fail(msg string) {
 	t.msg = msg
 	if !t.allowFailure {
 		t.status = StatusFailed
+	} else {
+		t.finish()
 	}
 }
 
 // Failed returns true if task has failed
 func (t *Task) Failed() bool {
 	return t.status == StatusFailed
+}
+
+// Elapsed returns how long phase has been running
+func (t *Task) Elapsed() string {
+	t.finish()
+	if t.status == StatusSuccess {
+		return time.Now().Sub(t.started).String()
+	}
+	return t.finished.Sub(t.started).String()
+}
+
+func (t *Task) start() {
+	t.started = time.Now()
+	t.status = StatusRunning
+}
+
+func (t *Task) finish() {
+	t.finished = time.Now()
+	if t.status == StatusRunning {
+		t.status = StatusSuccess
+	}
 }

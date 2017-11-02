@@ -65,7 +65,7 @@ const (
 // NewPlugin constructs new CLI Application Plugin and returns it's instance for
 // configuration. Returned Application has basic initialization done and
 // all defaults set.
-func NewPlugin(m appinfo.Metadata) *Plugin {
+func NewPlugin(m app.Metadata) *Plugin {
 	cli := &Plugin{
 		Log:         log.NewStdout(log.NOTICE),
 		commands:    make(map[string]Command),
@@ -107,7 +107,7 @@ func NewPlugin(m appinfo.Metadata) *Plugin {
 type Plugin struct {
 	started     time.Time               // when application was started
 	Log         *log.Logger             // logger
-	MetaData    appinfo.Metadata        // Application MetaData
+	MetaData    app.Metadata            // Application MetaData
 	Header      clitmpl.Header          // header if used
 	Footer      clitmpl.Footer          // footer if used
 	errs        errors.MultiError       // internal errors
