@@ -193,39 +193,9 @@ func (cli *Plugin) Start() {
 	worker := newWorker(cli.Log)
 	worker.Info = cli.MetaData.GetInfo()
 	worker.args = cli.currentCmd.getArgs()
-	// add global flags to worker
-	for _, flag := range cli.flags {
-		worker.attachFlag(flag)
-		if flag.IsRequired() && !flag.Present() {
-			// show footer if command has not disabled it
-			if worker.Config.ShowHeader {
-				cli.Header.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
-			}
-			worker.Log.Errorf(FmtErrRequiredFlag, "global", flag.Name(), flag.Usage())
-			// show footer if command has not disabled it
-			if worker.Config.ShowFooter {
-				cli.Footer.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
-			}
-			cli.exit(1)
-		}
-	}
 
-	for _, flag := range cli.currentCmd.getFlags() {
-		worker.attachFlag(flag)
-		// check did we have any required flags missing
-		if flag.IsRequired() && !flag.Present() {
-			// show footer if command has not disabled it
-			if worker.Config.ShowHeader {
-				cli.Header.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
-			}
-			worker.Log.Errorf(FmtErrRequiredFlag, cli.currentCmd.Name(), flag.Name(), flag.Usage())
-			// show footer if command has not disabled it
-			if worker.Config.ShowFooter {
-				cli.Footer.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
-			}
-			cli.exit(1)
-		}
-	}
+	// Add flags
+	cli.processFlags(worker)
 
 	// Start the application and reset the start time
 	now := time.Now()
@@ -263,4 +233,41 @@ func (cli *Plugin) Start() {
 		cli.Footer.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
 	}
 	cli.exit(1)
+}
+
+// Add flags
+func (cli *Plugin) processFlags(worker *Worker) {
+	// add global flags to worker
+	for _, flag := range cli.flags {
+		worker.attachFlag(flag)
+		if flag.IsRequired() && !flag.Present() {
+			// show footer if command has not disabled it
+			if worker.Config.ShowHeader {
+				cli.Header.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
+			}
+			worker.Log.Errorf(FmtErrRequiredFlag, "global", flag.Name(), flag.Usage())
+			// show footer if command has not disabled it
+			if worker.Config.ShowFooter {
+				cli.Footer.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
+			}
+			cli.exit(1)
+		}
+	}
+	// Add flags from current command
+	for _, flag := range cli.currentCmd.getFlags() {
+		worker.attachFlag(flag)
+		// check did we have any required flags missing
+		if flag.IsRequired() && !flag.Present() {
+			// show footer if command has not disabled it
+			if worker.Config.ShowHeader {
+				cli.Header.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
+			}
+			worker.Log.Errorf(FmtErrRequiredFlag, cli.currentCmd.Name(), flag.Name(), flag.Usage())
+			// show footer if command has not disabled it
+			if worker.Config.ShowFooter {
+				cli.Footer.Print(cli.Log, cli.MetaData.GetInfo(), cli.elapsed())
+			}
+			cli.exit(1)
+		}
+	}
 }
