@@ -1,0 +1,24 @@
+language: go
+go:
+  - 1.8
+  - 1.9
+  - master
+# notifications
+notifications:
+  email: false
+
+script: echo "1"
+jobs:
+  fast_finish: true
+  allow_failures:
+    - go: master
+  include:
+    - stage: test
+      script: echo "2"
+      env: JOB=test
+    - stage: build
+      script: echo "3"
+      env: JOB=cmd howi-ce
+    - stage: deploy
+      script: echo "4"
+      env: JOB=deploy howi-ce
