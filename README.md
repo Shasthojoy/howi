@@ -1,5 +1,10 @@
 # HOWI-CE
 
+
+[![GitHub license][license-image]][license-url]
+[![Build Status][travis-ci-image]][travis-ci-url]
+[![GoDoc][godoc-image]][godoc-url]
+
 HOWI Community Edition is open source project governed by a The MIT License.  
 HOWI has been a proprietary SDK, framework and package collection developed  
 by Marko Kungla since 2005. It has modular `addon/plugin/lib` design style  
@@ -77,3 +82,16 @@ HOWI's design style and philosophy.
     - any Addons
     - any Plugins
     - any HOWI Library
+
+<!-- ASSETS and LINKS -->
+<!-- travis-ci -->
+[travis-ci-image]: https://travis-ci.org/howi-ce/howi.svg?branch=master
+[travis-ci-url]: https://travis-ci.org/howi-ce/howi
+
+<!-- License -->
+[license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
+[license-url]: https://raw.githubusercontent.com/howi-ce/howi/master/LICENSE
+
+<!-- godoc -->
+[godoc-image]: https://godoc.org/github.com/howi-ce/howi?status.png
+[godoc-url]: https://godoc.org/github.com/howi-ce/howi

@@ -13,6 +13,9 @@ jobs:
     - stage: test
       script: echo "2"
       env: JOB=test
+    - script:
+      - go get github.com/mattn/goveralls
+      - goveralls -service=travis-ci
     - stage: build
       script: echo "3"
       env: JOB=cmd howi-ce
