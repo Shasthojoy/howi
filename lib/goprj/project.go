@@ -27,9 +27,9 @@ type Project struct {
 	Version     semver.Version
 }
 
-// Exists check whether or not .howi.yaml exists at projects path
+// Exists check whether or not .howi/project.yaml exists at projects path
 func (p *Project) Exists() bool {
-	conf, _ := p.Git.FS.LoadPath(".howi.yaml")
+	conf, _ := p.Git.FS.LoadPath(".howi", "project.yaml")
 	p.exists = conf.Exists()
 	p.Config.filepath = conf
 	p.Path, _ = p.Git.FS.LoadPath("/")

@@ -23,8 +23,8 @@ type Config struct {
 
 // Reload configuration file
 func (c *Config) Reload() error {
-	if c.filepath.Base() != ".howi.yaml" {
-		return errors.New("config filepath missing")
+	if c.filepath.Base() != "project.yaml" {
+		return errors.New("project config filepath missing")
 	}
 	f, err := os.Open(c.filepath.Abs())
 	if err != nil {
@@ -39,7 +39,7 @@ func (c *Config) Reload() error {
 	return yaml.Unmarshal(inputBytes, &c)
 }
 
-// Save configuration to file at repo root `.howi.yaml`
+// Save configuration to file at repo root `.howi/project.yaml`
 func (c *Config) Save() error {
 	contents, err := yaml.Marshal(&c)
 	if err != nil {

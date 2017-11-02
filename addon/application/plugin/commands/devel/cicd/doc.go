@@ -3,6 +3,6 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package cicd contains CI/CD command which reads .howi.yaml
+Package cicd contains CI/CD command
 */
 package cicd

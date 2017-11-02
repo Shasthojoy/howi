@@ -156,7 +156,7 @@ func projectLoad(path string) (prj *goprj.Project, err error) {
 	}
 	// We exit if path is not valid project
 	if !prj.Exists() {
-		return nil, errors.Newf(".howi.yaml is missing on project root %s", path)
+		return nil, errors.Newf(".howi/project.yaml is missing %s", path)
 	}
 	return prj, nil
 }

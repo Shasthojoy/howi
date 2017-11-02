@@ -5,9 +5,11 @@
 package filesystem
 
 import (
+	"path/filepath"
 	"strings"
 
 	"github.com/howi-ce/howi/lib/filesystem/path"
+	"github.com/howi-ce/howi/std/errors"
 )
 
 // Open creates new file system instance for given path as wprking directory
@@ -43,9 +45,13 @@ func (fs *Container) IsGitRepository() bool {
 }
 
 // LoadPath joins provided path to root current fs and returns new path plugin.
-func (fs *Container) LoadPath(p string) (path.Obj, error) {
-	if strings.HasPrefix(p, fs.root.Abs()) {
-		return path.New(p)
+func (fs *Container) LoadPath(p ...string) (path.Obj, error) {
+	if len(p) == 0 {
+		return fs.root, errors.New("no path segment passed")
 	}
-	return path.New(fs.root.Join(p))
+	s := filepath.Join(p...)
+	if strings.HasPrefix(s, fs.root.Abs()) {
+		return path.New(s)
+	}
+	return path.New(fs.root.Join(s))
 }
