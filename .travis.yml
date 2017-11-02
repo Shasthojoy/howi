@@ -1,5 +1,7 @@
 language: go
+# Go Versions
 go:
+  - 1.9
   - master
 # notifications
 notifications:
@@ -10,20 +12,7 @@ jobs:
   allow_failures:
     - go: master
   include:
-    # TEST
-    - stage: test
-      env: JOB=test
-      script: echo "2"
-    
-    - env: JOB=code coverage
+    - stage: HOWI CI / CD
       script:
-      - go get github.com/mattn/goveralls
-      - goveralls -service=travis-ci
-    # BUILD
-    - stage: build
-      env: JOB=cmd howi-ce
-      script: echo "3"
-    # DEPLOY
-    - stage: deploy
-      env: JOB=deploy howi-ce
-      script: echo "4"
+        - go run ./cmd/howi-ce/main.go devel cicd
+        - go run ./cmd/howi-ce/main.go devel cicd --vars | grep TRAVIS
