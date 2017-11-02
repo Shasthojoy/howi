@@ -1,13 +1,10 @@
 language: go
 go:
-  - 1.8
-  - 1.9
   - master
 # notifications
 notifications:
   email: false
 
-script: echo "1"
 jobs:
   fast_finish: true
   allow_failures:
