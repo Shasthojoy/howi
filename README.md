@@ -1,7 +1,7 @@
 | |
 | :---: |
 | <h2> HOWI Community Edition </h2> |
-| [![GoDoc][godoc-image]][godoc-url] [![GitHub license][license-image]][license-url] [![Build Status][travis-ci-image]][travis-ci-url] [![Coverage Status][coverage-image]][coverage-url] |
+| [![GoDoc][godoc-image]][godoc-url] [![GitHub license][license-image]][license-url] [![Build Status][travis-ci-image]][travis-ci-url] [![Coverage Status][coverage-image]][coverage-url] [![Go Report Card][go-report-card-img]][go-report-card-link] |
 
 HOWI Community Edition is open source project governed by a [The MIT License][license-url].  
 HOWI has been a proprietary [SDK][sdk-link], framework and package collection developed  
@@ -100,3 +100,7 @@ HOWI's design style and philosophy.
 <!-- coverage -->
 [coverage-image]: https://coveralls.io/repos/github/howi-ce/howi/badge.svg?branch=master
 [coverage-url]: https://coveralls.io/github/howi-ce/howi?branch=master
+
+<!-- Go Report Card -->
+[go-report-card-img]: https://goreportcard.com/badge/github.com/howi-ce/howi
+[go-report-card-link]: https://goreportcard.com/report/github.com/howi-ce/howi

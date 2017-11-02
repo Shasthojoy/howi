@@ -36,10 +36,7 @@ func (c *Config) Reload() error {
 	if err != nil {
 		return err
 	}
-	if err := yaml.Unmarshal(inputBytes, &c); err != nil {
-		return err
-	}
-	return nil
+	return yaml.Unmarshal(inputBytes, &c)
 }
 
 // Save configuration to file at repo root `.howi.yaml`

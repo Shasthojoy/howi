@@ -55,7 +55,7 @@ const (
 	FmtErrUnknownSubcommand = "unknown subcommand %q for command %q"
 	// FmtErrTooManyArgs formats error when too many arguments are passed.
 	FmtErrTooManyArgs = "too many arguments for command %q which accepts max (%d) args"
-	// FmtErrInvalidCommandArgs is returned when invalid args are recieved by
+	// FmtErrInvalidCommandArgs is returned when invalid args are received by
 	// command parser.
 	FmtErrInvalidCommandArgs = "invalid arguments passed for (%s).Parse"
 	// FmtErrCommandNotProvided when no command is provided calling the application

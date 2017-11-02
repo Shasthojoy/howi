@@ -55,7 +55,7 @@ func New(wd string) (*Git, error) {
 	return nil, errors.New("failed to load git repository")
 }
 
-// Git source contral managment
+// Git management
 type Git struct {
 	FS *filesystem.Container
 }

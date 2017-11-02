@@ -129,8 +129,5 @@ func (c *Config) Load(filepath string) error {
 	if err != nil {
 		return err
 	}
-	if err := yaml.Unmarshal(inputBytes, &c); err != nil {
-		return err
-	}
-	return nil
+	return yaml.Unmarshal(inputBytes, &c)
 }

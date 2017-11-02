@@ -81,7 +81,7 @@ func (v Value) ParseComplex128() (complex128, error) {
 	return complex128(complex(f1, f2)), nil
 }
 
-// Len returns the lenght of the string representation of the Value
+// Len returns the length of the string representation of the Value
 func (v Value) Len() int {
 	return len(v.String())
 }
@@ -178,7 +178,7 @@ func (c Collection) Getvar(k string) (v Value) {
 
 // GetvarOrDefaultTo is same as Getvar but returns default value if
 // value of variable [key] is empty or does not exist.
-// It only retuns this case default it neither sets or exports that default
+// It only returns this case default it neither sets or exports that default
 func (c Collection) GetvarOrDefaultTo(k string, defVal string) (v Value) {
 	v = c.Getvar(k)
 	if v == "" {

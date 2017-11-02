@@ -51,10 +51,7 @@ func (p *Project) createVarsGit() {
 		o, _ := p.Git.RevList(fmt.Sprintf("%s..", p.Vars.Getvar("HOWI_GIT_LAST_TAG_COMMIT").String()), "--count")
 		return o.String()
 	}())
-	p.Vars["HOWI_GIT_BRANCH"] = vars.Value(func() string {
-		o, _ := p.Git.RevParse("--abbrev-ref", "HEAD")
-		return o.String()
-	}())
+	p.Vars["HOWI_GIT_BRANCH"] = p.varGitBranch()
 	// The branch or tag name for which project is on
 	isTag, _ := p.Git.Describe("--exact-match", "HEAD")
 	if len(isTag.String()) == 0 {
@@ -70,4 +67,13 @@ func (p *Project) createVarsGit() {
 	// No leading / trailing -. Use in URLs, host names and domain names.
 	// https://github.com/howi-ce/howi/issues/34
 	p.Vars["HOWI_GIT_REF_SLUG"] = vars.Value("")
+}
+
+// HOWI_GIT_BRANCH
+func (p *Project) varGitBranch() vars.Value {
+	o, err := p.Git.RevParse("--abbrev-ref", "HEAD")
+	if err != nil || len(o.String()) == 0 {
+		return vars.Value("branches")
+	}
+	return vars.Value(o.String())
 }
