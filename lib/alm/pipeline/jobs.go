@@ -105,7 +105,7 @@ func (j *Job) Run(path path.Obj, log *log.Logger) error {
 		log.ColoredLine(c.Value)
 		args := strings.Fields(fmt.Sprintf("%s", c.Value))
 		cmd := args[0]
-		args = args[1:len(args)]
+		args = args[1:]
 		command := exec.Command(cmd, args...)
 		command.Stdout = os.Stdout
 		command.Stderr = os.Stderr

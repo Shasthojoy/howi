@@ -161,7 +161,7 @@ func ParseFromString(kv string) (key string, val Value) {
 // ParseFromBytes parses []bytes to string, creates []string by new line
 // and calls ParseFromStrings.
 func ParseFromBytes(b []byte) Collection {
-	slice := strings.Split(string(b[0:len(b)]), "\n")
+	slice := strings.Split(string(b[0:]), "\n")
 	return ParseFromStrings(slice)
 }
 
