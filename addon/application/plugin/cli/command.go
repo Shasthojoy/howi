@@ -237,6 +237,9 @@ func (c *Command) verify(reservedFlags map[string]int) error {
 	}
 	// must have Do function
 	if c.doFn == nil {
+		if c.subCommands != nil {
+			goto SubCommands
+		}
 		return errors.Newf(FmtErrCommandMissingDoFn, c.name)
 	}
 	// Check command flags
@@ -249,7 +252,7 @@ func (c *Command) verify(reservedFlags map[string]int) error {
 			reservedFlags[flagAlias] = flagID
 		}
 	}
-
+SubCommands:
 	// Check subcommand flags if any
 	if c.subCommands != nil {
 		for _, cmd := range c.subCommands {
@@ -373,6 +376,11 @@ func (c *Command) executeDoFn(w *Worker) {
 		return
 	}
 	w.Phase().start()
+	if c.doFn == nil {
+		w.Log.Line(c.ShortDesc())
+		w.Failf(FmtErrCommandNotProvided, c.Name())
+		return
+	}
 	c.doFn(w)
 	// wait
 	w.phasewait()
