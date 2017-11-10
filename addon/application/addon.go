@@ -9,6 +9,13 @@ import (
 	"github.com/howi-ce/howi/lib/app"
 )
 
+// NewAddon provides Application addon instance
+func NewAddon() *Addon {
+	addon := &Addon{}
+	addon.info = &app.Metadata{}
+	return addon
+}
+
 // Addon instance
 type Addon struct {
 	info *app.Metadata
