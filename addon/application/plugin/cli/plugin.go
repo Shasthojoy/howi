@@ -180,7 +180,7 @@ func (cli *Plugin) Start() {
 	cli.handleHelp()
 
 	if cli.currentCmd == nil {
-		cli.Log.Error(FmtErrCommandNotProvided)
+		cli.Log.Errorf(FmtErrCommandNotProvided, cli.MetaData.Name())
 		cli.exit(2)
 	}
 
