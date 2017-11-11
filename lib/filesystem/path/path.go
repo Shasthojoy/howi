@@ -5,8 +5,10 @@
 package path
 
 import (
+	"fmt"
 	"go/build"
 	"os"
+	"os/user"
 	"path/filepath"
 	"strings"
 	"time"
@@ -18,8 +20,21 @@ import (
 // It tries to set absolute representation of path,
 // but sets provided string if that fails.
 func New(path string) (Obj, error) {
-	abs, err := filepath.Abs(filepath.FromSlash(path))
 	p := Obj{}
+	if len(path) == 0 {
+		return p, nil
+	}
+	if path[0] == '~' {
+		usr, err := user.Current()
+		if err != nil {
+			return p, err
+		}
+		path = filepath.Join(usr.HomeDir, path[1:])
+		fmt.Println(usr.HomeDir)
+	}
+
+	abs, err := filepath.Abs(filepath.FromSlash(path))
+
 	if err != nil {
 		p.abs = path
 	} else {
