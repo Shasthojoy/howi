@@ -221,7 +221,8 @@ func (cli *Plugin) Start() {
 		cli.exit(0)
 	}
 	// failure
-	cli.Log.Errorf(FmtErrPhaseFailed, worker.Phase().Name(), worker.Phase().msg)
+	cli.Log.Debugf(FmtErrPhaseFailed, worker.Phase().Name(), worker.Phase().msg)
+	cli.Log.Error(worker.Phase().msg)
 	cli.currentCmd.executeAfterFailureFn(worker)
 	cli.currentCmd.executeAfterAlwaysFn(worker)
 	// restore loglevel
