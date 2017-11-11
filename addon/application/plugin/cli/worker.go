@@ -5,7 +5,9 @@
 package cli
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 	"sync"
 	"time"
 
@@ -133,6 +135,28 @@ func (w *Worker) Flag(alias string) (flags.Interface, error) {
 		}
 	}
 	return nil, errors.Newf(FmtErrUnknownFlag, alias)
+}
+
+// AskForConfirmation returns user choice
+func (w *Worker) AskForConfirmation(s string) bool {
+	reader := bufio.NewReader(os.Stdin)
+
+	for {
+		w.Log.ColoredLinef("%s [y/n]: ", s)
+
+		r, err := reader.ReadString('\n')
+		if err != nil {
+			w.Log.Fatal(err)
+		}
+
+		r = strings.ToLower(strings.TrimSpace(r))
+
+		if r == "y" || r == "yes" {
+			return true
+		} else if r == "n" || r == "no" {
+			return false
+		}
+	}
 }
 
 // WaitTaskPayloadFrom enables you to wait payload from specific tasks.

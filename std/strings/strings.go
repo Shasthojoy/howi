@@ -94,6 +94,11 @@ func TrimSpace(s string) string {
 	return strings.TrimSpace(s)
 }
 
+// ToLower returns a copy of the string s with all Unicode letters mapped to their lower case.
+func ToLower(s string) string {
+	return strings.ToLower(s)
+}
+
 func simpleRepeater(str string, n int) (out string) {
 	for i := 0; i < n; i++ {
 		out += str
