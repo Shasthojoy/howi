@@ -5,7 +5,6 @@
 package path
 
 import (
-	"fmt"
 	"go/build"
 	"os"
 	"os/user"
@@ -30,7 +29,6 @@ func New(path string) (Obj, error) {
 			return p, err
 		}
 		path = filepath.Join(usr.HomeDir, path[1:])
-		fmt.Println(usr.HomeDir)
 	}
 
 	abs, err := filepath.Abs(filepath.FromSlash(path))
