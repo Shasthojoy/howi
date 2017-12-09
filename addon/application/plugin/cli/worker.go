@@ -92,7 +92,7 @@ func (w *Worker) Task(name string, wt func(task *Task)) {
 	w.mu.Unlock()
 
 	w.wg.Add(1)
-	t := &Task{}
+	t := &Task{name: name}
 	go func() {
 		defer func() {
 			w.wg.Done()
