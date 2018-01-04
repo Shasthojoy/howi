@@ -25,5 +25,5 @@
 [go-report-card-link]: https://goreportcard.com/report/github.com/okramlabs/howicli
 
 <!-- codebeat -->
-[codebeat-img]: https://codebeat.co/badges/7ef35523-4eec-416e-8bc9-a5ffc6be7457
-[codebeat-link]: https://codebeat.co/projects/github-com-howi-ce-howi-master
+[codebeat-img]: https://codebeat.co/badges/de1d51b0-5ac5-48f3-b96d-5cca76d407be
+[codebeat-link]: https://codebeat.co/projects/github-com-okramlabs-howicli-master
