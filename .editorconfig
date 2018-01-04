@@ -10,6 +10,8 @@ root = true
 end_of_line = lf
 insert_final_newline = true
 charset = utf-8
+indent_style = space
+indent_size = 2
 
 # 2 space indentation
 # Matches multiple files with brace expansion notation
@@ -17,11 +19,3 @@ charset = utf-8
 indent_style = space
 indent_size = 2
 
-# Tab indentation (no size specified)
-[Makefile]
-indent_style = tab
-
-# Matches the exact files either howi.yaml or .config.yml
-[{howi.yaml,.config.yml}]
-indent_style = space
-indent_size = 2
