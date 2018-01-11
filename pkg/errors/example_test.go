@@ -74,7 +74,7 @@ func ExampleGetTypeOf() {
 }
 
 // ExampleGetTypeOf_extended shows you how to validate error types of any other package
-func ExampleGetTypeOf_other_pkg() {
+func ExampleGetTypeOf_otherPKG() {
 	fmt.Println(errors.GetTypeOf(http.ErrShortBody))
 	// Output:
 	// http.ProtocolError
