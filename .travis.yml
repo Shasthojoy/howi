@@ -8,9 +8,7 @@ go:
   - 1.9.x
   - tip
   - master
-# notifications
-notifications:
-  email: false
+
 # Jobs
 allow_failures:
   - go: master
@@ -18,3 +16,7 @@ allow_failures:
 script:
   - go get github.com/mattn/goveralls
   - goveralls -service=travis-ci
+
+# notifications
+notifications:
+  email: false
