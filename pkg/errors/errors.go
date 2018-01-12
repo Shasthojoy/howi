@@ -71,8 +71,8 @@ func GetTypeOf(err interface{}) string {
 }
 
 // NewMultiError returns new multierror
-func NewMultiError() *MultiError {
-	return &MultiError{}
+func NewMultiError() MultiError {
+	return MultiError{}
 }
 
 // WithStackTrace returns error with StackTrace

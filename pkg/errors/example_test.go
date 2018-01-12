@@ -12,6 +12,7 @@ import (
 	"github.com/okramlabs/howicli/pkg/errors"
 )
 
+// Really basic example lik std error
 func ExampleNew() {
 	err := errors.New("your error msg")
 	fmt.Println(err)
@@ -29,6 +30,7 @@ func ExampleNew_printf() {
 	// your error
 }
 
+// You can use also arguments for .New which are handled in manner of fmt.Sprint
 func ExampleNew_args() {
 	err := errors.New("your", "error", "msg", "2")
 	fmt.Println(err)
@@ -38,6 +40,7 @@ func ExampleNew_args() {
 	// your error msg 2
 }
 
+// You can format errors with .Newf args are handled in manner of fmt.Sprintf
 func ExampleNewf() {
 	err := errors.Newf("your error %s 3", "msg")
 	fmt.Println(err)
@@ -47,6 +50,7 @@ func ExampleNewf() {
 	// your error msg 3
 }
 
+// Example how to use context with errors
 func ExampleNewWithContext() {
 	ctx := context.WithValue(context.Background(), "err-ctx", "your-ctx-key")
 
@@ -65,6 +69,7 @@ func ExampleNewWithContext() {
 	// <nil>
 }
 
+// Example how to get error type
 func ExampleGetTypeOf() {
 	err_std := errors.New("your error msg")
 	err_deprecated := errors.NewDeprecated()
@@ -81,13 +86,14 @@ func ExampleGetTypeOf() {
 	// NotImplementedErr
 }
 
-// ExampleGetTypeOf_extended shows you how to validate error types of any other package
+// Example shows you how to validate error types of any other package
 func ExampleGetTypeOf_otherPKG() {
 	fmt.Println(errors.GetTypeOf(http.ErrShortBody))
 	// Output:
 	// http.ProtocolError
 }
 
+// Example shows you how to create error with stack trace and later retrieve that stack trace
 func ExampleWithStackTrace() {
 	err := errors.WithStackTrace("your errror")
 
@@ -101,4 +107,37 @@ func ExampleWithStackTrace() {
 	// your errror
 	// your errror
 	// github.com/okramlabs/howicli/pkg/errors/example_test.go errors_test ExampleWithStackTrace
+}
+
+func ExampleMultiError() {
+	merr := errors.NewMultiError()
+	// prints first true
+	fmt.Println(merr.Nil())
+
+	merr.Append("first error")
+	merr.Appendf("%dnd error", 2)
+	merr.Add(errors.New("third error"))
+	merr.Append("last error")
+
+	fmt.Println(merr.Error())
+	fmt.Println(merr.Len())
+	fmt.Println(merr.AsError())
+	fmt.Println(merr.Nil())
+
+	fmt.Println("errors:")
+
+	for _, err := range merr {
+		fmt.Println(err.Error())
+	}
+	// Output:
+	// true
+	// last error (total errors: 4)
+	// 4
+	// last error (total errors: 4)
+	// false
+	// errors:
+	// first error
+	// 2nd error
+	// third error
+	// last error
 }

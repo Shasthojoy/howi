@@ -23,7 +23,7 @@ func TestNewMultiError(t *testing.T) {
 		{"nil"},
 	}
 	for i := 1; i < len(tests); i++ {
-		merr.AppendString(tests[i].errstr)
+		merr.Append(tests[i].errstr)
 		if i != merr.Len() && tests[i].errstr != "" && tests[i].errstr != "nil" {
 			t.Errorf("multierror.AppendError() = %d, want %d", i, merr.Len())
 		}
@@ -58,7 +58,7 @@ func TestAppendString(t *testing.T) {
 		{"your errors go on"},
 	}
 	for i := 0; i < len(tests); i++ {
-		merr.AppendString(tests[i].errstr)
+		merr.Append(tests[i].errstr)
 		// tests[0].errst shows always last error
 		want := fmt.Sprintf("%s (total errors: %d)", tests[i].errstr, merr.Len())
 		if merr.Error() != want {
@@ -79,7 +79,7 @@ func TestAppendStringf(t *testing.T) {
 		{},
 	}
 	for i := 0; i < len(tests); i++ {
-		merr.AppendStringf("%s", tests[i].errstr)
+		merr.Appendf("%s", tests[i].errstr)
 		// tests[0].errst shows always last error
 		want := fmt.Sprintf("%s (total errors: %d)", tests[i].errstr, merr.Len())
 		if merr.Error() != want {
@@ -100,7 +100,7 @@ func TestAppendStringf_nilFormat(t *testing.T) {
 		{},
 	}
 	for i := 0; i < len(tests); i++ {
-		merr.AppendStringf("", tests[i].errstr)
+		merr.Appendf("", tests[i].errstr)
 		// tests[0].errst shows always last error
 		want := fmt.Sprintf("%s (total errors: %d)", tests[i].errstr, merr.Len())
 		if merr.Error() != want {
@@ -111,7 +111,7 @@ func TestAppendStringf_nilFormat(t *testing.T) {
 
 func TestAppendStringf_nilValue(t *testing.T) {
 	merr := NewMultiError()
-	merr.AppendStringf("")
+	merr.Appendf("")
 	// tests[0].errst shows always last error
 	want := fmt.Sprintf("(total errors: %d)", merr.Len())
 	if merr.Error() != want {
@@ -130,7 +130,7 @@ func TestAsError(t *testing.T) {
 		{"your errors go on"},
 	}
 	for i := 0; i < len(tests); i++ {
-		merr.AppendString(tests[i].errstr)
+		merr.Append(tests[i].errstr)
 		// tests[0].errst shows always last error
 		want := fmt.Sprintf("%s (total errors: %d)", tests[i].errstr, merr.Len())
 		if merr.AsError().Error() != want {
