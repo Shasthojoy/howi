@@ -94,17 +94,11 @@ func ExampleWithStackTrace() {
 	fmt.Println(err)
 	fmt.Println(err.Error())
 
-	for i, f := range err.GetStackTrace() {
-		fmt.Println(i, f.File(), f.Package(), f.Func())
-	}
+	st := err.GetStackTrace()
+	fmt.Println(st[0].File(), st[0].Package(), st[0].Func())
+
 	// Output:
 	// your errror
 	// your errror
-	// 0 github.com/okramlabs/howicli/pkg/errors/example_test.go errors_test ExampleWithStackTrace
-	// 1 testing/example.go testing runExample
-	// 2 testing/example.go testing runExamples
-	// 3 testing/testing.go testing (*M).Run
-	// 4 github.com/okramlabs/howicli/pkg/errors/_test/_testmain.go main main
-	// 5 runtime/proc.go runtime main
-	// 6 runtime/asm_amd64.s runtime goexit
+	// github.com/okramlabs/howicli/pkg/errors/example_test.go errors_test ExampleWithStackTrace
 }
