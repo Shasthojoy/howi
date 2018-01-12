@@ -71,11 +71,14 @@ func GetTypeOf(err interface{}) string {
 }
 
 // NewMultiError returns new multierror
-func NewMultiError() MultiError {
-	return MultiError{}
+func NewMultiError() *MultiError {
+	return &MultiError{}
 }
 
-// GetStackTrace returns StackTrace for that error
-func GetStackTrace(err error) StackTrace {
-	return StackTrace{}
+// WithStackTrace returns error with StackTrace
+func WithStackTrace(msg string) *ErrorWithStackTrace {
+	st := &ErrorWithStackTrace{}
+	st.msg = strings.TrimSpace(msg)
+	st.trace()
+	return st
 }
