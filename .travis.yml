@@ -1,13 +1,15 @@
 language: go
 
+os:
+  - linux
+
 go_import_path: github.com/okramlabs/howicli
 
 # Go Versions
 go:
-  - 1.8.x
-  - 1.9.x
+  - 1.8
+  - 1.9
   - tip
-  - master
 
 # Jobs
 allow_failures:
