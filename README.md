@@ -1,11 +1,12 @@
 ![howicli logo][howicli-logo]
 The extreme simplicity of HOWICLI makes the building of CLI applications in go super fun and easy.
 
-[![GoDoc][godoc-img]][godoc-link]
-[![GitHub license][license-img]][license-link]
-[![Coverage Status][coverage-img]][coverage-link]
-[![Go Report Card][go-report-card-img]][go-report-card-link]
+[![GoDoc badge][godoc-img]][godoc-link]
+[![GitHub license badge][license-img]][license-link]
+[![Coverage Status badge][coverage-img]][coverage-link]
+[![Go Report Card badge][go-report-card-img]][go-report-card-link]
 [![codebeat badge][codebeat-img]][codebeat-link]
+[![Sourcegraph badge][sourcegraph-img]][sourcegraph-link]
 
 **Build Status**
 
@@ -13,8 +14,6 @@ The extreme simplicity of HOWICLI makes the building of CLI applications in go s
 | Linux | macOS | Windows |
 | --- | --- | --- |
 | [![TravisCI Build Status][travis-img]][travis-link] | [![CircleCI Build Status][circleci-img]][circleci-link] | [![AppveyorCI Build Status][appveyor-img]][appveyor-link] |
-
-
 
 <!-- howicli -->
 [howicli-logo]: https://raw.githubusercontent.com/okramlabs/howicli/master/res/logo.png
