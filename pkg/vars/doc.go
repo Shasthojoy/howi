@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package vars provides the ability to parse variables from various input formats
+Package vars provides the API to parse variables from various input formats
 to common key value pair or sets to map[Var]Value.
 */
 package vars
