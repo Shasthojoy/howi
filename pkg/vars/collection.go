@@ -18,19 +18,19 @@ func (c Collection) Getvar(k string) (v Value) {
 	return
 }
 
-// GetvarOrDefaultTo is same as Getvar but returns default value if
+// GetVarOrDefaultTo is same as Getvar but returns default value if
 // value of variable [key] is empty or does not exist.
 // It only returns this case default it neither sets or exports that default
-func (c Collection) GetvarOrDefaultTo(k string, defVal string) (v Value) {
+func (c Collection) GetVarOrDefaultTo(k string, defVal string) (v Value) {
 	v = c.Getvar(k)
 	if v == "" {
-		v = ValueFromString(defVal)
+		v = NewValue(defVal)
 	}
 	return
 }
 
-// GetvarsWithPrefix return all variables with prefix if any as map[]
-func (c Collection) GetvarsWithPrefix(prfx string) (vars Collection) {
+// GetVarsWithPrefix return all variables with prefix if any as map[]
+func (c Collection) GetVarsWithPrefix(prfx string) (vars Collection) {
 	vars = make(Collection)
 	for k, v := range c {
 		if len(k) >= len(prfx) && k[0:len(prfx)] == prfx {

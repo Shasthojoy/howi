@@ -16,34 +16,35 @@ func (v Value) String() string {
 	return string(v)
 }
 
-// ParseBool calls strconv.ParseBool on Value
-func (v Value) ParseBool() (bool, error) {
+// Bool returns vars.Value as bool and error if vars.Value does not represent bool value
+func (v Value) Bool() (bool, error) {
 	return strconv.ParseBool(v.String())
 }
 
-// ParseFloat calls strconv.ParseFloat on Value
-func (v Value) ParseFloat(bitSize int) (float64, error) {
+// Float returns vars.Value as float64 and error if vars.Value does not float Float value
+func (v Value) Float(bitSize int) (float64, error) {
 	return strconv.ParseFloat(v.String(), bitSize)
 }
 
-// ParseInt calls strconv.ParseInt on Value
-func (v Value) ParseInt(base int, bitSize int) (int64, error) {
+// Int returns vars.Value as int64 and error if vars.Value does not represent int value
+func (v Value) Int(base int, bitSize int) (int64, error) {
 	return strconv.ParseInt(v.String(), base, bitSize)
 }
 
-// ParseUint calls strconv.ParseUint on Value
-func (v Value) ParseUint(base int, bitSize int) (uint64, error) {
+// Uint returns vars.Value as uint64 and error if vars.Value does not represent uint value
+func (v Value) Uint(base int, bitSize int) (uint64, error) {
 	return strconv.ParseUint(v.String(), base, bitSize)
 }
 
-// ParseFields calls strings.Fields on Value string
-func (v Value) ParseFields() []string {
-	return strings.Fields(v.String())
+// Uintptr returns vars.Value as uintptr and error if vars.Value does not represent uint value
+func (v Value) Uintptr() (uintptr, error) {
+	ptrInt, err := strconv.ParseUint(v.String(), 10, 64)
+	return uintptr(ptrInt), err
 }
 
-// ParseComplex64 tries to split Value to strings.Fields and
+// Complex64 tries to split Value to strings.Fields and
 // use 2 first fields to return complex64
-func (v Value) ParseComplex64() (complex64, error) {
+func (v Value) Complex64() (complex64, error) {
 	var err error
 	fields := v.ParseFields()
 	if len(fields) != 2 {
@@ -61,9 +62,9 @@ func (v Value) ParseComplex64() (complex64, error) {
 	return complex64(complex(f1, f2)), nil
 }
 
-// ParseComplex128 tries to split Value to strings.Fields and
+// Complex128 tries to split Value to strings.Fields and
 // use 2 first fields to return complex128
-func (v Value) ParseComplex128() (complex128, error) {
+func (v Value) Complex128() (complex128, error) {
 	var err error
 	fields := v.ParseFields()
 	if len(fields) != 2 {
@@ -80,6 +81,11 @@ func (v Value) ParseComplex128() (complex128, error) {
 	return complex128(complex(f1, f2)), nil
 }
 
+// ParseFields calls strings.Fields on Value string
+func (v Value) ParseFields() []string {
+	return strings.Fields(v.String())
+}
+
 // Len returns the length of the string representation of the Value
 func (v Value) Len() int {
 	return len(v.String())
@@ -88,14 +94,4 @@ func (v Value) Len() int {
 // Empty returns true if this Value is empty
 func (v Value) Empty() bool {
 	return v.Len() == 0
-}
-
-// ValueFromString trims spaces and returns Value
-func ValueFromString(val string) Value {
-	return Value(strings.TrimSpace(val))
-}
-
-// ValueFromBool returns Value pared from bool
-func ValueFromBool(val bool) Value {
-	return Value(strconv.FormatBool(val))
 }

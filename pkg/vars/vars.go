@@ -6,12 +6,23 @@ package vars
 
 import (
 	"regexp"
+	"strconv"
 	"strings"
 )
 
-// ParseFromString parses variable from single "key=val" pair and
+// NewValue trims spaces from provided string and returns new Value
+func NewValue(val string) Value {
+	return Value(strings.TrimSpace(val))
+}
+
+// ValueFromBool returns Value parsed from bool
+func ValueFromBool(val bool) Value {
+	return Value(strconv.FormatBool(val))
+}
+
+// ParseKeyVal parses variable from single "key=val" pair and
 // returns (key string, val Value)
-func ParseFromString(kv string) (key string, val Value) {
+func ParseKeyVal(kv string) (key string, val Value) {
 	if len(kv) == 0 {
 		return
 	}
@@ -22,7 +33,7 @@ func ParseFromString(kv string) (key string, val Value) {
 	for i := 0; i < l; i++ {
 		if kv[i] == '=' {
 			key = kv[:i]
-			val = ValueFromString(kv[i+1:])
+			val = NewValue(kv[i+1:])
 			if i < l {
 				return
 			}
@@ -34,9 +45,9 @@ func ParseFromString(kv string) (key string, val Value) {
 	return
 }
 
-// ParseFromStrings parses variables from any []"key=val" slice and
-// returns map[string]string (map[key]val)
-func ParseFromStrings(kv []string) Collection {
+// ParseKeyValSlice parses variables from any []"key=val" slice and
+// returns Collection
+func ParseKeyValSlice(kv []string) Collection {
 	vars := make(Collection)
 	if len(kv) == 0 {
 		return vars
@@ -53,7 +64,7 @@ NextVar:
 		}
 		for i := 0; i < l; i++ {
 			if v[i] == '=' {
-				vars[v[:i]] = ValueFromString(v[i+1:])
+				vars[v[:i]] = NewValue(v[i+1:])
 				if i < l {
 					continue NextVar
 				}
@@ -69,5 +80,5 @@ NextVar:
 // and calls ParseFromStrings.
 func ParseFromBytes(b []byte) Collection {
 	slice := strings.Split(string(b[0:]), "\n")
-	return ParseFromStrings(slice)
+	return ParseKeyValSlice(slice)
 }
