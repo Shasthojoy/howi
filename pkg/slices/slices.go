@@ -23,8 +23,9 @@ type Slice interface {
 	JSON() string
 }
 
-// // Slice interface
+// Slice interface
 type slice struct {
+	raw      interface{}
 	json     string
 	notEmpty bool
 }
