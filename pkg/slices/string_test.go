@@ -5,65 +5,43 @@
 package slices
 
 import (
-	"reflect"
 	"testing"
 )
 
-func TestMakeStringSlice(t *testing.T) {
+func TestStringSlice(t *testing.T) {
 	tests := []struct {
 		name     string
 		defaults []string
-		want     *StringSlice
 	}{
-		{"string set", []string{
-			"994834176",
-			"1000000001",
-			"1000000000",
-			string('⌘'),
-		},
-			&StringSlice{
-				raw: []string{
-					"994834176",
-					"1000000001",
-					"1000000000",
-					string('⌘'),
-				},
+		{
+			"string set", []string{
+				"994834176",
+				"1000000001",
+				"1000000000",
+				string('⌘'),
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := MakeStringSlice(tt.defaults...)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("MakeStringSlice() = %v, want %v", got, tt.want)
+			got := New()
+			for _, el := range tt.defaults {
+				got.Append(el)
 			}
-
-			if err := got.Add("1"); err != nil {
-				t.Errorf("StringSlice(.Add() error = %v", err)
+			if got.Len() != len(tt.defaults) {
+				t.Fatalf("Len should be same: got.Len() = %d want: %d", got.Len(), len(tt.defaults))
 			}
-
-			if !reflect.DeepEqual(got.raw, got.Raw()) {
-				t.Errorf("StringSlice( raw %v and .Raw %v should equal", got.raw, got.Raw())
+			if len(got.All()) != len(tt.defaults) {
+				t.Fatalf("Len should be same: len(got.All())  = %d want: %d", len(got.All()), len(tt.defaults))
+			}
+			i := 0
+			for el := got.First(); el != nil; el = el.Next() {
+				str := el.Value.String()
+				if tt.defaults[i] != str {
+					t.Errorf("el.Value.String() want: %s got %s", tt.defaults[i], str)
+				}
+				i++
 			}
 		})
 	}
 }
-
-// func TestStringSlice_String(t *testing.T) {
-// 	tests := []struct {
-// 		name  string
-// 		raw   []string
-// 		value string
-// 	}{
-// 		{"string 1", []string{"xxx"}, "xxx"},
-// 		{"string 2", []string{"yyy"}, "yyy"},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			s := MakeStringSlice(tt.raw...)
-// 			if s.Raw() != tt.value {
-// 				t.Errorf("StringSlice.String() %q != %q", s.String(), tt.value)
-// 			}
-// 		})
-// 	}
-// }

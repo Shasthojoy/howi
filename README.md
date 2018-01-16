@@ -1,5 +1,5 @@
 ![howicli logo][howicli-logo]
-The extreme simplicity of HOWICLI makes the building of CLI applications in go super fun and easy.
+**The extreme simplicity of HOWICLI makes the building of CLI applications in go super fun and easy.**
 
 [![GoDoc badge][godoc-img]][godoc-link]
 [![GitHub license badge][license-img]][license-link]

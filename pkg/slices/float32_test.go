@@ -5,59 +5,44 @@
 package slices
 
 import (
-	"reflect"
 	"testing"
 )
 
-func TestMakeFloat32Slice(t *testing.T) {
+func TestFloat32Slice(t *testing.T) {
 	tests := []struct {
 		name     string
 		defaults []float32
-		want     *Float32Slice
 	}{
-		{"floats 1", []float32{
-			1.000000059604644775390625,
-			1.000000059604644775390624,
-			1.000000059604644775390626,
-			340282346638528859811704183484516925440,
-			-340282346638528859811704183484516925440,
-			3.402823567e38,
-			1e-38,
-			4951760157141521099596496896,
-		},
-			&Float32Slice{
-				raw: []float32{1, 1, 1.0000001, 3.4028235e+38, -3.4028235e+38, 3.4028235e+38, 1e-38, 4.9517602e+27},
+		{
+			"floats 32", []float32{
+				3.44,
+				1.000000059604644775390625,
+				1.000000059604644775390624,
+				1.000000059604644775390626,
+				340282346638528859811704183484516925440,
+				-340282346638528859811704183484516925440,
+				3.402823567e38,
+				1e-38,
+				4951760157141521099596496896,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := MakeFloat32Slice(tt.defaults...)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("MakeFloat32Slice() = %v, want %v", got, tt.want)
+			got := New()
+			for _, el := range tt.defaults {
+				got.Append(el)
 			}
-			if !reflect.DeepEqual(got.raw, got.Raw()) {
-				t.Errorf("MakeFloat32Slice() raw %v and .Raw %v should equal", got.raw, got.Raw())
+			if got.Len() != len(tt.defaults) {
+				t.Fatalf("Len should be same: got.Len() = %d want: %d", got.Len(), len(tt.defaults))
 			}
-		})
-	}
-}
-
-func TestFloat32Slice_Add(t *testing.T) {
-	tests := []struct {
-		name    string
-		raw     []float32
-		value   string
-		wantErr bool
-	}{
-		{"floats 1", []float32{1}, "1", false},
-		{"floats 2", []float32{3.4028236}, "3.4028236e38", true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			s := MakeFloat32Slice(tt.raw...)
-			if err := s.Add(tt.value); (err != nil) != tt.wantErr {
-				t.Errorf("MakeFloat32Slice.Add() error = %v, wantErr %v", err, tt.wantErr)
+			i := 0
+			for el := got.First(); el != nil; el = el.Next() {
+				f32, _ := el.Value.Float(32)
+				if tt.defaults[i] != float32(f32) {
+					t.Errorf("el.Value.Float(32) want: %f got %f", tt.defaults[i], float32(f32))
+				}
+				i++
 			}
 		})
 	}
