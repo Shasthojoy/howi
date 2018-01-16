@@ -4,7 +4,7 @@
 
 /*
 Package vars provides the API to parse variables from various input formats
-to common key value pair or sets to map[Var]Value.
+to common key value pair or sets to vars.Collection or single vars.Value
 */
 package vars
 
