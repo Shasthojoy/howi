@@ -97,7 +97,7 @@ func TestStackTraceFrames(t *testing.T) {
 	st := err.GetStackTrace()
 	for i, tt := range tests {
 		if i >= len(st) {
-			t.Fatal("Lenght of tests and StackTrace mismatch")
+			t.Fatal("Length of tests and StackTrace mismatch")
 		}
 		if tt.wantFile != st[i].File() {
 			t.Errorf("File(): want: %q, got %q", tt.wantFile, st[i].File())

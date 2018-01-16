@@ -31,6 +31,15 @@ func (v Value) Int(base int, bitSize int) (int64, error) {
 	return strconv.ParseInt(v.String(), base, bitSize)
 }
 
+// AsInt returns vars.Value as int and error if vars.Value does not represent int value
+func (v Value) AsInt() (int, error) {
+	if _, err := strconv.Atoi(v.String()); err != nil {
+		return 0, err
+	}
+	i64, err := strconv.ParseInt(v.String(), 10, 64)
+	return int(i64), err
+}
+
 // Uint returns vars.Value as uint64 and error if vars.Value does not represent uint value
 func (v Value) Uint(base int, bitSize int) (uint64, error) {
 	return strconv.ParseUint(v.String(), base, bitSize)
@@ -40,6 +49,11 @@ func (v Value) Uint(base int, bitSize int) (uint64, error) {
 func (v Value) Uintptr() (uintptr, error) {
 	ptrInt, err := strconv.ParseUint(v.String(), 10, 64)
 	return uintptr(ptrInt), err
+}
+
+// Rune returns rune slice
+func (v Value) Rune() []rune {
+	return []rune(string(v))
 }
 
 // Complex64 tries to split Value to strings.Fields and

@@ -50,6 +50,9 @@ func TestValueFromString(t *testing.T) {
 		if got := NewValue(tt.val); got.String() != tt.want {
 			t.Errorf("ValueFromString() = %q, want %q", got.String(), tt.want)
 		}
+		if rv := NewValue(tt.val); string(rv.Rune()) != tt.want {
+			t.Errorf("Value.Rune() = %q, want %q", string(rv.Rune()), tt.want)
+		}
 	}
 }
 
@@ -222,6 +225,18 @@ func TestValue_ParseUint64Base(t *testing.T) {
 }
 
 func TestValue_ParseInt64(t *testing.T) {
+	val := Value("200")
+	iout, erri1 := val.AsInt()
+	if iout != 200 {
+		t.Errorf("Value(11).AsInt() = %d, err(%v) want 200", iout, erri1)
+	}
+
+	val2 := Value("x")
+	iout2, erri2 := val2.AsInt()
+	if iout2 != 0 || erri2 == nil {
+		t.Errorf("Value(11).AsInt() = %d, err(%v) want 0 and err", iout2, erri2)
+	}
+
 	collection := ParseFromBytes(genAtoi64TestBytes())
 	for _, test := range atoi64Tests {
 		val := collection.Getvar(test.key)
@@ -251,17 +266,18 @@ func TestValue_ParseInt64Base(t *testing.T) {
 		out, err := val.Int(test.base, 64)
 		if test.wantErr != nil {
 			if err == nil {
-				t.Errorf("Value(%s).ParseInt(%d, 64) = %v, err(%s) want %v, err(%s)",
+				t.Errorf("Value(%s).ParseInt(%d, 64) = %v, err(%v) want %v, err(%v)",
 					test.key, test.base, out, err, test.want, test.wantErr)
 			} else {
 				if test.wantErr != err.(*strconv.NumError).Err {
-					t.Errorf("Value(%s).ParseInt(%d, 64) = %v, err(%s) want %v, err(%s)",
+					t.Errorf("Value(%s).ParseInt(%d, 64) = %v, err(%v) want %v, err(%v)",
 						test.key, test.base, out, err, test.want, test.wantErr)
 				}
 			}
 		}
+
 		if out != test.want {
-			t.Errorf("Value(%s).ParseInt(%d, 64) = %v, err(%s) want %v, err(%s)",
+			t.Errorf("Value(%s).ParseInt(%d, 64) = %v, err(%v) want %v, err(%v)",
 				test.key, test.base, out, err, test.want, test.wantErr)
 		}
 	}
