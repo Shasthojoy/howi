@@ -1,6 +1,6 @@
-version: v6-{branch}.{build}
+version: v5-{branch}.{build}
 
-clone_folder: C:\gopath\src\github.com\okramlabs\howicli
+clone_folder: C:\gopath\src\github.com\howi-ce\howicli
 shallow_clone: true # for startup speed
 
 environment:
