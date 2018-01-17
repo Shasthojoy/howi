@@ -44,8 +44,8 @@
 [travis-link]: https://travis-ci.org/howi-ce/howicli
 
 <!-- appveyor -->
-[appveyor-img]: https://ci.appveyor.com/api/projects/status/0519mbpb7b887rbr?svg=true
-[appveyor-link]: https://ci.appveyor.com/project/mkungla/howicli
+[appveyor-img]: https://ci.appveyor.com/api/projects/status/0xucxrmxbqcqoeg1?svg=true
+[appveyor-link]: https://ci.appveyor.com/project/mkungla/howicli-vssvb
 
 <!-- circleci -->
 [circleci-img]: https://circleci.com/gh/howi-ce/howicli/tree/master.svg?style=svg
