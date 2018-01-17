@@ -47,7 +47,7 @@
 [appveyor-img]: https://ci.appveyor.com/api/projects/status/8w0pjo5xs8n1wap8?svg=true
 [appveyor-link]: https://ci.appveyor.com/project/mkungla/howicli
 
-<!-- circleci -->
+<!-- circleci (fromOkram Labs to HOWI_CE) -->
 [circleci-img]: https://circleci.com/gh/howi-ce/howicli/tree/master.svg?style=svg
 [circleci-link]: https://circleci.com/gh/howi-ce/howicli/tree/master
 
