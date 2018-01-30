@@ -17,7 +17,7 @@ allow_failures:
 
 script:
   - go get github.com/mattn/goveralls
-  - goveralls -service=travis-ci
+  - goveralls -service=travis-ci -ignore="cmd/*"
   - git status
 
 # notifications
