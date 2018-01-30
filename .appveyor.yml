@@ -1,5 +1,5 @@
 version: v5-{branch}.{build}
-platform: x64
+
 branches:
   only:
     - master
@@ -21,9 +21,7 @@ install:
   # some helpful output for debugging builds
   - go version
   - go env
-  # pre-installed MinGW at C:\MinGW is 32bit only
-  # but MSYS2 at C:\msys64 has mingw64
-  - set PATH=C:\msys64\mingw64\bin;%PATH%
+  - set PATH=C:\go\bin;C:\gopath\bin;C:\msys64\mingw64\bin;%PATH%
   - gcc --version
   - g++ --version
 
