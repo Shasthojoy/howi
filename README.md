@@ -40,16 +40,16 @@
 [codebeat-link]: https://codebeat.co/projects/github-com-howi-ce-howicli-master
 
 <!-- travis-ci -->
-[travis-img]: https://travis-ci.org/howi-ce/howicli.svg?branch=master
-[travis-link]: https://travis-ci.org/howi-ce/howicli
+[travis-img]: https://img.shields.io/travis/okramlabs/howicli.svg?style=flat-square
+[travis-link]: https://travis-ci.org/okramlabs/howicli
 
 <!-- appveyor -->
-[appveyor-img]: https://ci.appveyor.com/api/projects/status/8w0pjo5xs8n1wap8?svg=true
+[appveyor-img]: https://ci.appveyor.com/api/projects/status/j224d6e7vvxnm9wl?svg=true
 [appveyor-link]: https://ci.appveyor.com/project/mkungla/howicli
 
 <!-- circleci (fromOkram Labs to HOWI_CE) -->
-[circleci-img]: https://circleci.com/gh/howi-ce/howicli/tree/master.svg?style=svg
-[circleci-link]: https://circleci.com/gh/howi-ce/howicli/tree/master
+[circleci-img]: https://circleci.com/gh/okramlabs/howicli/tree/master.svg?style=svg
+[circleci-link]: https://circleci.com/gh/okramlabs/howicli/tree/master
 
 <!-- sourcegraph -->
 [sourcegraph-img]: https://sourcegraph.com/github.com/howi-ce/howicli/-/badge.svg
