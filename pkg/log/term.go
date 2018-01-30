@@ -5,10 +5,6 @@
 package log
 
 import (
-	"os"
-	"os/signal"
-	"syscall"
-
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -29,35 +25,9 @@ type tsize struct {
 
 // Terminal instance
 type term struct {
-	fd         int
-	size       tsize
-	sch        chan struct{}
-	evch       chan tsize
-	winch      chan os.Signal
-	state      *terminal.State
-	monitoring bool
-}
-
-func (t *term) monitor() {
-	t.monitoring = true
-	signal.Notify(t.winch, syscall.SIGWINCH)
-	defer func() {
-		signal.Stop(t.winch)
-		t.monitoring = false
-	}()
-	for {
-		select {
-		case <-t.winch:
-			w, h, err := terminal.GetSize(t.fd)
-			t.size = tsize{w: w, h: h}
-			if err != nil {
-				return
-			}
-		case <-t.sch:
-			if t != nil && t.state != nil {
-				terminal.Restore(t.fd, t.state)
-			}
-			return
-		}
-	}
+	fd    int
+	size  tsize
+	sch   chan struct{}
+	evch  chan tsize
+	state *terminal.State
 }

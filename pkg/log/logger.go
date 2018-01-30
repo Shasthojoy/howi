@@ -53,11 +53,6 @@ func (l *Logger) ColorsDisable() {
 
 // Exit calls method set with SetExitFunc defaults to os.Exit
 func (l *Logger) Exit(code int) {
-	if t != nil {
-		t.sch <- struct{}{}
-		for t.monitoring { /* wait terminal to be restored */
-		}
-	}
 	if l.exit != nil {
 		l.exit(code)
 	}
@@ -358,10 +353,7 @@ func (l *Logger) Okf(format string, v ...interface{}) {
 // Debug performs write to the loggers attached io.Writer.
 // Arguments are handled in the manner of fmt.Println.
 func (l *Logger) Debug(v ...interface{}) {
-	if !debug {
-		return
-	}
-	if l.isValid() {
+	if debug && l.isValid() {
 		l.write(fmt.Sprint(v...), l.prfx, sfxDebug[:], white)
 	}
 }
@@ -436,8 +428,6 @@ func (l *Logger) InitTerm() {
 			l.aligned = true
 			t.evch = make(chan tsize, 1)
 			t.sch = make(chan struct{})
-			t.winch = make(chan os.Signal, 1)
-			go t.monitor()
 		}
 	}
 }
