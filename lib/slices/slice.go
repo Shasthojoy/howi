@@ -7,7 +7,7 @@ package slices
 import (
 	"fmt"
 
-	"github.com/okramlabs/howicli/pkg/vars"
+	"github.com/okramlabs/howi/pkg/vars"
 )
 
 // Slice represents a doubly linked list like go's container/list

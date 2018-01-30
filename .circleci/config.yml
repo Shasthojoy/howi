@@ -4,7 +4,7 @@ version: 2
 # jobs
 jobs:
   go-tests:
-    working_directory: ~/go/src/github.com/okramlabs/howicli
+    working_directory: ~/go/src/github.com/okramlabs/howi
     # environment:
     #   - GOPATH: ~/.go
     macos:
@@ -36,24 +36,24 @@ jobs:
             go install -v ./...
             go test -v ./...
 
-  # Build howicli from master or rc- branches
-  build-howicli:
+  # Build howi from master or rc- branches
+  build-howi:
     macos:
       xcode: "9.0"
     steps:
       - run:
-          name: build howicli
-          command: echo "will build new osx version of howicli when pr is merged to master"
+          name: build howi
+          command: echo "will build new osx version of howi cli when pr is merged to master"
 
 # Workflow configuration
 workflows:
   version: 2
   # this workflows should only be executed when contibutor with push access to upstream
-  # https://github.com/okramlabs/howicli has pushed commit directly to master
+  # https://github.com/okramlabs/howi has pushed commit directly to master
   member-push:
     jobs:
       - go-tests
-      - build-howicli:
+      - build-howi:
           requires:
             - go-tests
           filters:

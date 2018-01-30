@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/okramlabs/howicli/pkg/errors"
+	"github.com/okramlabs/howi/pkg/errors"
 )
 
 // Really basic example lik std error
@@ -106,7 +106,7 @@ func ExampleWithStackTrace() {
 	// Output:
 	// your errror
 	// your errror
-	// github.com/okramlabs/howicli/pkg/errors/example_test.go errors_test ExampleWithStackTrace
+	// github.com/okramlabs/howi/pkg/errors/example_test.go errors_test ExampleWithStackTrace
 }
 
 func ExampleMultiError() {

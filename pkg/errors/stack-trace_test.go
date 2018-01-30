@@ -57,7 +57,7 @@ func TestPackageInfo(t *testing.T) {
 		{"errors.WithStackTrace", "errors", "WithStackTrace"},
 		{"runtime.main", "runtime", "main"},
 		{"packageInfo", "", "packageInfo"},
-		{"github.com/okramlabs/howicli/pkg/errors.packageInfo", "errors", "packageInfo"},
+		{"github.com/okramlabs/howi/pkg/errors.packageInfo", "errors", "packageInfo"},
 	}
 
 	for _, tt := range tests {
@@ -83,7 +83,7 @@ func TestWithStackTrace(t *testing.T) {
 
 func TestStackTraceFrames(t *testing.T) {
 	err := WithStackTrace("your error msg")
-	// 	github.com/okramlabs/howicli/pkg/errors/stack-trace_test.go:85 errors.TestStackTraceFrames
+	// 	github.com/okramlabs/howi/pkg/errors/stack-trace_test.go:85 errors.TestStackTraceFrames
 	// testing/testing.go:746 testing.tRunner
 	// runtime/asm_amd64.s:2337 runtime.goexit
 	tests := []struct {
@@ -91,7 +91,7 @@ func TestStackTraceFrames(t *testing.T) {
 		wantLine          int
 		wantPkg, wantFunc string
 	}{
-		{"github.com/okramlabs/howicli/pkg/errors/stack-trace_test.go", 85, "errors", "TestStackTraceFrames"},
+		{"github.com/okramlabs/howi/pkg/errors/stack-trace_test.go", 85, "errors", "TestStackTraceFrames"},
 	}
 
 	st := err.GetStackTrace()
