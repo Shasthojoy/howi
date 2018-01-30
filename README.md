@@ -1,4 +1,5 @@
-![howi logo][howi-logo]
+![howi logo][howi-logo]  
+
 **The extreme simplicity of HOWI makes the building of CLI applications in go super fun and easy.**
 
 <!-- transferred from Okram Labs -->
