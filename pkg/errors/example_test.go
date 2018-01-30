@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/howi-ce/howicli/pkg/errors"
+	"github.com/okramlabs/howicli/pkg/errors"
 )
 
 // Really basic example lik std error

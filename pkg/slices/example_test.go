@@ -7,7 +7,7 @@ package slices_test
 import (
 	"fmt"
 
-	"github.com/howi-ce/howicli/pkg/slices"
+	"github.com/okramlabs/howicli/pkg/slices"
 )
 
 func Example() {
