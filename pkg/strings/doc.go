@@ -3,8 +3,7 @@
 // license that can be found in the LICENSE file.
 
 /*
-Package emailaddr extends net/mail format for emails and mail addresses for Go Prj.
+Package strings implements simple functions which are not present
+in go standard library to manipulate strings.
 */
-package emailaddr
-
-// TODO(mkungla): Complete the docs
+package strings
