@@ -2,7 +2,7 @@
 
 **The extreme simplicity of HOWI makes the building of CLI applications in go super fun and easy.**
 
-<!-- transferred from Okram Labs -->
+<!-- dep ensure -add github.com/okramlabs/howi -->
 
 [![GoDoc badge][godoc-img]][godoc-link]
 [![GitHub license badge][license-img]][license-link]

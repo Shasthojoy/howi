@@ -24,6 +24,7 @@ install:
   - g++ --version
 
 build_script:
+  - dep ensure
   - go install -v ./...
 
 test_script:

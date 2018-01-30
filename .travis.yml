@@ -15,6 +15,7 @@ go:
 allow_failures:
   - go: master
 
+before_script: dep ensure
 script:
   - go get github.com/mattn/goveralls
   - goveralls -service=travis-ci -ignore="cmd/**/*"
