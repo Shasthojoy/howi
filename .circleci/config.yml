@@ -17,7 +17,7 @@ jobs:
             brew update
             brew prune
             brew upgrade go || brew install go
-            dep ensure
+            brew upgrade dep || brew install dep
 
       # display go info
       - run:
@@ -33,6 +33,7 @@ jobs:
       - run:
           name: run tests
           command: |
+            dep ensure
             go version
             go install -v ./...
             go test -v ./...

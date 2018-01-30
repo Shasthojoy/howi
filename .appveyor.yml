@@ -1,4 +1,8 @@
 version: v5-{branch}.{build}
+platform: x64
+branches:
+  only:
+    - master
 
 clone_folder: C:\gopath\src\github.com\okramlabs\howi
 shallow_clone: true # for startup speed
@@ -24,6 +28,7 @@ install:
   - g++ --version
 
 build_script:
+  - go get -u github.com/golang/dep/...
   - dep ensure
   - go install -v ./...
 
