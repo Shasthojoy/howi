@@ -552,3 +552,10 @@ func TestTerm(t *testing.T) {
 	InitTerm()
 	InitTerm()
 }
+
+func TestProgress(t *testing.T) {
+	pr := NewProgress("go!", 100)
+	for !pr.Done() {
+		pr.Next()
+	}
+}

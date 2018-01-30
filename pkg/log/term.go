@@ -11,11 +11,12 @@ import (
 var t *term
 
 // Width returns cuurent line with
-func Width() int {
+func Width() (w int) {
+	w = 80
 	if t != nil {
-		return t.size.w
+		w = t.size.w
 	}
-	return 80
+	return w
 }
 
 type tsize struct {
