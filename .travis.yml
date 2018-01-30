@@ -1,0 +1,25 @@
+language: go
+
+os:
+  - linux
+
+go_import_path: github.com/okramlabs/howicli
+
+# Go Versions
+go:
+  - 1.8
+  - 1.9
+  - tip
+
+# Jobs
+allow_failures:
+  - go: master
+
+script:
+  - go get github.com/mattn/goveralls
+  - goveralls -service=travis-ci
+  - git status
+
+# notifications
+notifications:
+  email: false
