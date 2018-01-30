@@ -17,27 +17,27 @@
 | [![TravisCI Build Status][travis-img]][travis-link] | [![CircleCI Build Status][circleci-img]][circleci-link] | [![AppveyorCI Build Status][appveyor-img]][appveyor-link] |
 
 <!-- howicli -->
-[howicli-logo]: https://raw.githubusercontent.com/howi-ce/howicli/master/res/logo.png
+[howicli-logo]: https://raw.githubusercontent.com/okramlabs/howicli/master/res/logo.png
 
 <!-- License -->
 [license-img]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square
-[license-link]: https://raw.githubusercontent.com/howi-ce/howicli/master/LICENSE
+[license-link]: https://raw.githubusercontent.com/okramlabs/howicli/master/LICENSE
 
 <!-- godoc -->
-[godoc-img]: https://godoc.org/github.com/howi-ce/howicli?status.png
-[godoc-link]: https://godoc.org/github.com/howi-ce/howicli
+[godoc-img]: https://godoc.org/github.com/okramlabs/howicli?status.png
+[godoc-link]: https://godoc.org/github.com/okramlabs/howicli
 
 <!-- coverage -->
-[coverage-img]: https://coveralls.io/repos/github/howi-ce/howicli/badge.svg?branch=master
-[coverage-link]: https://coveralls.io/github/howi-ce/howicli?branch=master
+[coverage-img]: https://coveralls.io/repos/github/okramlabs/howicli/badge.svg?branch=master
+[coverage-link]: https://coveralls.io/github/okramlabs/howicli?branch=master
 
 <!-- Go Report Card -->
-[go-report-card-img]: https://goreportcard.com/badge/howi-ce/howicli
-[go-report-card-link]: https://goreportcard.com/report/github.com/howi-ce/howicli
+[go-report-card-img]: https://goreportcard.com/badge/okramlabs/howicli
+[go-report-card-link]: https://goreportcard.com/report/github.com/okramlabs/howicli
 
 <!-- codebeat -->
 [codebeat-img]: https://codebeat.co/badges/de1d51b0-5ac5-48f3-b96d-5cca76d407be
-[codebeat-link]: https://codebeat.co/projects/github-com-howi-ce-howicli-master
+[codebeat-link]: https://codebeat.co/projects/github-com-okramlabs-howicli-master
 
 <!-- travis-ci -->
 [travis-img]: https://img.shields.io/travis/okramlabs/howicli.svg?style=flat-square
@@ -52,5 +52,5 @@
 [circleci-link]: https://circleci.com/gh/okramlabs/howicli/tree/master
 
 <!-- sourcegraph -->
-[sourcegraph-img]: https://sourcegraph.com/github.com/howi-ce/howicli/-/badge.svg
-[sourcegraph-link]: https://sourcegraph.com/github.com/howi-ce/howicli?badge
+[sourcegraph-img]: https://sourcegraph.com/github.com/okramlabs/howicli/-/badge.svg
+[sourcegraph-link]: https://sourcegraph.com/github.com/okramlabs/howicli?badge
