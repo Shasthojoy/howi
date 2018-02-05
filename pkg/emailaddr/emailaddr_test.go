@@ -5,6 +5,7 @@
 package emailaddr
 
 import (
+	"fmt"
 	"testing"
 
 	"golang.org/x/crypto/openpgp/errors"
@@ -67,8 +68,6 @@ func TestParseAddressList(t *testing.T) {
 			},
 		},
 		// RFC 5322, Appendix A.1.3
-		// TODO(dsymonds): Group addresses.
-
 		// RFC 2047 "Q"-encoded ISO-8859-1 address.
 		{
 			`=?iso-8859-1?q?J=F6rg_Doe?= <joerg@example.com>`,
@@ -421,5 +420,33 @@ func TestParseAddressFromEmptyPublicKey(t *testing.T) {
 
 	if _, ok := err.(errors.StructuralError); ok {
 		t.Errorf("TestParseAddressFromMalformedPublicKey: expected StructuralError, got:%s", err)
+	}
+}
+
+func TestGravatar(t *testing.T) {
+	// Should pass
+	tests := []struct {
+		Email string
+		Want  string
+	}{
+		{`<Bob@example.com>`, `https://www.gravatar.com/avatar/115b93b1ca9965ce97688e488b603cda?s=80`},
+		{`<".bob"@example.com>`, `https://www.gravatar.com/avatar/2b09b6dfda6d9c9f30f7ae588d2aba34?s=80`},
+		{`<admin@mailserver1>`, `https://www.gravatar.com/avatar/ffc38f350eabbdba225eea4cb9c4b278?s=80`},
+		{`<postmaster@localhost>`, `https://www.gravatar.com/avatar/a60d4dd15ffc0d507f55cec5b5a87634?s=80`},
+		{`<"Joe\\Blow"@example.com>`, `https://www.gravatar.com/avatar/f7fcb35054d2dc05f771a3b0357f3c87?s=80`},
+	}
+
+	for _, test := range tests {
+		addr, err := ParseAddress(test.Email)
+		if err != nil {
+			t.Errorf("Couldn't parse address %s: %s", test.Email, err.Error())
+			continue
+		}
+		gra := addr.Gravatar(80)
+		if gra != test.Want {
+			fmt.Println(addr)
+			t.Errorf("Gravatar() got = %q; want %q", gra, test.Want)
+			continue
+		}
 	}
 }

@@ -4,7 +4,10 @@
 
 package emailaddr
 
-import "fmt"
+import (
+	"crypto/md5"
+	"fmt"
+)
 
 // Address represents a single email address.
 // An address such as "John Doe <john.doe@example.com>" is represented as
@@ -39,4 +42,10 @@ func (a *Address) String() string {
 		}
 	}
 	return a.Addr
+}
+
+// Gravatar returns gravatar.com url for that email
+func (a *Address) Gravatar(s uint) string {
+	h := md5.Sum([]byte(a.Email))
+	return fmt.Sprintf("https://www.gravatar.com/avatar/%x?s=%d", h, s)
 }
