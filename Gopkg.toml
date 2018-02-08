@@ -24,3 +24,7 @@
 [[constraint]]
   branch = "master"
   name = "golang.org/x/crypto"
+
+[[constraint]]
+  name = "github.com/blang/semver"
+  version = "3.5.1"

@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/blang/semver"
+  packages = ["."]
+  revision = "2ee87856327ba09384cabd113bc6b5d174e9ec0f"
+  version = "v3.5.1"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["cast5","openpgp","openpgp/armor","openpgp/elgamal","openpgp/errors","openpgp/packet","openpgp/s2k","ssh/terminal"]
@@ -16,6 +22,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "791dabba55a195a57e96d44528f32e579639b0aec2f03fe8a019e001cdecefef"
+  inputs-digest = "c80132d714b0e8e6262cd92ea9d3d03285c6f3dd553eee4fdc7acc60fe0e9af4"
   solver-name = "gps-cdcl"
   solver-version = 1
