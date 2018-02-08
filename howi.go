@@ -21,6 +21,6 @@ func (h *HOWI) Meta() *metadata.Basic {
 }
 
 // CLI [creates] returns application command-line interface instance
-func (h *HOWI) CLI() {
-
+func (h *HOWI) CLI() string {
+	return "not implemented"
 }

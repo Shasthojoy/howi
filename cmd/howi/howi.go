@@ -1,6 +1,10 @@
 package main
 
-import "github.com/okramlabs/howi"
+import (
+	"fmt"
+
+	"github.com/okramlabs/howi"
+)
 
 func main() {
 	howi := howi.New()
@@ -15,4 +19,5 @@ func main() {
 	appMeta.SetVersion("5.0.0-alpha.1")
 
 	howicli := howi.CLI()
+	fmt.Println(howicli)
 }
