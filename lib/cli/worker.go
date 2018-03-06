@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,8 +16,8 @@ import (
 	"github.com/okramlabs/howi/lib/metadata"
 	"github.com/okramlabs/howi/pkg/errors"
 	"github.com/okramlabs/howi/pkg/log"
+	"github.com/okramlabs/howi/pkg/namespace"
 	"github.com/okramlabs/howi/pkg/vars"
-	"old.github.com/howi-ce/howi/std/strings"
 )
 
 // Worker is instance shared between command phases
@@ -60,9 +61,9 @@ func (w *Worker) Task(name string, wt func(task *Task)) {
 		return
 	}
 	// Check task name and exit on failure
-	if !strings.IsNamespace(name) {
+	if !namespace.IsValid(name) {
 		w.Log.Fatalf("task name %q is invalid - must match following regex %v",
-			name, strings.NamespaceMustCompile)
+			name, namespace.NamespaceMustCompile)
 	}
 	if _, exists := w.taskPayloads[name]; exists {
 		w.Log.Fatalf("task name %q is already in use", name)
