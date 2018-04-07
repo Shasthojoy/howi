@@ -7,7 +7,7 @@ package flags
 import (
 	"strings"
 
-	"github.com/okramlabs/howi/pkg/vars"
+	"github.com/digaverse/howi/pkg/vars"
 )
 
 // NewOptionFlag returns new string flag. Argument "opts" is string slice

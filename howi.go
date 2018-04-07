@@ -5,8 +5,8 @@
 package howi
 
 import (
-	"github.com/okramlabs/howi/lib/cli"
-	"github.com/okramlabs/howi/lib/metadata"
+	"github.com/digaverse/howi/lib/cli"
+	"github.com/digaverse/howi/lib/metadata"
 )
 
 // New creates new howi application instance

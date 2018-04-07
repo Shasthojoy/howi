@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/okramlabs/howi/lib/filesystem/path"
-	"github.com/okramlabs/howi/pkg/errors"
+	"github.com/digaverse/howi/lib/filesystem/path"
+	"github.com/digaverse/howi/pkg/errors"
 )
 
 // Open creates new file system instance for given path as wprking directory

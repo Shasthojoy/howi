@@ -7,7 +7,7 @@ package cli
 import (
 	"fmt"
 
-	"github.com/okramlabs/howi/lib/cli/flags"
+	"github.com/digaverse/howi/lib/cli/flags"
 )
 
 func cmdAbout() Command {

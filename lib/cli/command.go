@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/okramlabs/howi/lib/cli/flags"
-	"github.com/okramlabs/howi/pkg/errors"
-	"github.com/okramlabs/howi/pkg/namespace"
-	"github.com/okramlabs/howi/pkg/vars"
+	"github.com/digaverse/howi/lib/cli/flags"
+	"github.com/digaverse/howi/pkg/errors"
+	"github.com/digaverse/howi/pkg/namespace"
+	"github.com/digaverse/howi/pkg/vars"
 )
 
 // Command for application

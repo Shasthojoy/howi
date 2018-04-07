@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/okramlabs/howi/pkg/errors"
+	"github.com/digaverse/howi/pkg/errors"
 )
 
 // New returns Obj for given string,

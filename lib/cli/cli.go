@@ -8,10 +8,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/okramlabs/howi/lib/cli/flags"
-	"github.com/okramlabs/howi/lib/metadata"
-	"github.com/okramlabs/howi/pkg/errors"
-	"github.com/okramlabs/howi/pkg/log"
+	"github.com/digaverse/howi/lib/cli/flags"
+	"github.com/digaverse/howi/lib/metadata"
+	"github.com/digaverse/howi/pkg/errors"
+	"github.com/digaverse/howi/pkg/log"
 )
 
 const (

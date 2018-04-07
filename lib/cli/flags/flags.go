@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/okramlabs/howi/pkg/errors"
-	"github.com/okramlabs/howi/pkg/namespace"
-	"github.com/okramlabs/howi/pkg/vars"
+	"github.com/digaverse/howi/pkg/errors"
+	"github.com/digaverse/howi/pkg/namespace"
+	"github.com/digaverse/howi/pkg/vars"
 )
 
 // Interface for the flags

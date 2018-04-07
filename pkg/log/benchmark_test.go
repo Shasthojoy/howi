@@ -9,7 +9,7 @@ import (
 	"log"
 	"testing"
 
-	hlog "github.com/okramlabs/howi/pkg/log"
+	hlog "github.com/digaverse/howi/pkg/log"
 )
 
 const testString = "Dummy log message to have something to log, length of this string is avarage message length."

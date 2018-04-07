@@ -7,7 +7,7 @@ package flags
 import (
 	"strings"
 
-	"github.com/okramlabs/howi/pkg/vars"
+	"github.com/digaverse/howi/pkg/vars"
 )
 
 // NewBoolFlag returns new bool flag. Argument "a" can be any nr of aliases

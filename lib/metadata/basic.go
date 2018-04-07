@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/blang/semver"
-	"github.com/okramlabs/howi/pkg/emailaddr"
-	"github.com/okramlabs/howi/pkg/namespace"
+	"github.com/digaverse/howi/pkg/emailaddr"
+	"github.com/digaverse/howi/pkg/namespace"
 )
 
 // Basic application metadata

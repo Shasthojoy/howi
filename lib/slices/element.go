@@ -4,7 +4,7 @@
 
 package slices
 
-import "github.com/okramlabs/howi/pkg/vars"
+import "github.com/digaverse/howi/pkg/vars"
 
 // Element is an element of a slice
 type Element struct {

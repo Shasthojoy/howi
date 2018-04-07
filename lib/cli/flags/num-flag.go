@@ -7,7 +7,7 @@ package flags
 import (
 	"strings"
 
-	"github.com/okramlabs/howi/pkg/vars"
+	"github.com/digaverse/howi/pkg/vars"
 )
 
 // NewNumFlag returns new numeric flag. Argument "a" can be any nr of aliases

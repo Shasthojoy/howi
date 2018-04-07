@@ -7,7 +7,7 @@ package vars
 import "testing"
 
 // These test focus on basic type tests
-// https://github.com/okramlabs/howi/issues/15 (vars.Value to)
+// https://github.com/digaverse/howi/issues/15 (vars.Value to)
 func TestType_from_string(t *testing.T) {
 	val := NewValue("string var")
 	val2 := Value("string var")

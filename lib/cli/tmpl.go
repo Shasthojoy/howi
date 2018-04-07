@@ -11,7 +11,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/okramlabs/howi/pkg/log"
+	"github.com/digaverse/howi/pkg/log"
 )
 
 // TmplParser enables to parse templates for cli apps
