@@ -4,7 +4,7 @@ version: 2
 # jobs
 jobs:
   go-tests:
-    working_directory: ~/go/src/github.com/okramlabs/howi
+    working_directory: ~/go/src/github.com/digaverse/howi
     # environment:
     #   - GOPATH: ~/.go
     macos:
@@ -51,7 +51,7 @@ jobs:
 workflows:
   version: 2
   # this workflows should only be executed when contibutor with push access to upstream
-  # https://github.com/okramlabs/howi has pushed commit directly to master
+  # https://github.com/digaverse/howi has pushed commit directly to master
   member-push:
     jobs:
       - go-tests
