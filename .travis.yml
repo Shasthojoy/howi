@@ -3,7 +3,7 @@ language: go
 os:
   - linux
 
-go_import_path: github.com/okramlabs/howi
+go_import_path: github.com/digaverse/howi
 
 # Go Versions
 go:
