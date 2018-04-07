@@ -4,7 +4,7 @@ branches:
   only:
     - master
 
-clone_folder: C:\gopath\src\github.com\okramlabs\howi
+clone_folder: C:\gopath\src\github.com\digaverse\howi
 shallow_clone: true # for startup speed
 
 environment:
