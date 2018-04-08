@@ -8,27 +8,25 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-var t *term
-
-// Width returns cuurent line with
-func Width() (w int) {
-	w = 80
-	if t != nil {
-		w = t.size.w
-	}
-	return w
-}
-
 type tsize struct {
 	w int
 	h int
 }
 
-// Terminal instance
-type term struct {
+// Term instance
+type Term struct {
 	fd    int
 	size  tsize
 	sch   chan struct{}
 	evch  chan tsize
 	state *terminal.State
+}
+
+// Width returns cuurent line with
+func (t *Term) Width() (w int) {
+	w = 80
+	if t != nil {
+		w = t.size.w
+	}
+	return w
 }

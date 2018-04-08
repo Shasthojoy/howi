@@ -34,6 +34,7 @@ type Logger struct {
 	primaryColor []byte
 	prfx         []byte
 	levelLocked  bool
+	term         *Term
 }
 
 // Colors colirzes output
@@ -417,17 +418,17 @@ func (l *Logger) ColoredLinef(format string, v ...interface{}) {
 // InitTerm puts current terminal into raw mode and enables logger to use
 // current terminal
 func (l *Logger) InitTerm() {
-	if t != nil {
+	if l.term != nil {
 		return
 	}
-	t = &term{}
-	t.fd = int(os.Stdout.Fd())
-	if terminal.IsTerminal(t.fd) {
-		t.size.w, t.size.h, _ = terminal.GetSize(t.fd)
-		if (t.size.w + t.size.h) > 0 {
+	l.term = &Term{}
+	l.term.fd = int(os.Stdout.Fd())
+	if terminal.IsTerminal(l.term.fd) {
+		l.term.size.w, l.term.size.h, _ = terminal.GetSize(l.term.fd)
+		if (l.term.size.w + l.term.size.h) > 0 {
 			l.aligned = true
-			t.evch = make(chan tsize, 1)
-			t.sch = make(chan struct{})
+			l.term.evch = make(chan tsize, 1)
+			l.term.sch = make(chan struct{})
 		}
 	}
 }
@@ -446,7 +447,7 @@ func (l *Logger) printProgress(name string, pct float32, started time.Time) {
 	l.inProgress = true
 	l.msgBuf = l.msgBuf[:0]
 	l.msgBuf = append(l.msgBuf, _cr)
-	termW := Width()
+	termW := l.term.Width()
 
 	l.msgBuf = append(l.msgBuf, name...)
 	l.msgBuf = append(l.msgBuf, 32)
@@ -465,7 +466,10 @@ func (l *Logger) printProgress(name string, pct float32, started time.Time) {
 		l.msgBuf = append(l.msgBuf, pad...)
 	}
 	l.msgBuf = append(l.msgBuf, suffix...)
-	l.w.Write(l.msgBuf)
+	_, err := l.w.Write(l.msgBuf)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 // write writes the output for a logging event. The string s contains
@@ -498,7 +502,7 @@ func (l *Logger) write(s string, prfx []byte, suffix []byte, color []byte) error
 	if l.aligned && suffix != nil {
 		bodyLen := len(l.msgBuf)
 		sfxLen := len(suffix)
-		termW := Width()
+		termW := l.term.Width()
 		padLen := termW - bodyLen - sfxLen
 		r := padLen + padDef
 		if r > 0 {
