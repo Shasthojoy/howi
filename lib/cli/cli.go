@@ -187,7 +187,10 @@ func (cli *Application) Start() {
 	cli.Log.Debug("Application:Start - preparing runtime")
 	// Setup internals if not setup already
 	if !cli.isLoaded {
-		cli.AddCommand(cli.rootCmd)
+		// Add root command if it has Do fn
+		if cli.rootCmd.doFn != nil {
+			cli.AddCommand(cli.rootCmd)
+		}
 
 		// Check for application configuration and validity of flags and commands
 		cli.errs.Add(cli.verifyConfig())
@@ -208,7 +211,6 @@ func (cli *Application) Start() {
 	cli.handleHelp()
 
 	if cli.currentCmd == nil {
-
 		cli.Log.Errorf(FmtErrCommandNotProvided, cli.MetaData.Name())
 		cli.exit(2)
 	}
@@ -334,7 +336,9 @@ func (cli *Application) prepare() error {
 	} else {
 		cmd, exists := cli.commands[cli.MetaData.Name()]
 		if !exists {
-			return errors.Newf(FmtErrUnknownCommand, "root")
+			// Not having root command is not a error.
+			// It is treated as no command was provided
+			return nil
 		}
 		cli.currentCmd = &cmd
 	}

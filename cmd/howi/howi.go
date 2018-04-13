@@ -52,26 +52,26 @@ func main() {
 
 	// add root command
 	howicli.Before(func(w *cli.Worker) {
-		w.Log.Info("root before")
+		w.Log.Debug("root before")
 	})
 	// add root command
 	howicli.Do(func(w *cli.Worker) {
-		w.Log.Info("root do")
+		w.Log.Debug("root do")
 	})
 
 	// add root command
 	howicli.AfterSuccess(func(w *cli.Worker) {
-		w.Log.Info("root after success")
+		w.Log.Debug("root after success")
 	})
 
 	// add root command
 	howicli.AfterFailure(func(w *cli.Worker) {
-		w.Log.Info("root after failure")
+		w.Log.Debug("root after failure")
 	})
 
 	// add root command
 	howicli.AfterAlways(func(w *cli.Worker) {
-		w.Log.Info("root after always")
+		w.Log.Debug("root after always")
 	})
 
 	// start the Application
