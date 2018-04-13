@@ -10,28 +10,36 @@ import (
 )
 
 // New creates new howi application instance
-func New() *HOWI {
-	return &HOWI{}
+func New(name string) (h *HOWI, err error) {
+	h = &HOWI{}
+	h.name = name
+	h.meta, err = metadata.New(h.name)
+	if err != nil {
+		return nil, err
+	}
+	return h, nil
 }
 
 // HOWI Application wrapper
 type HOWI struct {
-	metadata *metadata.Basic
-	cli      *cli.Application
-}
-
-// Meta [creates] returns metadata pointer
-func (h *HOWI) Meta() *metadata.Basic {
-	if h.metadata == nil {
-		h.metadata = &metadata.Basic{}
-	}
-	return h.metadata
+	name string
+	cli  *cli.Application
+	meta *metadata.Basic
 }
 
 // CLI [creates] returns application command-line interface instance
+//
+// This instance enables you to build all your CLI functionality for your app
 func (h *HOWI) CLI() *cli.Application {
-	h.cli = cli.New(h.metadata)
+	if h.cli == nil {
+		h.cli = cli.New(h.meta)
+	}
 	return h.cli
+}
+
+// Meta for application
+func (h *HOWI) Meta() *metadata.Basic {
+	return h.meta
 }
 
 // Start the application

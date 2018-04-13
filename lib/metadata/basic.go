@@ -15,6 +15,17 @@ import (
 	"github.com/digaverse/howi/pkg/namespace"
 )
 
+// New metadata
+func New(name string) (*Basic, error) {
+	if len(name) > 72 {
+		return nil, errors.New("name is too long max char allowed 72")
+	}
+	if !namespace.IsValid(name) {
+		return nil, errors.New("name must only consist a-zA-Z0-9_-")
+	}
+	return &Basic{name: name}, nil
+}
+
 // Basic application metadata
 type Basic struct {
 	title        string
@@ -41,18 +52,6 @@ func (b *Basic) SetTitle(title string) error {
 // Title returns application title
 func (b *Basic) Title() string {
 	return b.title
-}
-
-// SetName of the application used as command name
-func (b *Basic) SetName(name string) error {
-	if len(name) > 72 {
-		return errors.New("name is too long max char allowed 72")
-	}
-	if !namespace.IsValid(name) {
-		return errors.New("name must only consist a-zA-Z0-9_-")
-	}
-	b.name = name
-	return nil
 }
 
 // Name returns application name

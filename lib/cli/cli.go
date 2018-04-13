@@ -75,6 +75,7 @@ type Application struct {
 	isLoaded    bool                    // is application loaded
 	osArgs      []string                // raw os args from beginning of the execution
 	currentCmd  *Command
+	rootCmd     Command
 }
 
 // New constructs new CLI Application Plugin and returns it's instance for
@@ -115,7 +116,33 @@ func New(m *metadata.Basic) *Application {
 
 	// Add internal commands besides help
 	cli.AddCommand(cmdAbout())
+	cli.rootCmd = NewCommand(m.Name())
 	return cli
+}
+
+// Before root function
+func (cli *Application) Before(fn func(w *Worker)) {
+	cli.rootCmd.Before(fn)
+}
+
+// Do root function
+func (cli *Application) Do(fn func(w *Worker)) {
+	cli.rootCmd.Do(fn)
+}
+
+// AfterAlways root function
+func (cli *Application) AfterAlways(fn func(w *Worker)) {
+	cli.rootCmd.AfterAlways(fn)
+}
+
+// AfterSuccess root function
+func (cli *Application) AfterSuccess(fn func(w *Worker)) {
+	cli.rootCmd.AfterSuccess(fn)
+}
+
+// AfterFailure root function
+func (cli *Application) AfterFailure(fn func(w *Worker)) {
+	cli.rootCmd.AfterFailure(fn)
 }
 
 // AddCommand to application. Commands and command flags will be verified upon
@@ -160,6 +187,8 @@ func (cli *Application) Start() {
 	cli.Log.Debug("Application:Start - preparing runtime")
 	// Setup internals if not setup already
 	if !cli.isLoaded {
+		cli.AddCommand(cli.rootCmd)
+
 		// Check for application configuration and validity of flags and commands
 		cli.errs.Add(cli.verifyConfig())
 
@@ -179,6 +208,7 @@ func (cli *Application) Start() {
 	cli.handleHelp()
 
 	if cli.currentCmd == nil {
+
 		cli.Log.Errorf(FmtErrCommandNotProvided, cli.MetaData.Name())
 		cli.exit(2)
 	}
@@ -301,6 +331,12 @@ func (cli *Application) prepare() error {
 		if err := cli.currentCmd.parse(&cli.osArgs); err != nil {
 			return err
 		}
+	} else {
+		cmd, exists := cli.commands[cli.MetaData.Name()]
+		if !exists {
+			return errors.Newf(FmtErrUnknownCommand, "root")
+		}
+		cli.currentCmd = &cmd
 	}
 	if cli.currentCmd != nil {
 		return cli.currentCmd.errs.AsError()
