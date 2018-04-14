@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/digaverse/howi/lib/cli/flags"
-	"github.com/digaverse/howi/lib/metadata"
 	"github.com/digaverse/howi/pkg/log"
+	"github.com/digaverse/howi/pkg/project"
 )
 
 var (
@@ -54,7 +54,7 @@ var (
 // HelpGlobal used to show help for application
 type HelpGlobal struct {
 	TmplParser
-	Info                metadata.JSON
+	Project             *project.Project
 	Commands            map[string]Command
 	Flags               map[int]flags.Interface
 	PrimaryCommands     []Command
@@ -85,7 +85,7 @@ func (h *HelpGlobal) Print(log *log.Logger) {
 // HelpCommand is used to display help for command
 type HelpCommand struct {
 	TmplParser
-	Info    metadata.JSON
+	Project *project.Project
 	Command Command
 	Usage   string
 	Flags   []flags.Interface
@@ -94,7 +94,7 @@ type HelpCommand struct {
 // Print command help
 func (h *HelpCommand) Print(log *log.Logger) {
 	h.SetTemplate(helpCommandTmpl)
-	usage := []string{h.Info.Name}
+	usage := []string{h.Project.Name}
 	for _, parent := range h.Command.getParents() {
 		usage = append(usage, parent)
 	}

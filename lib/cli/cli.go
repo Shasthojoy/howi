@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/digaverse/howi/lib/cli/flags"
-	"github.com/digaverse/howi/lib/metadata"
 	"github.com/digaverse/howi/pkg/errors"
 	"github.com/digaverse/howi/pkg/log"
+	"github.com/digaverse/howi/pkg/project"
 )
 
 const (
@@ -65,7 +65,7 @@ const (
 type Application struct {
 	started     time.Time               // when application was started
 	Log         *log.Logger             // logger
-	MetaData    *metadata.Basic         // Application MetaData
+	Project     *project.Project        // Application Project data
 	Header      Header                  // header if used
 	Footer      Footer                  // footer if used
 	errs        errors.MultiError       // internal errors
@@ -81,10 +81,10 @@ type Application struct {
 // New constructs new CLI Application Plugin and returns it's instance for
 // configuration. Returned Application has basic initialization done and
 // all defaults set.
-func New(m *metadata.Basic) *Application {
+func New(prj *project.Project) *Application {
 	cli := &Application{
 		Log:         log.NewStdout(log.NOTICE),
-		MetaData:    m,
+		Project:     prj,
 		commands:    make(map[string]Command),
 		flags:       make(map[int]flags.Interface),
 		flagAliases: make(map[string]int),
@@ -93,8 +93,15 @@ func New(m *metadata.Basic) *Application {
 	// set initial startup time
 	cli.started = time.Now()
 	cli.Log.TsDisabled()
-
+	if prj.Config.InitTerm {
+		cli.Log.InitTerm()
+	}
+	cli.Log.SetPrimaryColor(prj.Config.Color)
+	cli.Log.SetLogLevel(prj.Config.LogLevel)
 	cli.addInternalFlags()
+	if prj.Config.Color != "" {
+		cli.Log.Colors()
+	}
 
 	// Set log level to debug and lock the log level, but only if --debug
 	// flag was found before any command. If --debug flag was found later
@@ -111,12 +118,14 @@ func New(m *metadata.Basic) *Application {
 		cli.Log.LockLevel()
 	}
 
-	cli.Log.Debugf("Application:Create - accepting configuration changes debugging(%t)",
+	cli.Log.Debugf("CLI:Create - accepting configuration changes debugging(%t)",
 		cli.flag("debug").Present())
 
 	// Add internal commands besides help
 	cli.AddCommand(cmdAbout())
-	cli.rootCmd = NewCommand(m.Name())
+	cli.rootCmd = NewCommand(prj.Name)
+	cli.Header.Defaults()
+	cli.Footer.Defaults()
 	return cli
 }
 
@@ -149,7 +158,7 @@ func (cli *Application) AfterFailure(fn func(w *Worker)) {
 // application startup and will prevent application to start if command was
 // invalid or command introduces any flag shadowing.
 func (cli *Application) AddCommand(c Command) {
-	cli.Log.Debugf("Application:AddCommand - %q", c.Name())
+	cli.Log.Debugf("CLI:AddCommand - %q", c.Name())
 	// Can only check command name here since nothing stops you to add possible
 	// shadow flags after this command was added.
 	if _, exists := cli.commands[c.Name()]; exists {
@@ -162,7 +171,7 @@ func (cli *Application) AddCommand(c Command) {
 // AddFlag to application. Invalid flag will add error to multierror and
 // prevents application to start.
 func (cli *Application) AddFlag(f flags.Interface) {
-	cli.Log.Debugf("Application:AddFlag - %q", f.Name())
+	cli.Log.Debugf("CLI:AddFlag - %q", f.Name())
 	// Verify flag
 	cli.errs.Add(f.Verify())
 
@@ -184,7 +193,7 @@ func (cli *Application) AddFlag(f flags.Interface) {
 
 // Start the application
 func (cli *Application) Start() {
-	cli.Log.Debug("Application:Start - preparing runtime")
+	cli.Log.Debug("CLI:Start - preparing runtime")
 	// Setup internals if not setup already
 	if !cli.isLoaded {
 		// Add root command if it has Do fn
@@ -211,7 +220,7 @@ func (cli *Application) Start() {
 	cli.handleHelp()
 
 	if cli.currentCmd == nil {
-		cli.Log.Errorf(FmtErrCommandNotProvided, cli.MetaData.Name())
+		cli.Log.Errorf(FmtErrCommandNotProvided, cli.Project.Name)
 		cli.exit(2)
 	}
 
@@ -221,22 +230,20 @@ func (cli *Application) Start() {
 		cli.Log.SetLogLevel(log.DEBUG)
 	}
 
-	worker := newWorker(cli.Log)
-	worker.MetaData = cli.MetaData.JSON()
-	worker.args = cli.currentCmd.getArgs()
+	worker := newWorker(cli.Project, cli.currentCmd.getArgs(), cli.Log)
 
 	// Add flags
 	cli.processFlags(worker)
 
-	// Start the application and reset the start time
+	// Start the appMetaData.JSON(lication and reset the start time
 	now := time.Now()
-	cli.Log.Debugf("Application:Start - startup took %f seconds (excluding before function)",
+	cli.Log.Debugf("CLI:Start - startup took %f seconds (excluding before function)",
 		cli.elapsed().Seconds())
 	cli.started = now
 	// show header if command has not disabled it
 	cli.currentCmd.executeBeforeFn(worker)
 	if worker.Config.ShowHeader {
-		cli.Header.Print(cli.Log, cli.MetaData.JSON(), cli.elapsed())
+		cli.Header.Print(cli.Log, cli.Project, cli.elapsed())
 	}
 	if worker.Phase().status <= StatusSuccess {
 		cli.currentCmd.executeDoFn(worker)
@@ -247,7 +254,7 @@ func (cli *Application) Start() {
 		cli.currentCmd.executeAfterAlwaysFn(worker)
 		// show footer if command has not disabled it
 		if worker.Config.ShowFooter {
-			cli.Footer.Print(cli.Log, cli.MetaData.JSON(), cli.elapsed())
+			cli.Footer.Print(cli.Log, cli.Project, cli.elapsed())
 		}
 		cli.exit(0)
 	}
@@ -262,7 +269,7 @@ func (cli *Application) Start() {
 	}
 	// show footer if command has not disabled it
 	if worker.Config.ShowFooter {
-		cli.Footer.Print(cli.Log, cli.MetaData.JSON(), cli.elapsed())
+		cli.Footer.Print(cli.Log, cli.Project, cli.elapsed())
 	}
 	cli.exit(1)
 }
@@ -271,11 +278,11 @@ func (cli *Application) Start() {
 func (cli *Application) verifyConfig() error {
 	lenc := len(cli.commands)
 	lenf := len(cli.flags)
-	cli.Log.Debugf("Application:verifyConfig - %q has total %d command(s)", cli.MetaData.Name(), lenc)
+	cli.Log.Debugf("CLI:verifyConfig - %q has total %d command(s)", cli.Project.Name, lenc)
 	if (cli.commands == nil || lenc == 0) || (cli.flags == nil || lenf == 0) {
 		return errors.New(FmtErrAppWithNoCommandsOrFlags)
 	}
-	if cli.MetaData.Name() == "" {
+	if cli.Project.Name == "" {
 		return errors.New(FmtErrAppUnnamed)
 	}
 	return nil
@@ -334,7 +341,7 @@ func (cli *Application) prepare() error {
 			return err
 		}
 	} else {
-		cmd, exists := cli.commands[cli.MetaData.Name()]
+		cmd, exists := cli.commands[cli.Project.Name]
 		if !exists {
 			// Not having root command is not a error.
 			// It is treated as no command was provided
@@ -353,14 +360,14 @@ func (cli *Application) prepare() error {
 // printing the error
 func (cli *Application) checkRuntimeErrors() {
 	hasErrors := !cli.errs.Nil()
-	cli.Log.Debugf("Application:checkRuntimeErrors - has errors (%t)", hasErrors)
+	cli.Log.Debugf("CLI:checkRuntimeErrors - has errors (%t)", hasErrors)
 	// log errors and exit if present
 	if hasErrors {
 		elapsed := cli.elapsed()
 
-		cli.Header.Print(cli.Log, cli.MetaData.JSON(), elapsed)
+		cli.Header.Print(cli.Log, cli.Project, elapsed)
 		cli.Log.Error(cli.errs.Error())
-		cli.Footer.Print(cli.Log, cli.MetaData.JSON(), elapsed)
+		cli.Footer.Print(cli.Log, cli.Project, elapsed)
 
 		cli.exit(2)
 	}
@@ -368,7 +375,7 @@ func (cli *Application) checkRuntimeErrors() {
 
 // handleBashCompletion handles bash completion calls
 func (cli *Application) handleBashCompletion() {
-	cli.Log.Debugf("Application:handleBashCompletion - is bash completion call (%t)",
+	cli.Log.Debugf("CLI:handleBashCompletion - is bash completion call (%t)",
 		cli.flag("show-bash-completion").Present())
 
 	if cli.flag("show-bash-completion").Present() {
@@ -380,26 +387,26 @@ func (cli *Application) handleBashCompletion() {
 
 // handleHelp prints help menu depending on request
 func (cli *Application) handleHelp() {
-	cli.Log.Debugf("Application:handleHelp - was it help call (%t)",
+	cli.Log.Debugf("CLI:handleHelp - was it help call (%t)",
 		cli.flag("help").Present())
 	if cli.flag("help").Present() {
 		elapsed := cli.elapsed()
-		cli.Header.Print(cli.Log, cli.MetaData.JSON(), elapsed)
+		cli.Header.Print(cli.Log, cli.Project, elapsed)
 		if cli.flag("help").IsGlobal() {
 			help := HelpGlobal{
-				Info:     cli.MetaData.JSON(),
+				Project:  cli.Project,
 				Commands: cli.commands,
 				Flags:    cli.flags,
 			}
 			help.Print(cli.Log)
 		} else {
 			help := HelpCommand{
-				Info:    cli.MetaData.JSON(),
+				Project: cli.Project,
 				Command: *cli.currentCmd,
 			}
 			help.Print(cli.Log)
 		}
-		cli.Footer.Print(cli.Log, cli.MetaData.JSON(), elapsed)
+		cli.Footer.Print(cli.Log, cli.Project, elapsed)
 		cli.exit(0)
 	}
 }
@@ -412,12 +419,12 @@ func (cli *Application) processFlags(worker *Worker) {
 		if flag.IsRequired() && !flag.Present() {
 			// show footer if command has not disabled it
 			if worker.Config.ShowHeader {
-				cli.Header.Print(cli.Log, cli.MetaData.JSON(), cli.elapsed())
+				cli.Header.Print(cli.Log, cli.Project, cli.elapsed())
 			}
 			worker.Log.Errorf(FmtErrRequiredFlag, "global", flag.Name(), flag.Usage())
 			// show footer if command has not disabled it
 			if worker.Config.ShowFooter {
-				cli.Footer.Print(cli.Log, cli.MetaData.JSON(), cli.elapsed())
+				cli.Footer.Print(cli.Log, cli.Project, cli.elapsed())
 			}
 			cli.exit(1)
 		}
@@ -429,12 +436,12 @@ func (cli *Application) processFlags(worker *Worker) {
 		if flag.IsRequired() && !flag.Present() {
 			// show footer if command has not disabled it
 			if worker.Config.ShowHeader {
-				cli.Header.Print(cli.Log, cli.MetaData.JSON(), cli.elapsed())
+				cli.Header.Print(cli.Log, cli.Project, cli.elapsed())
 			}
 			worker.Log.Errorf(FmtErrRequiredFlag, cli.currentCmd.Name(), flag.Name(), flag.Usage())
 			// show footer if command has not disabled it
 			if worker.Config.ShowFooter {
-				cli.Footer.Print(cli.Log, cli.MetaData.JSON(), cli.elapsed())
+				cli.Footer.Print(cli.Log, cli.Project, cli.elapsed())
 			}
 			cli.exit(1)
 		}

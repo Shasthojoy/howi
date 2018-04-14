@@ -47,37 +47,33 @@ func aboutCLIdo(w *Worker) {
 	contributors, _ := w.Flag("contributors")
 	if show, _ := contributors.Value().Bool(); show {
 		w.Log.Line("Project Contributors\n")
-		for _, contributor := range w.MetaData.Contributors {
-			w.Log.Line(contributor)
+		for _, contributor := range w.Project.Contributors {
+			w.Log.Line(contributor.String())
 		}
 		return
 	}
 	buildDate, _ := w.Flag("build-date")
 	if show, _ := buildDate.Value().Bool(); show {
-		fmt.Print(w.MetaData.BuildDate)
+		fmt.Print(w.Project.BuildDate)
 		return
 	}
 	version, _ := w.Flag("version")
 	if show, _ := version.Value().Bool(); show {
-		fmt.Print(w.MetaData.Version)
+		fmt.Print(w.Project.Version)
 		return
 	}
 
 	w.Log.Line("ABOUT")
 	w.Log.Line("------------------------------------------------------------------------")
-	if w.MetaData.LongDescription != "" {
-		w.Log.Line(w.MetaData.LongDescription)
-	} else {
-		w.Log.Line(w.MetaData.ShortDescription)
-	}
+	w.Log.Line(w.Project.Description)
 	w.Log.Line("------------------------------------------------------------------------")
-	w.Log.Line(tableRow("Version:", w.MetaData.Version))
-	w.Log.Line(tableRow("Build date:", w.MetaData.BuildDate))
-	w.Log.Line(tableRow("Total contributors:", len(w.MetaData.Contributors)))
+	w.Log.Line(tableRow("Version:", w.Project.Version))
+	w.Log.Line(tableRow("Build date:", w.Project.BuildDate))
+	w.Log.Line(tableRow("Total contributors:", len(w.Project.Contributors)))
 	w.Log.Line("------------------------------------------------------------------------")
 	w.Log.Line("Project Contributors\n")
-	for _, contributor := range w.MetaData.Contributors {
-		w.Log.Line(contributor)
+	for _, contributor := range w.Project.Contributors {
+		w.Log.Line(contributor.String())
 	}
 	w.Log.Line("------------------------------------------------------------------------")
 	w.Log.Line("for flags printing additional info use --help")

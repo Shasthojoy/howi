@@ -76,9 +76,8 @@ func (t *TmplParser) textBold(s string) string {
 	return fmt.Sprintf("\033[1m%s\033[0m", s)
 }
 
-func (t *TmplParser) dateOnly(s string) string {
-	date, _ := time.Parse(time.RFC3339, s)
-	y, m, d := date.Date()
+func (t *TmplParser) dateOnly(ts time.Time) string {
+	y, m, d := ts.Date()
 	return fmt.Sprintf("%.2d-%.2d-%d", d, m, y)
 }
 
@@ -87,9 +86,21 @@ type Header struct {
 	TmplParser
 }
 
+// Defaults for header
+func (h *Header) Defaults() {
+	h.SetTemplate(`
+################################################################################
+# {{ .Title }}{{ if .Copyright.Since }}
+#  Copyright © {{ .Copyright.Since }} {{ .Copyright.By }}. All rights reserved.{{end}}
+# {{if .Version}}
+#   Version:    {{ .Version }}{{end}}{{if .BuildDate}}
+#   Build date: {{ .BuildDate | funcDate }}{{end}}
+################################################################################`)
+}
+
 // Print application header
-func (h *Header) Print(log *log.Logger, info interface{}, elapsed time.Duration) {
-	err := h.ParseTmpl("header-tmpl", info, elapsed)
+func (h *Header) Print(log *log.Logger, project interface{}, elapsed time.Duration) {
+	err := h.ParseTmpl("header-tmpl", project, elapsed)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -101,9 +112,17 @@ type Footer struct {
 	TmplParser
 }
 
+// Defaults for footer
+func (f *Footer) Defaults() {
+	f.SetTemplate(`
+################################################################################
+# elapsed: {{ funcElapsed }}
+################################################################################`)
+}
+
 // Print application footer
-func (f *Footer) Print(log *log.Logger, info interface{}, elapsed time.Duration) {
-	err := f.ParseTmpl("footer-tmpl", info, elapsed)
+func (f *Footer) Print(log *log.Logger, project interface{}, elapsed time.Duration) {
+	err := f.ParseTmpl("footer-tmpl", project, elapsed)
 	if err != nil {
 		log.Fatal(err)
 	}

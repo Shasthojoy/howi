@@ -13,10 +13,10 @@ import (
 	"time"
 
 	"github.com/digaverse/howi/lib/cli/flags"
-	"github.com/digaverse/howi/lib/metadata"
 	"github.com/digaverse/howi/pkg/errors"
 	"github.com/digaverse/howi/pkg/log"
 	"github.com/digaverse/howi/pkg/namespace"
+	"github.com/digaverse/howi/pkg/project"
 	"github.com/digaverse/howi/pkg/vars"
 )
 
@@ -33,7 +33,29 @@ type Worker struct {
 	flagAliases  map[string]int          // global flag aliases
 	Log          *log.Logger
 	Config       WorkerConfig
-	MetaData     metadata.JSON
+	Project      *project.Project
+}
+
+// NewWorker constructs new worker
+func newWorker(prj *project.Project, args []vars.Value, logger *log.Logger) *Worker {
+	w := &Worker{
+		started:      time.Now(),
+		phases:       make(map[string]*Phase),
+		taskPayloads: make(map[string]chan []byte),
+		args:         args,
+		Log:          logger,
+		Config: WorkerConfig{
+			ShowHeader: true,
+			ShowFooter: true,
+		},
+		Project: prj,
+	}
+	w.phases["before"] = newPhase("before")
+	w.phases["do"] = newPhase("do")
+	w.phases["after-failure"] = newPhase("after-failure")
+	w.phases["after-success"] = newPhase("after-success")
+	w.phases["after-always"] = newPhase("after-always")
+	return w
 }
 
 // Fail marks phase as failed
@@ -164,26 +186,6 @@ func (w *Worker) phasewait() {
 	w.Phase().finish()
 	w.Log.Debugf("phase: %s status: %s, elapsed: %s", w.Phase().Name(),
 		w.Phase().Status(), w.Phase().Elapsed())
-}
-
-// NewWorker constructs new worker
-func newWorker(logger *log.Logger) *Worker {
-	w := &Worker{
-		started:      time.Now(),
-		phases:       make(map[string]*Phase),
-		taskPayloads: make(map[string]chan []byte),
-		Log:          logger,
-		Config: WorkerConfig{
-			ShowHeader: true,
-			ShowFooter: true,
-		},
-	}
-	w.phases["before"] = newPhase("before")
-	w.phases["do"] = newPhase("do")
-	w.phases["after-failure"] = newPhase("after-failure")
-	w.phases["after-success"] = newPhase("after-success")
-	w.phases["after-always"] = newPhase("after-always")
-	return w
 }
 
 func (w *Worker) attachFlag(f flags.Interface) {

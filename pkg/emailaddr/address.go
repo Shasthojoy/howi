@@ -6,6 +6,7 @@ package emailaddr
 
 import (
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 )
 
@@ -48,4 +49,27 @@ func (a *Address) String() string {
 func (a *Address) Gravatar(s uint) string {
 	h := md5.Sum([]byte(a.Email))
 	return fmt.Sprintf("https://www.gravatar.com/avatar/%x?s=%d", h, s)
+}
+
+// MarshalJSON implements the encoding/json.Marshaler interface.
+func (a *Address) MarshalJSON() ([]byte, error) {
+	return json.Marshal(a.String())
+}
+
+// UnmarshalJSON implements the encoding/json.Unmarshaler interface.
+func (a *Address) UnmarshalJSON(data []byte) (err error) {
+	var addressString string
+	var addr *Address
+	if err = json.Unmarshal(data, &addressString); err != nil {
+		return
+	}
+
+	if addr, err = ParseAddress(addressString); err != nil {
+		return
+	}
+
+	a.Addr = addr.Addr
+	a.Email = addr.Email
+	a.Name = addr.Name
+	return
 }
